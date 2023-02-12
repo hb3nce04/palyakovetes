@@ -1,47 +1,45 @@
 .genericNotFound {
-
-    font-size: 1.5rem;
-    text-align: center;
-    margin-top: 10vh;
-    
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 10vh;
 }
 
 .backToHomePageButton {
-    display: inline-block;
-    border-radius: 4px;
-    background-color: rgb(86, 167, 86);
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    font-size: 2rem;
-    padding: 1rem;
-    width: 20rem;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 0.5rem;
-  }
-  
-  .backToHomePageButton span {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
-  }
-  
-  .backToHomePageButton span:after {
-    content: '\00bb';
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    right: -20px;
-    transition: 0.5s;
-  }
-  
-  .backToHomePageButton:hover span {
-    padding-right: 2rem;
-  }
-  
-  .backToHomePageButton:hover span:after {
-    opacity: 1;
-    right: 0;
-  }
+  display: inline-block;
+  border-radius: 4px;
+  background-color: rgb(86, 167, 86);
+  border: none;
+  color: #ffffff;
+  text-align: center;
+  font-size: 2rem;
+  padding: 1rem;
+  width: 20rem;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 0.5rem;
+}
+
+.backToHomePageButton span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.backToHomePageButton span:after {
+  content: "\00bb";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.backToHomePageButton:hover span {
+  padding-right: 2rem;
+}
+
+.backToHomePageButton:hover span:after {
+  opacity: 1;
+  right: 0;
+}
