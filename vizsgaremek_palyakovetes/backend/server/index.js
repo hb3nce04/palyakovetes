@@ -21,6 +21,7 @@ connection.connect((err) => {
   if (err) console.log(err);
   console.log("Connected");
 });
+
 /*
 app.get("/login", (req, res)=> {
     connection.query("SELECT * FROM user WHERE email = ?;", [email], (err, data) => {
@@ -41,6 +42,7 @@ app.get("/login", (req, res)=> {
     });
 });
 */
+
 app.listen(8080, () => {
   console.log("Listening to port 8080");
 });
