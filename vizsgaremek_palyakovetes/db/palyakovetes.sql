@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2023. Feb 19. 16:50
--- Kiszolgáló verziója: 10.4.22-MariaDB
--- PHP verzió: 8.1.1
+-- Létrehozás ideje: 2023. Feb 25. 12:44
+-- Kiszolgáló verziója: 10.4.21-MariaDB
+-- PHP verzió: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -189,7 +189,7 @@ INSERT INTO `kategoria` (`id`, `megnevezes`) VALUES
 CREATE TABLE `osztaly` (
   `id` int(4) NOT NULL,
   `iskolaid` int(2) NOT NULL,
-  `felhasznalo_om` int(11) NOT NULL,
+  `felhasznalo_om` bigint(11) NOT NULL,
   `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `vegzesi_ev` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
@@ -202,7 +202,7 @@ CREATE TABLE `osztaly` (
 
 CREATE TABLE `palya` (
   `id` int(11) NOT NULL,
-  `diak_om_azon` int(11) NOT NULL,
+  `diak_om_azon` bigint(11) NOT NULL,
   `kategoriaid` int(2) NOT NULL,
   `leiras` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
@@ -278,7 +278,7 @@ INSERT INTO `szakma` (`id`, `nev`, `szam`) VALUES
 --
 
 CREATE TABLE `tanulo` (
-  `om_azon` int(11) NOT NULL,
+  `om_azon` bigint(11) NOT NULL,
   `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `osztalyid` int(4) NOT NULL,
   `nappali_munkarend` tinyint(1) NOT NULL DEFAULT 1,
@@ -322,8 +322,8 @@ ALTER TABLE `kategoria`
 --
 ALTER TABLE `osztaly`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `osztaly_ibfk_2` (`iskolaid`),
-  ADD KEY `osztaly_ibfk_3` (`felhasznalo_om`);
+  ADD KEY `felhasznalo_om` (`felhasznalo_om`),
+  ADD KEY `iskolaid` (`iskolaid`);
 
 --
 -- A tábla indexei `palya`
@@ -331,7 +331,7 @@ ALTER TABLE `osztaly`
 ALTER TABLE `palya`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `diak_om_azon` (`diak_om_azon`),
-  ADD KEY `palya_ibfk_3` (`kategoriaid`);
+  ADD KEY `kategoriaid` (`kategoriaid`);
 
 --
 -- A tábla indexei `szakma`
@@ -346,8 +346,8 @@ ALTER TABLE `szakma`
 ALTER TABLE `tanulo`
   ADD PRIMARY KEY (`om_azon`),
   ADD UNIQUE KEY `osztalyid` (`osztalyid`),
-  ADD KEY `tanulo_ibfk_6` (`agazatid`),
-  ADD KEY `tanulo_ibfk_7` (`szakid`);
+  ADD KEY `agazatid` (`agazatid`),
+  ADD KEY `szakid` (`szakid`);
 
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
@@ -388,6 +388,32 @@ ALTER TABLE `palya`
 --
 ALTER TABLE `szakma`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- Megkötések a kiírt táblákhoz
+--
+
+--
+-- Megkötések a táblához `osztaly`
+--
+ALTER TABLE `osztaly`
+  ADD CONSTRAINT `osztaly_ibfk_1` FOREIGN KEY (`iskolaid`) REFERENCES `iskola` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `osztaly_ibfk_2` FOREIGN KEY (`felhasznalo_om`) REFERENCES `felhasznalo` (`om_azon`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `palya`
+--
+ALTER TABLE `palya`
+  ADD CONSTRAINT `palya_ibfk_1` FOREIGN KEY (`diak_om_azon`) REFERENCES `tanulo` (`om_azon`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `palya_ibfk_2` FOREIGN KEY (`kategoriaid`) REFERENCES `kategoria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `tanulo`
+--
+ALTER TABLE `tanulo`
+  ADD CONSTRAINT `tanulo_ibfk_1` FOREIGN KEY (`osztalyid`) REFERENCES `osztaly` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tanulo_ibfk_2` FOREIGN KEY (`agazatid`) REFERENCES `agazat` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tanulo_ibfk_3` FOREIGN KEY (`szakid`) REFERENCES `szakma` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
