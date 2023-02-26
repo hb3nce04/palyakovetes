@@ -47,27 +47,35 @@ app.post("/register", (req, res) => {
   );
 });
 */
-app.get("/login", (req, res)=> {
+app.post("/login", (req, res) => {
   const { om_azon, jelszo } = req.body;
-    connection.query("SELECT * FROM felhasznalo WHERE om_azon = ?;", [om_azon], (err, data) => {
-        if(data.length === 0){
-          res.status(204).send("User not found.");
-        }
+  connection.query(
+    "SELECT * FROM felhasznalo WHERE om_azon = ?;",
+    [om_azon],
+    (err, data) => {
+      if (err) {
+        return res.status(500).json({ message: "Error" });
+      }
+      if (data.length === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
 
-        const isCorrectPassword = bcrypt.compareSync(jelszo, data[0].jelszo);
-        
-        if(!isCorrectPassword)
-            res.status(400).json({message: "Wrong username or password."});
+      const isCorrectPassword = bcrypt.compareSync(jelszo, data[0].jelszo);
 
+      if (!isCorrectPassword)
+        return res.status(400).json({ message: "Wrong username or password." });
 
-        const token = jwt.sign({id: data[0].id}, "secret");
+      const token = jwt.sign({ id: data[0].id }, "secret");
 
-        res.cookie("access_token", token, {
-            httpOnly: true
-        }).status(200).json({isAdmin: data[0].admin});
-    });
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .status(200)
+        .json({ isAdmin: data[0].admin });
+    }
+  );
 });
-
 
 app.listen(8080, () => {
   console.log("Listening to port 8080");
