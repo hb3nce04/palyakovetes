@@ -1,4 +1,4 @@
-import { Button, ListItem, Tooltip } from "@mui/material";
+import { Button, ListItem, ListItemButton, Tooltip } from "@mui/material";
 import * as FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
 import MenuItem from "@mui/material/MenuItem";
@@ -19,12 +19,12 @@ export default function ExportExcel({ excelData, fileName }) {
 
   return (
     <>
-      <ListItem
+      <ListItemButton
             onClick={(e) => exportToExcel(fileName)}
-            className="MuiButtonBase-root MuiMenuItem-root MuiMenuItem-gutters MuiMenuItem-root MuiMenuItem-gutters css-12wi0s0-MuiButtonBase-root-MuiMenuItem-root"
+            
       >
         Mentés Excel fájlként
-      </ListItem>
+      </ListItemButton>
     </>
   );
 }

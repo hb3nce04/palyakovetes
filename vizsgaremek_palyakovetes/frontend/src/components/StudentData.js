@@ -19,21 +19,25 @@ import {
 } from "@mui/x-data-grid-premium";
 import { Button } from "@mui/material";
 import ExportExcel from "./ExportExcel";
+import { GridToolbarImportButton } from "./GridToolbarImportButton";
+import "../css/App.css";
 
 const data = {
 
   columns: [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "firstName", headerName: "First name", width: 130 },
-    { field: "lastName", headerName: "Last name", width: 130 },
+    { field: "id", headerName: "ID", width: 70 ,headerClassName: 'columnsData'},
+    { field: "firstName", headerName: "First name", width: 130,headerClassName: 'columnsData' },
+    { field: "lastName", headerName: "Last name", width: 130,headerClassName: 'columnsData' },
     {
       field: "age",
       headerName: "Age",
       type: "number",
       width: 90,
+      headerClassName: 'columnsData'
     },
     {
       field: "fullName",
+      headerClassName: 'columnsData',
       headerName: "Full name",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
@@ -90,6 +94,7 @@ export default function StudentData() {
   
     return (
       <GridToolbarContainer>
+        <GridToolbarImportButton/>
           <GridToolbarExportContainer>
             <ExportExcel
               excelData={selectedRows}
@@ -116,6 +121,15 @@ export default function StudentData() {
         rowHeight={35}
         checkboxSelection
         columns={data.columns}
+        sx={{
+          border: 4,
+          borderColor: '#E0E0E0'
+          /*
+          '& .MuiDataGrid-cell:hover': {
+            borderColor: 'primary.main',
+          },
+          */
+        }}
         onSelectionModelChange={(ids) => {
           const selectedIDs = new Set(ids);
           const selectedRowData = data.rows.filter((row) => {

@@ -4,6 +4,26 @@
   margin-top: 10vh;
 }
 
+.columnsData {
+  /*background-color: rgba(0, 162, 255, 0.144);*/
+}
+
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
 .backToHomePageButton {
   display: inline-block;
   border-radius: 4px;
