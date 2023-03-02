@@ -4,20 +4,13 @@ import {
   GridCsvExportMenuItem,
   GridPrintExportMenuItem,
   GridToolbarContainer,
-  GridToolbarExport,
-  GridToolbar ,
   GridToolbarExportContainer,
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
   huHU
 } from "@mui/x-data-grid";
-import {
-  DataGridPremium,
-  GridExcelExportMenuItem,
-  GridExcelExportOptions,
-} from "@mui/x-data-grid-premium";
-import { Button } from "@mui/material";
+
 import ExportExcel from "./ExportExcel";
 import { GridToolbarImportButton } from "./GridToolbarImportButton";
 import "../css/App.css";
@@ -39,7 +32,6 @@ const data = {
       field: "fullName",
       headerClassName: 'columnsData',
       headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
       sortable: false,
       width: 160,
       valueGetter: (params) =>
@@ -138,7 +130,6 @@ export default function StudentData() {
           );
 
           setSelectedRows(selectedRowData);
-          console.log(selectedRows)
           console.log(selectedRowData);
         }}
         components={{

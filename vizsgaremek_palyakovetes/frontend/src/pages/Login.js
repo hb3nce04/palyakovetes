@@ -3,21 +3,29 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme } from "@mui/material/styles";
 import Footer from "../components/Footer";
 
+/*
+REGEX
+*/
+
+const omIdentifierPattern = "^[0-9]{11}$";
+const passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$";
+
+/*
+REGEX
+*/
+
 export default function SignIn() {
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
+      omIdentifier: data.get("omIdentifier"),
       password: data.get("password"),
     });
   };
@@ -37,16 +45,17 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            id="email"
+            id="omIdentifier"
             label="OM azonosító"
-            name="email"
-            autoComplete="email"
+            name="omIdentifier"
+            autoComplete="omIdentifier"
             autoFocus
+            inputProps={{ inputMode: 'numeric', pattern: omIdentifierPattern}} 
           />
           <TextField
             margin="normal"
@@ -57,6 +66,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputProps={{inputMode:'text', pattern: passwordPattern}}
           />
           {/*
             <FormControlLabel
@@ -72,7 +82,7 @@ export default function SignIn() {
           >
             Bejelentkezés
           </Button>
-          <Grid container></Grid>
+          
         </Box>
       </Box>
 
