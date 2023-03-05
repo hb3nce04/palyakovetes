@@ -8,14 +8,41 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
-  huHU
+  huHU,
+  GridCellModes
 } from "@mui/x-data-grid";
-
+import { Button, FormControlLabel, IconButton } from "@mui/material";
 import ExportExcel from "./ExportExcel";
 import { GridToolbarImportButton } from "./GridToolbarImportButton";
 import "../css/App.css";
+import { blue } from "@mui/material/colors";
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+
+const editIcon = <i className="fa-solid fa-pen" style={{color:"black",textAlign:"center"}}/>
+
+const MatEdit = ({ index }) => {
+  const handleEditClick = () => {
+    
+  };
+
+  return (
+    <FormControlLabel
+      control={
+        <IconButton
+          color="secondary"
+          aria-label="add an alarm"
+          onClick={handleEditClick}
+        >
+          <ModeEditOutlineOutlinedIcon color="primary"/>
+        </IconButton>
+      }
+    />
+  );
+};
 
 const data = {
+
+  
 
   columns: [
     { field: "id", headerName: "ID", width: 70 ,headerClassName: 'columnsData'},
@@ -28,6 +55,7 @@ const data = {
       width: 90,
       headerClassName: 'columnsData'
     },
+
     {
       field: "fullName",
       headerClassName: 'columnsData',
@@ -37,6 +65,23 @@ const data = {
       valueGetter: (params) =>
         `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
+    {
+      field: "edit",
+      headerName: "Módosítás",
+      sortable: false,
+      width: 140,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <MatEdit index={params.row.id} />
+          </div>
+        );
+      }
+    }
   ],
   rows: [{ id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
   { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
