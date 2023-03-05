@@ -13,8 +13,8 @@ function App() {
         <DarkModeTest>
           <Routes>
             <Route path="/">
-              <Route index element={<Home />} />
               <Route path="login" element={<Login />} />
+              <Route index element={<Home />} />
               <Route path="*" exact={true} element={<GenericNotFound />} />
             </Route>
           </Routes>
