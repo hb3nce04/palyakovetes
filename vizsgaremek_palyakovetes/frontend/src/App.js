@@ -9,12 +9,13 @@ import { DarkModeTest } from "./components/DarkModeTest";
 function App() {
   return (
     <div className="App">
+      
       <BrowserRouter>
         <DarkModeTest>
           <Routes>
             <Route path="/">
-              <Route path="login" element={<Login />} />
-              <Route index element={<Home />} />
+              <Route index element={<Login />} />
+              <Route path = "home" element={<Home />} />
               <Route path="*" exact={true} element={<GenericNotFound />} />
             </Route>
           </Routes>

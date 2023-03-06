@@ -3,12 +3,10 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
-  
   "author": "",
   "license": "ISC",
   "description": "",
@@ -19,6 +17,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "react-router-dom": "^6.8.2"
   }
 }

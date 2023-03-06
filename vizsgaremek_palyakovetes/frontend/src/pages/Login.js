@@ -1,4 +1,3 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,23 +6,39 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Footer from "../components/Footer";
+import axios from "axios";
+import { useState } from "react";
+import {useNavigate} from "react-router-dom";
+
+
 
 /*
 REGEX
 */
 
 const omIdentifierPattern = "^[0-9]{11}$";
-const passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$";
+//const passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$";
 
 /*
 REGEX
 */
 
 export default function SignIn() {
+  const [omazon, setOmazon] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    try {
+      axios.post("http://localhost:8080/login", {om_azon: omazon, jelszo: password})
+      navigate("/");
+    } catch (error) {
+      alert("Error");
+    }
+    
     console.log({
       omIdentifier: data.get("omIdentifier"),
       password: data.get("password"),
@@ -47,6 +62,7 @@ export default function SignIn() {
         </Typography>
         <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
           <TextField
+            onChange={(event)=>setOmazon(event.target.value)}
             margin="normal"
             required
             fullWidth
@@ -58,6 +74,7 @@ export default function SignIn() {
             inputProps={{ inputMode: 'numeric', pattern: omIdentifierPattern}} 
           />
           <TextField
+          onChange={(event)=>setPassword(event.target.value)}
             margin="normal"
             required
             fullWidth
@@ -66,7 +83,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
-            inputProps={{inputMode:'text', pattern: passwordPattern}}
+            //inputProps={{inputMode:'text', pattern: passwordPattern}}
           />
           {/*
             <FormControlLabel
