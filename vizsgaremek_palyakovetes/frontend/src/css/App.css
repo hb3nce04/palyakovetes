@@ -8,6 +8,12 @@
   /*background-color: rgba(0, 162, 255, 0.144);*/
 }
 
+.formstest * {
+
+  margin: 0.75rem 0rem
+
+}
+
 ::-webkit-scrollbar {
   width: 16px;
 }
