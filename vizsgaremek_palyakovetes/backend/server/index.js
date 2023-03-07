@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -66,7 +66,7 @@ app.post("/login", (req, res) => {
         return res.status(400).json({ message: "Wrong username or password." });
 
       const token = jwt.sign({ id: data[0].id }, "secret");
-
+      
       res
         .cookie("access_token", token, {
           httpOnly: true,
@@ -76,6 +76,11 @@ app.post("/login", (req, res) => {
     }
   );
 });
+
+app.delete("/logout", (req, res)=>{
+  res.clearCookie("access_token");
+  res.end();
+})
 
 app.listen(8080, () => {
   console.log("Listening to port 8080");

@@ -24,27 +24,25 @@ REGEX
 */
 
 export default function SignIn() {
-  const [omazon, setOmazon] = useState("");
-  const [password, setPassword] = useState("");
-
+  const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleClick = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    try {
-      axios.post("http://localhost:8080/login", {om_azon: omazon, jelszo: password})
-      .then(res =>(navigate("/")));
-      
-    } catch (error) {
-      alert("Error");
-    }
-    
-    console.log({
-      omIdentifier: data.get("omIdentifier"),
-      password: data.get("password"),
-    });
-  };
+    if(formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !==""){
+         try {
+          const res = await axios.post("http://localhost:8080/login", formData, {
+            headers: {
+                'Content-Type':'application/json'
+            },
+            withCredentials: true
+        });
+        navigate("/home");
+      } catch({response: {data}}) {
+        alert(data.message);
+      }
+  }
+}
 
   return (
     <Container component="main" maxWidth="xs">
@@ -61,29 +59,29 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleClick}  sx={{ mt: 1 }}>
           <TextField
-            onChange={(event)=>setOmazon(event.target.value)}
+            value={formData?.om_azon || ""}
+            onChange={({target: {name, value}})=>setFormData({...formData, [name]: value})}
             margin="normal"
             required
             fullWidth
-            id="omIdentifier"
             label="OM azonosító"
-            name="omIdentifier"
-            autoComplete="omIdentifier"
+            name="om_azon"
+            autoComplete="om_azon"
             autoFocus
             inputProps={{ inputMode: 'numeric', pattern: omIdentifierPattern}} 
           />
           <TextField
-          onChange={(event)=>setPassword(event.target.value)}
+          value={formData?.jelszo || ""}
+            onChange={({target: {name, value}})=>setFormData({...formData, [name]: value})}
             margin="normal"
             required
             fullWidth
-            name="password"
+            name="jelszo"
             label="Jelszó"
             type="password"
-            id="password"
-            autoComplete="current-password"
+            //autoComplete="current-password"
             //inputProps={{inputMode:'text', pattern: passwordPattern}}
           />
           {/*
@@ -93,7 +91,7 @@ export default function SignIn() {
             />
             */}
           <Button
-            type="submit"
+            type="submit"            
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}

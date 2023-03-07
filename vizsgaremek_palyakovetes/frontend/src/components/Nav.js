@@ -15,15 +15,19 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { ColorModeContext } from "./DarkModeTest";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const pages = ["Menüpont 1", "Menüpont 2", "Menüpont 3"];
 const settings = ["Profil", "Kijelentkezés"];
+
 
 function Nav() {
   const { mode, toggleColorMode } = React.useContext(ColorModeContext);
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -39,6 +43,13 @@ function Nav() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const logout = (text) => {
+    if (text === "Kijelentkezés") {
+      axios.delete("http://localhost:8080/logout", {withCredentials: true});
+      navigate("/");
+    }
+  }
 
   return (
     <AppBar position="static">
@@ -158,7 +169,7 @@ function Nav() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" onClick={() => logout(setting)}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
