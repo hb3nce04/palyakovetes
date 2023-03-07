@@ -34,7 +34,8 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
     try {
       axios.post("http://localhost:8080/login", {om_azon: omazon, jelszo: password})
-      navigate("/");
+      .then(res =>(navigate("/")));
+      
     } catch (error) {
       alert("Error");
     }
