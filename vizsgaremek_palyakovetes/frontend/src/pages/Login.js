@@ -51,13 +51,13 @@ export default function SignIn() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
+        <Avatar sx={{ mt: "40%", bgcolor: "secondary.main" }}></Avatar>
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>
