@@ -61,8 +61,10 @@ app.post("/login", (req, res) => {
       }
 
       const isCorrectPassword = bcrypt.compareSync(jelszo, data[0].jelszo);
-
+      
       if (!isCorrectPassword)
+      console.log(jelszo,data[0].jelszo)
+      console.log(isCorrectPassword)
         return res.status(400).json({ message: "Wrong username or password." });
 
       const token = jwt.sign({ id: data[0].id }, "secret");
