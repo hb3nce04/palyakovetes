@@ -1,9 +1,17 @@
 import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 
 export const AddNewStudent = () => {
+
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+      navigate('/home',{replace:true})
+    }
+
     return (
         <>
         <Nav/>
@@ -29,7 +37,7 @@ export const AddNewStudent = () => {
         </Select>
         </FormControl>
         <FormControlLabel control={<Checkbox defaultChecked />} label="Nappali munkarend" />
-                <Button variant="contained">TANULÓ FELVÉTELE</Button>
+                <Button onClick={handleClick} variant="contained">TANULÓ FELVÉTELE</Button>
                 </div>
                 <div className="formstest" style={{marginLeft:"2rem", width:"35%" ,display: "grid"}}>
                 <FormControl>

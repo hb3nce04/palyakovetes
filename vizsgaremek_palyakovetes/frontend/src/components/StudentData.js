@@ -105,10 +105,7 @@ export default function StudentData() {
 
   const MatEdit = ({ index,prop }) => {
     const handleEditClick = () => {
-      
-      navigate(`student/${index}/update`)
-      
-      
+      navigate(`/student/${index}/update`,{replace:true});
     };
   
     return (

@@ -8,7 +8,7 @@ export const GridToolbarAddNewStudentButton = () => {
   const navigate = useNavigate();
 
   const handleClick = (event) => {
-    navigate("student/add");
+    navigate("/student/add",{replace:true});
   };
 
   return (
