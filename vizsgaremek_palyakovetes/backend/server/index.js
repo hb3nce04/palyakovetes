@@ -22,31 +22,36 @@ connection.connect((err) => {
   console.log("Connected");
 });
 
-/*
+
 app.post("/register", (req, res) => {
-  const { om_azon, jelszo } = req.body;
+  const { om_azon, jelszo, admin } = req.body;
   connection.query(
     "SELECT * FROM felhasznalo WHERE om_azon LIKE ?;",
     [om_azon],
     (err, rows) => {
-      if (err) res.status(500).json("Error");
-      if (rows.length) res.status(409).json("User already exists!");
-
+      if (err){
+        return res.status(500).json("Error");
+      } 
+      if (rows.length){
+        return res.status(409).json("User already exists!");
+      }
       const salt = bcrypt.genSaltSync(12);
       const hash = bcrypt.hashSync(jelszo, salt);
 
       connection.query(
-        "INSERT INTO felhasznalo (om_azon, jelszo) VALUES (?);",
-        [[om_azon, hash]],
+        "INSERT INTO felhasznalo (om_azon, jelszo, admin) VALUES (?);",
+        [[om_azon, hash, admin]],
         (err, data) => {
-          if (err) res.status(500).json(err);
-          res.status(201).json("User has been created.");
+          if (err)
+            return res.status(500).json(err);
+          else
+            return res.status(201).json("User has been created.");                   
         }
       );
     }
   );
 });
-*/
+
 app.post("/login", (req, res) => {
   const { om_azon, jelszo } = req.body;
   connection.query(
@@ -62,10 +67,10 @@ app.post("/login", (req, res) => {
 
       const isCorrectPassword = bcrypt.compareSync(jelszo, data[0].jelszo);
       
-      if (!isCorrectPassword)
-      console.log(jelszo,data[0].jelszo)
+      if (!isCorrectPassword){
       console.log(isCorrectPassword)
         return res.status(400).json({ message: "Wrong username or password." });
+      }
 
       const token = jwt.sign({ id: data[0].id }, "secret");
       

@@ -38,7 +38,7 @@ export default function SignIn() {
             withCredentials: true
         });
         
-        navigate("/");
+        navigate("/home");
         
       } catch({response: {data}}) {
         alert(data.message);
