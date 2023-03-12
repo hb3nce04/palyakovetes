@@ -8,9 +8,7 @@ import Container from "@mui/material/Container";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
-
-
+import { useNavigate } from "react-router-dom";
 
 /*
 REGEX
@@ -29,30 +27,28 @@ export default function SignIn() {
 
   const handleClick = async (event) => {
     event.preventDefault();
-    if(formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !==""){
-         try {
-          const res = await axios.post("http://localhost:8080/login", formData, {
-            headers: {
-                'Content-Type':'application/json'
-            },
-            withCredentials: true
+    if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
+      try {
+        const res = await axios.post("http://localhost:8080/login", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
         });
-        
+
         navigate("/home");
-        
-      } catch({response: {data}}) {
+      } catch ({ response: { data } }) {
         alert(data.message);
-        setFormData({om_azon : formData.om_azon, jelszo : ""});
+        setFormData({ om_azon: formData.om_azon, jelszo: "" });
       }
-  }
-}
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
-
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -62,10 +58,12 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>
-        <Box component="form" onSubmit={handleClick}  sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleClick} sx={{ mt: 1 }}>
           <TextField
             value={formData?.om_azon || ""}
-            onChange={({target: {name, value}})=>setFormData({...formData, [name]: value})}
+            onChange={({ target: { name, value } }) =>
+              setFormData({ ...formData, [name]: value })
+            }
             margin="normal"
             required
             fullWidth
@@ -73,11 +71,13 @@ export default function SignIn() {
             name="om_azon"
             autoComplete="om_azon"
             autoFocus
-            inputProps={{ inputMode: 'numeric', pattern: omIdentifierPattern}} 
+            inputProps={{ inputMode: "numeric", pattern: omIdentifierPattern }}
           />
           <TextField
-          value={formData?.jelszo || ""}
-            onChange={({target: {name, value}})=>setFormData({...formData, [name]: value})}
+            value={formData?.jelszo || ""}
+            onChange={({ target: { name, value } }) =>
+              setFormData({ ...formData, [name]: value })
+            }
             margin="normal"
             required
             fullWidth
@@ -94,14 +94,13 @@ export default function SignIn() {
             />
             */}
           <Button
-            type="submit"            
+            type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
             Bejelentkezés
           </Button>
-          
         </Box>
       </Box>
 
