@@ -2,7 +2,7 @@ import { ListItemButton } from "@mui/material";
 import * as FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
 
-export default function ExportExcel({ excelData, fileName }) {
+export default function GridToolbarExportExcelButton({ excelData, fileName }) {
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset-UTF-8";
   const fileExtension = ".xlsx";

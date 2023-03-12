@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { GenericNotFound } from "./pages/GenericNotFound";
-import { DarkModeTest } from "./components/DarkModeTest";
+import { DarkMode } from "./components/DarkMode";
 import { AddNewStudent } from "./pages/AddNewStudent";
 import { UpdateStudent } from "./pages/UpdateStudent";
 import { ClassChooser } from "./pages/ClassChooser";
@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       
       <BrowserRouter>
-        <DarkModeTest>
+        <DarkMode>
           <Routes>
           <Route path="*"  element={<GenericNotFound />} />
             <Route path="/">
@@ -29,7 +29,7 @@ function App() {
                 </Route>
             </Route>
           </Routes>
-        </DarkModeTest>
+        </DarkMode>
       </BrowserRouter>
     </div>
   );

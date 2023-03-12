@@ -1,13 +1,13 @@
 import React from "react";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
-import StudentData from "../components/StudentData";
+import StudentDataTable from "../components/StudentDataTable";
 
 const Home = () => {
   return (
     <>
       <Nav />
-      <StudentData />
+      <StudentDataTable />
       <Footer trademark versionNumber />
     </>
   );

@@ -1,19 +1,14 @@
-import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
-import { Container } from "@mui/system";
-import { useNavigate } from "react-router-dom";
+import {Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
+
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
+import PositionedSnackbar from "../components/PositionedSnackbar";
 
 export const AddNewStudent = () => {
 
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-      navigate('/home',{replace:true})
-    }
-
     return (
         <>
+        
         <Nav/>
         <Paper style={{ padding:"3rem 6rem"}} elevation={2} >
             <Typography variant="h4" color="primary">ÚJ TANULÓ FELVÉTELE</Typography>
@@ -37,7 +32,7 @@ export const AddNewStudent = () => {
         </Select>
         </FormControl>
         <FormControlLabel control={<Checkbox defaultChecked />} label="Nappali munkarend" />
-                <Button onClick={handleClick} variant="contained">TANULÓ FELVÉTELE</Button>
+                <PositionedSnackbar severity='success' message='Pompás' navigateTo="/home" navigateAfter={250}/>
                 </div>
                 <div className="formstest" style={{marginLeft:"2rem", width:"35%" ,display: "grid"}}>
                 <FormControl>
@@ -61,6 +56,7 @@ export const AddNewStudent = () => {
           defaultValue=""
         />
         </FormControl>
+        
                 </div>
                 </div>
             </Paper>

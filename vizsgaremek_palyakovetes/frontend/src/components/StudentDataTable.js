@@ -9,18 +9,14 @@ import {
   GridToolbarFilterButton,
   GridToolbarDensitySelector,
   huHU,
-  GridCellModes
 } from "@mui/x-data-grid";
-import { Button, FormControlLabel, IconButton, Link } from "@mui/material";
-import ExportExcel from "./ExportExcel";
-import { GridToolbarImportButton } from "./GridToolbarImportButton";
+import { FormControlLabel, IconButton } from "@mui/material";
+import GridToolbarExportExcelButton from "./custom-gridtoolbar-components/GridToolbarExportExcelButton";
+import { GridToolbarImportButton } from "./custom-gridtoolbar-components/GridToolbarImportButton";
 import "../css/App.css";
-import { blue } from "@mui/material/colors";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import {Navigate, useNavigate} from 'react-router-dom';
-import { GridToolbarAddNewStudentButton } from "./GridToolbarAddNewStudentButton";
-
-const editIcon = <i className="fa-solid fa-pen" style={{color:"black",textAlign:"center"}}/>
+import {useNavigate} from 'react-router-dom';
+import { GridToolbarAddNewStudentButton } from "./custom-gridtoolbar-components/GridToolbarAddNewStudentButton";
 
 export default function StudentData() {
   const data = {
@@ -138,7 +134,7 @@ export default function StudentData() {
         <GridToolbarAddNewStudentButton/>
         <GridToolbarImportButton/>
           <GridToolbarExportContainer>
-            <ExportExcel
+            <GridToolbarExportExcelButton
               excelData={selectedRows}
               fileName={`Diák adatok ${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}. ${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`}
             />
@@ -156,7 +152,7 @@ export default function StudentData() {
     <div style={{ height: 800, width: "90%", margin: "1rem auto" }}>
       <DataGrid
         /*MUI-hoz tartozó magyar fordítás*/
-        localeText={huHU.components.MuiDataGrid.defaultProps.localeText}
+        localeText={huHU.components.MuiDataGrid.defaultProps.localeText} 
         pageSize={pageSize}
         onPageSizeChange={(newPage) => setPageSize(newPage)}
         pagination
