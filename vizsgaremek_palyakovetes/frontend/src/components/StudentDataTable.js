@@ -45,7 +45,9 @@ export default function StudentData() {
       {
         field: "edit",
         headerName: "Módosítás",
-        sortable: false,
+        sortable: false, 
+        filterable: false, 
+        disableColumnMenu: true,
         width: 140,
         disableClickEventBubbling: true,
         renderCell: (params) => {
