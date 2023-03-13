@@ -38,7 +38,7 @@ export const ClassChooser = () => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button  sx={{ fontWeight: 'bold' }}>Tovább</Button>
+        <Button sx={{ fontWeight: 'bold' }} href="home">Tovább</Button>
       </CardActions>
     </Card>
     </Grow>

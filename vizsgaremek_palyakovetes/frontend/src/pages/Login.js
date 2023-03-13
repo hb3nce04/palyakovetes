@@ -36,7 +36,7 @@ export default function SignIn() {
           withCredentials: true,
         });
 
-        navigate("/home");
+        navigate("classchooser");
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });

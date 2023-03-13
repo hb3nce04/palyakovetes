@@ -19,7 +19,7 @@ function App() {
           <Route path="*"  element={<GenericNotFound />} />
             <Route path="/">
               <Route path = "/" index element={<Login />} />
-              <Route path="/home" element={<Home />} />
+              <Route path="home" element={<Home />} />
               <Route path = "classchooser" element={<ClassChooser />} />
               <Route path="student">
                 <Route path="add" element={<AddNewStudent/>}></Route>
