@@ -1,8 +1,8 @@
 import { Button,  Menu, MenuItem } from '@mui/material'
 import React from 'react'
+import Papa from 'papaparse';
 
 export const GridToolbarImportButton = () => {
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -11,6 +11,16 @@ export const GridToolbarImportButton = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleChange = (event) => {
+    console.log(event.target.files[0])
+    Papa.parse(event.target.files[0], {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        console.log(results.data)
+      },
+    });
+  }
 
   return (
     <div>
@@ -38,7 +48,20 @@ export const GridToolbarImportButton = () => {
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={handleClose}>CSV fájlként</MenuItem>
+        <MenuItem>
+      <label 
+      htmlFor="file-upload" 
+      className="importAsCSVLabel">
+          CSV fájlként
+      </label>
+      </MenuItem>
+      <input
+          type='file'
+          accept='.csv'
+          onChange={handleChange}
+          id="file-upload"
+          />
+
       </Menu>
     </div>
   );
