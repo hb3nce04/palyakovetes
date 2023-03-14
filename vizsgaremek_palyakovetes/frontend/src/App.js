@@ -3,11 +3,13 @@ import "./css/Footer.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+
 import { GenericNotFound } from "./pages/GenericNotFound";
 import { DarkMode } from "./components/DarkMode";
 import { AddNewStudent } from "./pages/AddNewStudent";
 import { UpdateStudent } from "./pages/UpdateStudent";
 import { ClassChooser } from "./pages/ClassChooser";
+import { Contact } from "./pages/Contact";
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
           <Route path="*"  element={<GenericNotFound />} />
             <Route path="/">
               <Route path = "/" index element={<Login />} />
+              <Route path="contact" element={<Contact />} />
               <Route path="home" element={<Home />} />
               <Route path = "classchooser" element={<ClassChooser />} />
               <Route path="student">
