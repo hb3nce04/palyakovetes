@@ -8,6 +8,14 @@
   /*background-color: rgba(0, 162, 255, 0.144);*/
 }
 
+input[type="file"] {
+  display: none;
+}
+
+.importAsCSVLabel {
+  cursor: pointer;
+}
+
 .formstest * {
 
   margin: 0.75rem 0rem
