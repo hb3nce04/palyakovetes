@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import authRoutes from "../server/routes/auth.js";
+import auth from './routes/auth.js';
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
-app.use("", authRoutes);
+app.use("/auth", auth);
 
 db.connect((err) => {
   if (err) console.log(err);

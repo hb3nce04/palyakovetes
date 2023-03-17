@@ -7,8 +7,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Footer from "../components/Footer";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/auth/AuthContext";
 
 /*
 REGEX
@@ -24,19 +25,14 @@ REGEX
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const {login} = useContext(AuthContext);
 
   const handleClick = async (event) => {
     event.preventDefault();
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
       try {
-        const res = await axios.post("http://localhost:8080/login", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
-
-        navigate("classchooser");
+        login(formData).then(()=>navigate("classchooser"));
+        
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });
