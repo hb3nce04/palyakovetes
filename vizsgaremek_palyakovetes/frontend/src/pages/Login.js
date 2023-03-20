@@ -10,13 +10,14 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth/AuthContext";
+import fingerprint from "../images/fingerprint.svg";
 
 /*
 REGEX
 */
 
 const omIdentifierPattern = "^[0-9]{11}$";
-//const passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$";
+
 
 /*
 REGEX
@@ -50,7 +51,9 @@ export default function SignIn() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ mt: "40%", bgcolor: "secondary.main" }}></Avatar>
+        
+        <Avatar src={fingerprint} sx={{ mt: "40%", bgcolor: "white" }}></Avatar>
+        
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>
