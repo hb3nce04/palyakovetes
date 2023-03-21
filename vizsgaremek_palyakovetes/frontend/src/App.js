@@ -13,7 +13,7 @@ import { ClassChooser } from "./pages/ClassChooser";
 import { Contact } from "./pages/Contact";
 
 import { Auth } from "./context/auth/AuthContext";
-
+import {EditUsers} from "./pages/admin/EditUsers"
 
 function App() {
   return (
@@ -33,6 +33,9 @@ function App() {
                   <Route path=":studentId">
                     <Route path="update" element={<UpdateStudent />}></Route>
                   </Route>
+                </Route>
+                <Route path="admin">
+                  <Route path="editusers" element={<EditUsers/>}/>
                 </Route>
               </Route>
             </Routes>
