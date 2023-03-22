@@ -15,7 +15,7 @@ export const Auth = ({children}) => {
     }
 
     const logout = async () => {
-        const res = await axios.get("http://localhost:8080/auth/logout")
+        await axios.get("http://localhost:8080/auth/logout", {withCredentials: true})
         setCurrentUser(null);
     }
 

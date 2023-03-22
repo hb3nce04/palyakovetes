@@ -52,6 +52,7 @@ export const login = (req, res) => {
       if (!isCorrectPassword) {
         console.log(isCorrectPassword);
         return res.status(StatusCodes.BAD_REQUEST).json({ message: "Wrong username or password." });
+        
       }
 
       const token = jwt.sign({ id: data[0].id }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
