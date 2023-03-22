@@ -62,7 +62,7 @@ export const login = (req, res) => {
           httpOnly: true,
         })
         .status(StatusCodes.OK)
-        .json({ isAdmin: data[0].admin });
+        .json({ isAdmin: data[0].admin,om_azon: data[0].om_azon });
     }
   );
 };

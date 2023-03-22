@@ -1,9 +1,23 @@
 import { Button, Card, CardActions, CardContent, Grid, Grow, Paper, Typography } from "@mui/material";
+import { useEffect } from "react";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 
 export const ClassChooser = () => {
 
+  const om_azon = JSON.parse(localStorage.getItem("user")).om_azon;
+
+  useEffect(() => {
+    fetch("http://localhost:8080/classes/class_chooser",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({om_azon})
+    })
+    .then(res => res.json())
+    .then(res => console.log(res));
+  },[])
 
     return (
         <>

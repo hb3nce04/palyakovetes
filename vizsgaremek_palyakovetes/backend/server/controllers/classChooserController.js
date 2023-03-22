@@ -2,10 +2,13 @@ import { db } from "../db.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getClasses = (req, res) => {
+
+  console.log(req.body);
   const { om_azon } = req.body;
+  
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
-  }
+  } else {
 
   let userExists = false;
 
@@ -36,4 +39,5 @@ export const getClasses = (req, res) => {
       }
     }
   );
+  }
 };
