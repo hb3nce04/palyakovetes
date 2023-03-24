@@ -1,5 +1,5 @@
 import express from "express";
-import{getClasses} from "../controllers/classChooserController.js";
+import { getClasses } from "../controllers/classChooserController.js";
 
 const router = express.Router();
 
