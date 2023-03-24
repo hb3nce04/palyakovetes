@@ -1,4 +1,4 @@
-import * as React from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -16,17 +16,18 @@ import { ColorModeContext } from "./DarkMode";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/auth/AuthContext";
 
 const pages = ["Menüpont 1", "Menüpont 2", "Menüpont 3"];
-const settings = ["Profil", "Kijelentkezés"];
+const dropdownButtons = ["Profil", "Kijelentkezés"];
 
 
 function Nav() {
-  const { mode, toggleColorMode } = React.useContext(ColorModeContext);
-
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { mode, toggleColorMode } = useContext(ColorModeContext);
+  const {logout} = useContext(AuthContext);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -44,10 +45,9 @@ function Nav() {
     setAnchorElUser(null);
   };
 
-  const logout = (text) => {
-    if (text === "Kijelentkezés") {
-      axios.delete("http://localhost:8080/logout", {withCredentials: true});
-      navigate("/");
+  const handleLogout = async (text) => {
+    if (text === "Kijelentkezés") {      
+        logout().then(()=>navigate("/"));  
     }
   }
 
@@ -167,9 +167,9 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {dropdownButtons.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" onClick={() => logout(setting)}>{setting}</Typography>
+                  <Typography textAlign="center" onClick={() => handleLogout(setting)}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

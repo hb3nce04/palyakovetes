@@ -1,29 +1,16 @@
 import { Button, Card, CardActions, CardContent, Grid, Grow, Paper, Typography } from "@mui/material";
-import { useEffect } from "react";
-import Footer from "../components/Footer";
-import Nav from "../components/Nav";
+import Footer from "../../components/Footer";
+import Nav from "../../components/Nav";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-export const ClassChooser = () => {
+export const EditUsers = () => {
 
-  const om_azon = JSON.parse(localStorage.getItem("user")).om_azon;
-
-  useEffect(() => {
-    fetch("http://localhost:8080/classes/class_chooser",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({om_azon})
-    })
-    .then(res => res.json())
-    .then(res => console.log(res));
-  },[])
 
     return (
         <>
             <Nav/>
             <Paper style={{  padding:"3rem 6rem"}} elevation={2} >
-            <Typography style={{marginBottom:"1rem"}} variant="h3" color="primary">Válasszon osztályt!</Typography>
+            <Typography style={{marginBottom:"1rem"}} variant="h3" color="primary">Felhasználók listája</Typography>
             
                 
                 <Grid container spacing={2}>
@@ -42,17 +29,15 @@ export const ClassChooser = () => {
 <Card  sx={{ minWidth: 150 }}>
       <CardContent>
         <Typography variant="h5"  gutterBottom>
-          Osztály neve
+          Felhasználó OM
         </Typography>
-        <Typography variant="h5" >
-          Végzési év
-        </Typography>
+
         <Typography color="text.secondary">
-          Iskola neve
+          Felhasználó osztályainak listája
         </Typography>
       </CardContent>
       <CardActions>
-        <Button sx={{ fontWeight: 'bold' }} href="home">Tovább</Button>
+        <Button sx={{ fontWeight: 'bold' }} color="error" href="home"><DeleteOutlinedIcon/> Törlés</Button>
       </CardActions>
     </Card>
     </Grow>
