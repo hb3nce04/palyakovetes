@@ -3,6 +3,7 @@ import cors from "cors";
 import auth from './routes/auth.js';
 import classRoute from "./routes/classRoute.js";
 import getUsers from "./routes/userList.js"
+import getStudents from "./routes/studentList.js"
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
@@ -20,6 +21,7 @@ app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 app.use("/auth", auth);
 app.use("/classes", classRoute);
 app.use("/users", getUsers);
+app.use("/students", getStudents);
 
 db.connect((err) => {
   if (err) console.log(err);
