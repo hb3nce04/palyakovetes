@@ -10,7 +10,6 @@ export const getStudents = (req, res) => {
       return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
     } else {
   
-    let userExists = false;
   
     db.query(
       "SELECT * FROM osztaly WHERE id = ?",

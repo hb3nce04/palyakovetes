@@ -4,6 +4,7 @@ import auth from './routes/auth.js';
 import classRoute from "./routes/classRoute.js";
 import getUsers from "./routes/userList.js"
 import getStudents from "./routes/studentList.js"
+import getStudent from "./routes/student.js";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
@@ -22,6 +23,7 @@ app.use("/auth", auth);
 app.use("/classes", classRoute);
 app.use("/users", getUsers);
 app.use("/students", getStudents);
+app.use("/student", getStudent)
 
 db.connect((err) => {
   if (err) console.log(err);

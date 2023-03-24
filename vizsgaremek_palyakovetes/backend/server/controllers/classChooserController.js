@@ -10,7 +10,6 @@ export const getClasses = (req, res) => {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
 
-  let userExists = false;
 
   db.query(
     "SELECT * FROM felhasznalo WHERE om_azon = ?",
