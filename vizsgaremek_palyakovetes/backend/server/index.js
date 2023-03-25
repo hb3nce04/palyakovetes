@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
-import auth from './routes/auth.js';
+import authRoute from './routes/auth.js';
 import classRoute from "./routes/classRoute.js";
-import getUsers from "./routes/userList.js"
-import getStudents from "./routes/studentList.js"
-import getStudent from "./routes/student.js";
+import userRoute from "./routes/user.js"
+import studentRoute from "./routes/student.js";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
@@ -19,11 +18,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
-app.use("/auth", auth);
+app.use("/auth", authRoute);
 app.use("/classes", classRoute);
-app.use("/users", getUsers);
-app.use("/students", getStudents);
-app.use("/student", getStudent)
+app.use("/users", userRoute);
+app.use("/students", studentRoute);
 
 db.connect((err) => {
   if (err) console.log(err);
