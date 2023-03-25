@@ -1,20 +1,16 @@
 import { db } from "../db.js";
 import { StatusCodes } from "http-status-codes";
 
-export const getStudents = (req, res) => {
+export const getClasses = (req, res) => {
+  console.log(req.body);
+  const { om_azon } = req.body;
 
-    console.log(req.body);
-    const { class_id } = req.body;
-    
-    if (!class_id) {
-      return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
-    } else {
-  
-    let userExists = false;
-  
+  if (!om_azon) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
+  } else {
     db.query(
-      "SELECT * FROM osztaly WHERE id = ?",
-      [class_id],
+      "SELECT * FROM felhasznalo WHERE om_azon = ?",
+      [om_azon],
       (err, data) => {
         if (err) {
           return res
@@ -22,11 +18,11 @@ export const getStudents = (req, res) => {
             .send("Error: " + err);
         }
         if (data.length === 0) {
-          return res.status(StatusCodes.BAD_REQUEST).send("No such class");
+          return res.status(StatusCodes.BAD_REQUEST).send("No such user");
         } else {
           db.query(
-            "SELECT * FROM tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id WHERE osztaly.id = ?",
-            [class_id],
+            "SELECT * FROM osztaly WHERE felhasznalo_om = ?",
+            [om_azon],
             (err, data) => {
               if (err) {
                 return res
@@ -39,5 +35,5 @@ export const getStudents = (req, res) => {
         }
       }
     );
-    }
-  };
+  }
+};
