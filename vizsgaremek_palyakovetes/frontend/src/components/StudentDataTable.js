@@ -19,6 +19,38 @@ import {useNavigate} from 'react-router-dom';
 import { GridToolbarAddNewStudentButton } from "./custom-gridtoolbar-components/GridToolbarAddNewStudentButton";
 
 export default function StudentData() {
+
+
+  const [data,setData] = React.useState({
+    columns: [
+      { field: "omIdentifier", headerName: "OM azonosító", width: 150 ,headerClassName: 'columnsData'},
+      { field: "studentName", headerName: "Tanuló neve", width: 150 ,headerClassName: 'columnsData'},
+      { field: "sector", headerName: "Ágazat", width: 150 ,headerClassName: 'columnsData'},
+      { field: "schedule", headerName: "Munkarend", width: 150 ,headerClassName: 'columnsData'},
+      { field: "profession", headerName: "Szakma", width: 150 ,headerClassName: 'columnsData'},
+      {
+        field: "edit",
+        headerName: "Módosítás",
+        sortable: false,
+        disableColumnMenu: true,
+        width: 140,
+        disableClickEventBubbling: true,
+        renderCell: (params) => {
+          return (
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ cursor: "pointer" }}
+            >
+              <MatEdit index={params.row.id} />
+            </div>
+          );
+        }
+      }
+    ],
+    rows: []
+  });
+
+  /*
   const data = {
 
     columns: [
@@ -99,6 +131,7 @@ export default function StudentData() {
     { id: 36, lastName: "Roxie", firstName: "Harvey", age: 65 },
   ]
   }
+*/
 
   const MatEdit = ({ index,prop }) => {
     const handleEditClick = () => {

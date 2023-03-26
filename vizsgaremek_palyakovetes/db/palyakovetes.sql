@@ -345,7 +345,7 @@ ALTER TABLE `szakma`
 --
 ALTER TABLE `tanulo`
   ADD PRIMARY KEY (`om_azon`),
-  ADD UNIQUE KEY `osztalyid` (`osztalyid`),
+  ADD KEY `osztalyid` (`osztalyid`),
   ADD KEY `agazatid` (`agazatid`),
   ADD KEY `szakid` (`szakid`);
 

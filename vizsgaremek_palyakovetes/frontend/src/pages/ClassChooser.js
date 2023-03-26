@@ -1,11 +1,30 @@
 import { Button, Card, CardActions, CardContent, Grid, Grow, Paper, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
+
 
 export const ClassChooser = () => {
 
   const om_azon = JSON.parse(localStorage.getItem("user")).om_azon;
+  const [classData,setClassData] = useState([]);
+  const [studentData,setStudentData] = useState([]);
+  const navigate = useNavigate();
+
+  const handleClick = (class_id) => {
+    fetch(`http://localhost:8080/students/studentList`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({class_id})
+    })
+    .then(res => res.json())
+    .then(res => setStudentData(res))
+    .then(console.log(studentData))
+    //.then(navigate('/home'));
+  }
 
   useEffect(() => {
     fetch("http://localhost:8080/classes/class_chooser",{
@@ -16,7 +35,7 @@ export const ClassChooser = () => {
       body: JSON.stringify({om_azon})
     })
     .then(res => res.json())
-    .then(res => console.log(res));
+    .then(res => setClassData(res));
   },[])
 
     return (
@@ -29,9 +48,9 @@ export const ClassChooser = () => {
                 <Grid container spacing={2}>
 
             {
-            Array(10).fill(1).map((el, i) => {
+            classData.map((el, i) => {
                 return (
-                    <Grid item xs={12} sm={6} md={3} >
+                    <Grid item xs={12} sm={6} md={3} key={el.id}>
                       
            <Grow
           in={true}
@@ -42,17 +61,17 @@ export const ClassChooser = () => {
 <Card  sx={{ minWidth: 150 }}>
       <CardContent>
         <Typography variant="h5"  gutterBottom>
-          Osztály neve
+          Osztály: {el.osztaly_nev}
         </Typography>
         <Typography variant="h5" >
-          Végzési év
+          Végzési év: {el.vegzesi_ev}
         </Typography>
         <Typography color="text.secondary">
-          Iskola neve
+          {el.iskola_nev}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button sx={{ fontWeight: 'bold' }} href="home">Tovább</Button>
+        <Button onClick={() => {return handleClick(el.id)}} sx={{ fontWeight: 'bold' }}>Tovább</Button>
       </CardActions>
     </Card>
     </Grow>
