@@ -1,17 +1,18 @@
 import { Button, Card, CardActions, CardContent, Grid, Grow, Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
+import { ClassContext } from "../context/auth/ClassContext";
 
 
 export const ClassChooser = () => {
 
   const om_azon = JSON.parse(localStorage.getItem("user")).om_azon;
-  const [classData,setClassData] = useState([]);
+  const {classData} = useContext(ClassContext);
   const [studentData,setStudentData] = useState([]);
   const navigate = useNavigate();
-
+/*
   const handleClick = (class_id) => {
     fetch(`http://localhost:8080/students/studentList`,{
       method: "POST",
@@ -25,18 +26,8 @@ export const ClassChooser = () => {
     .then(console.log(studentData))
     //.then(navigate('/home'));
   }
+*/
 
-  useEffect(() => {
-    fetch("http://localhost:8080/classes/class_chooser",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({om_azon})
-    })
-    .then(res => res.json())
-    .then(res => setClassData(res));
-  },[])
 
     return (
         <>
@@ -48,7 +39,7 @@ export const ClassChooser = () => {
                 <Grid container spacing={2}>
 
             {
-            classData.map((el, i) => {
+            classData.osztalyok.map((el, i) => {
                 return (
                     <Grid item xs={12} sm={6} md={3} key={el.id}>
                       
@@ -71,7 +62,7 @@ export const ClassChooser = () => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button onClick={() => {return handleClick(el.id)}} sx={{ fontWeight: 'bold' }}>Tovább</Button>
+        <Button onClick={() => {localStorage.setItem("currentclassid",el.id);navigate("/")}} sx={{ fontWeight: 'bold' }}>Tovább</Button>
       </CardActions>
     </Card>
     </Grow>

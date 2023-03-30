@@ -47,7 +47,7 @@ function Nav() {
 
   const handleLogout = async (text) => {
     if (text === "Kijelentkezés") {      
-        logout().then(()=>navigate("/"));  
+        logout().then(()=>navigate("/login"));  
     }
   }
 

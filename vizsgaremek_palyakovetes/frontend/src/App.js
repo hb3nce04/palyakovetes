@@ -12,21 +12,43 @@ import { ClassChooser } from "./pages/ClassChooser";
 
 import { Contact } from "./pages/Contact";
 
-import { Auth } from "./context/auth/AuthContext";
+import {  AuthContext } from "./context/auth/AuthContext";
 import {EditUsers} from "./pages/admin/EditUsers"
+import { useContext, useEffect } from "react";
+import { ClassContext  } from "./context/auth/ClassContext";
+import axios from "axios";
+
 
 function App() {
+
+  const {currentUser} = useContext(AuthContext);
+  const {classData, handleSet : handleClasses} = useContext(ClassContext);
+  const om_azon = currentUser.om_azon;
+  const class_id = localStorage.getItem("currentclassid");
+
+  useEffect(() => {
+    axios.post("http://localhost:8080/classes/class_chooser",{om_azon},{
+      headers: {
+        "Content-Type":"application/json"
+      }
+
+    })
+    .then(res => {
+      handleClasses(res.data)
+    })  
+  },[]) 
+
   return (
     <div className="App">
-      <Auth>
+      
         <BrowserRouter>
           <DarkMode>
             <Routes>
               <Route path="*" element={<GenericNotFound />} />
               <Route path="/">
-                <Route path="/" index element={<Login />} />
+                <Route path="login" index element={<Login />} />
                 <Route path="contact" element={<Contact />} />
-                <Route path="home" element={<Home />} />
+                <Route path="/" element={<Home />} />
                 <Route path="classchooser" element={<ClassChooser />} />
                 <Route path="student">
                   <Route path="add" element={<AddNewStudent />}></Route>
@@ -41,7 +63,6 @@ function App() {
             </Routes>
           </DarkMode>
         </BrowserRouter>
-      </Auth>
     </div>
   );
 }

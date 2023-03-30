@@ -31,7 +31,7 @@ export default function SignIn() {
     event.preventDefault();
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
       try {
-        login(formData).then(()=>navigate("classchooser"));
+        login(formData).then(()=>setTimeout(() => navigate("/classchooser"),0));
         
       } catch ({ response: { data } }) {
         alert(data.message);

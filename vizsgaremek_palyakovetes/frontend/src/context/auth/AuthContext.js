@@ -9,7 +9,7 @@ export const Auth = ({children}) => {
     );
 
     const login = async (inputs) => {
-        const res = await axios.post("http://localhost:8080/auth/login", inputs, {withCredentials: true, headers: {"Content-Type" : "application/json"}});
+        const res = await axios.post("http://localhost:8080/auth/login", inputs, {withCredentials: true});
         setCurrentUser(res.data);
         console.log(res.data)
     }

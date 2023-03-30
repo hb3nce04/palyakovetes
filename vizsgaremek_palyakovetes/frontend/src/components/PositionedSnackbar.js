@@ -29,12 +29,14 @@ export default function PositionedSnackbar(props) {
   return (
     <div>
         <Button
+        variant={props.variant}
+        color={props.color}
         onClick={handleClick({
           vertical: 'bottom',
           horizontal: 'center',
         })}
       >
-        TANULÓ HOZZÁADÁSA
+        {props.buttonMessage}
       </Button>
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
@@ -45,7 +47,7 @@ export default function PositionedSnackbar(props) {
       >
         <Alert
        variant="filled" severity={props.severity}>
-          {props.message}
+          {props.alertMessage}
         </Alert>
       </Snackbar>
     </div>

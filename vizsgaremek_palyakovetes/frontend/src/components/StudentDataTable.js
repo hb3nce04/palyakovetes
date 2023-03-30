@@ -10,24 +10,41 @@ import {
   GridToolbarDensitySelector,
   huHU,
 } from "@mui/x-data-grid";
-import { FormControlLabel, IconButton } from "@mui/material";
+import { FormControlLabel, IconButton, Typography } from "@mui/material";
 import GridToolbarExportExcelButton from "./custom-gridtoolbar-components/GridToolbarExportExcelButton";
 import { GridToolbarImportButton } from "./custom-gridtoolbar-components/GridToolbarImportButton";
 import "../css/App.css";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import {useNavigate} from 'react-router-dom';
 import { GridToolbarAddNewStudentButton } from "./custom-gridtoolbar-components/GridToolbarAddNewStudentButton";
+import { ClassContext } from "../context/auth/ClassContext";
 
 export default function StudentData() {
 
+  const databaseLogicConverter = a => a === 1 ? "Nappali" : "Éjszakai";  
 
+  const currentStudentData = () => {
+    console.log(studentRows.classData.tanulok);
+    let currClassData =  studentRows.classData.tanulok.filter(students => students.osztalyid == localStorage.getItem("currentclassid"))
+    let boolConvertedClassData = currClassData.map(o => ({ ...o, nappali_munkarend: databaseLogicConverter(o.nappali_munkarend) }));
+    return boolConvertedClassData;
+  }
+
+  const currentClassData = () => {
+    return studentRows.classData.osztalyok.find(classes => classes.id == localStorage.getItem("currentclassid"))
+    
+  }
+
+  
+  const studentRows = React.useContext(ClassContext);
+  
   const [data,setData] = React.useState({
     columns: [
-      { field: "omIdentifier", headerName: "OM azonosító", width: 150 ,headerClassName: 'columnsData'},
-      { field: "studentName", headerName: "Tanuló neve", width: 150 ,headerClassName: 'columnsData'},
-      { field: "sector", headerName: "Ágazat", width: 150 ,headerClassName: 'columnsData'},
-      { field: "schedule", headerName: "Munkarend", width: 150 ,headerClassName: 'columnsData'},
-      { field: "profession", headerName: "Szakma", width: 150 ,headerClassName: 'columnsData'},
+      { field: "om_azon", headerName: "OM azonosító", width: 150 ,headerClassName: 'columnsData'},
+      { field: "tanulo_nev", headerName: "Tanuló neve", width: 150 ,headerClassName: 'columnsData'},
+      { field: "agazat_nev", headerName: "Ágazat", width: 150 ,headerClassName: 'columnsData'},
+      { field: "szakma_nev", headerName: "Szakma", width: 150 ,headerClassName: 'columnsData'},
+      { field: "nappali_munkarend", headerName: "Munkarend", width: 150 ,headerClassName: 'columnsData'},
       {
         field: "edit",
         headerName: "Módosítás",
@@ -47,91 +64,8 @@ export default function StudentData() {
         }
       }
     ],
-    rows: []
+    rows:currentStudentData()
   });
-
-  /*
-  const data = {
-
-    columns: [
-      { field: "id", headerName: "ID", width: 70 ,headerClassName: 'columnsData'},
-      { field: "firstName", headerName: "First name", width: 130,headerClassName: 'columnsData' },
-      { field: "lastName", headerName: "Last name", width: 130,headerClassName: 'columnsData' },
-      {
-        field: "age",
-        headerName: "Age",
-        type: "number",
-        width: 90,
-        headerClassName: 'columnsData'
-      },
-  
-      {
-        field: "fullName",
-        headerClassName: 'columnsData',
-        headerName: "Full name",
-        sortable: false,
-        width: 160,
-        valueGetter: (params) =>
-          `${params.row.firstName || ""} ${params.row.lastName || ""}`,
-      },
-      {
-        field: "edit",
-        headerName: "Módosítás",
-        sortable: false,
-        disableColumnMenu: true,
-        width: 140,
-        disableClickEventBubbling: true,
-        renderCell: (params) => {
-          return (
-            <div
-              className="d-flex justify-content-between align-items-center"
-              style={{ cursor: "pointer" }}
-            >
-              <MatEdit index={params.row.id} />
-            </div>
-          );
-        }
-      }
-    ],
-    rows: [{ id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 10, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 11, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 12, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 13, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 14, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 15, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 16, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 17, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 18, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 19, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 20, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 21, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 22, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 23, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 24, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 25, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 26, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 27, lastName: "Roxie", firstName: "Harvey", age: 65 },
-    { id: 28, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 29, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 30, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 31, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 32, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 33, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 34, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 35, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 36, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ]
-  }
-*/
 
   const MatEdit = ({ index,prop }) => {
     const handleEditClick = () => {
@@ -183,13 +117,19 @@ export default function StudentData() {
   }
 
   return (
-    <div style={{ height: 800, width: "90%", margin: "1rem auto" }}>
+    
+
+    <div style={{ height: 800, width: "90%", margin: "1rem auto", marginBottom: 175 }}>
+      <h1>{currentClassData().iskola_nev} / {currentClassData().osztaly_nev}</h1>
+
       <DataGrid
+      
         /*MUI-hoz tartozó magyar fordítás*/
         localeText={huHU.components.MuiDataGrid.defaultProps.localeText} 
         pageSize={pageSize}
         onPageSizeChange={(newPage) => setPageSize(newPage)}
         pagination
+        getRowId={row => row.om_azon}
         rowHeight={35}
         checkboxSelection
         columns={data.columns}
@@ -204,8 +144,8 @@ export default function StudentData() {
         }}
         onSelectionModelChange={(ids) => {
           const selectedIDs = new Set(ids);
-          const selectedRowData = data.rows.filter((row) => {
-            return selectedIDs.has(row.id)
+          const selectedRowData = currentStudentData().filter((row) => {
+            return selectedIDs.has(row.om_azon)
           }
           );
 
