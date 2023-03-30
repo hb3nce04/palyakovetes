@@ -1,4 +1,3 @@
-
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -15,17 +14,16 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { ColorModeContext } from "./DarkMode";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/auth/AuthContext";
 
 const pages = ["Menüpont 1", "Menüpont 2", "Menüpont 3"];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
 
-
 function Nav() {
   const { mode, toggleColorMode } = useContext(ColorModeContext);
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
@@ -46,10 +44,10 @@ function Nav() {
   };
 
   const handleLogout = async (text) => {
-    if (text === "Kijelentkezés") {      
-        logout().then(()=>navigate("/login"));  
+    if (text === "Kijelentkezés") {
+      logout().then(() => navigate("/login"));
     }
-  }
+  };
 
   return (
     <AppBar position="static">
@@ -169,7 +167,12 @@ function Nav() {
             >
               {dropdownButtons.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" onClick={() => handleLogout(setting)}>{setting}</Typography>
+                  <Typography
+                    textAlign="center"
+                    onClick={() => handleLogout(setting)}
+                  >
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

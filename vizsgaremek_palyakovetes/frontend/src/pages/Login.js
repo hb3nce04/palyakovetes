@@ -17,7 +17,6 @@ REGEX
 
 const omIdentifierPattern = "^[0-9]{11}$";
 
-
 /*
 REGEX
 */
@@ -25,14 +24,15 @@ REGEX
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const {login} = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   const handleClick = async (event) => {
     event.preventDefault();
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
       try {
-        login(formData).then(()=>setTimeout(() => navigate("/classchooser"),0));
-        
+        login(formData).then(() =>
+          setTimeout(() => navigate("/classchooser"), 0)
+        );
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });
@@ -50,9 +50,8 @@ export default function SignIn() {
           alignItems: "center",
         }}
       >
-        
         <Avatar src={fingerprint} sx={{ mt: "40%", bgcolor: "white" }}></Avatar>
-        
+
         <Typography component="h1" variant="h5">
           Bejelentkezés
         </Typography>

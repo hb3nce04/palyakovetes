@@ -8,12 +8,11 @@ import { Auth } from "./context/auth/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-
   <React.StrictMode>
     <Auth>
-        <Classes>
-    <App />
-    </Classes>
+      <Classes>
+        <App />
+      </Classes>
     </Auth>
   </React.StrictMode>
 );

@@ -1,17 +1,16 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import { useNavigate } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import { useNavigate } from "react-router-dom";
+import { Alert } from "@mui/material";
 
 export default function PositionedSnackbar(props) {
-
   const autoHideDurationDefault = 1000;
 
   const [state, setState] = React.useState({
     open: false,
-    vertical: 'top',
-    horizontal: 'center',
+    vertical: "top",
+    horizontal: "center",
   });
   const { vertical, horizontal, open } = state;
 
@@ -19,7 +18,7 @@ export default function PositionedSnackbar(props) {
 
   const handleClick = (newState) => () => {
     setState({ open: true, ...newState });
-    setTimeout(() => navigate(props.navigateTo),props.navigateAfter); 
+    setTimeout(() => navigate(props.navigateTo), props.navigateAfter);
   };
 
   const handleClose = () => {
@@ -28,12 +27,12 @@ export default function PositionedSnackbar(props) {
 
   return (
     <div>
-        <Button
+      <Button
         variant={props.variant}
         color={props.color}
         onClick={handleClick({
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         })}
       >
         {props.buttonMessage}
@@ -43,10 +42,13 @@ export default function PositionedSnackbar(props) {
         open={open}
         onClose={handleClose}
         key={vertical + horizontal}
-        autoHideDuration={props.autoHideDuration === undefined ? autoHideDurationDefault : props.autoHideDuration}
+        autoHideDuration={
+          props.autoHideDuration === undefined
+            ? autoHideDurationDefault
+            : props.autoHideDuration
+        }
       >
-        <Alert
-       variant="filled" severity={props.severity}>
+        <Alert variant="filled" severity={props.severity}>
           {props.alertMessage}
         </Alert>
       </Snackbar>

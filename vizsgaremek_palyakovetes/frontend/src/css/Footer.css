@@ -1,11 +1,11 @@
 .footerContent {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
 }
 
 .footer {
-    position:absolute;
-    left:0;
-    bottom:0;
-    right:0;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }

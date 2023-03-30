@@ -17,10 +17,7 @@ export default function GridToolbarExportExcelButton({ excelData, fileName }) {
 
   return (
     <>
-      <ListItemButton
-            onClick={(e) => exportToExcel(fileName)}
-            
-      >
+      <ListItemButton onClick={(e) => exportToExcel(fileName)}>
         Mentés Excel fájlként
       </ListItemButton>
     </>

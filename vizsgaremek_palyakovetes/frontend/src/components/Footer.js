@@ -17,7 +17,6 @@ function Footer(props) {
 
   return (
     <Box
-    
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -26,7 +25,7 @@ function Footer(props) {
       <CssBaseline />
 
       <Box
-      className="footer"
+        className="footer"
         component="footer"
         sx={{
           backgroundColor: (theme) =>

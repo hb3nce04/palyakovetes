@@ -14,41 +14,71 @@ import { FormControlLabel, IconButton, Typography } from "@mui/material";
 import GridToolbarExportExcelButton from "./custom-gridtoolbar-components/GridToolbarExportExcelButton";
 import { GridToolbarImportButton } from "./custom-gridtoolbar-components/GridToolbarImportButton";
 import "../css/App.css";
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import {useNavigate} from 'react-router-dom';
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { useNavigate } from "react-router-dom";
 import { GridToolbarAddNewStudentButton } from "./custom-gridtoolbar-components/GridToolbarAddNewStudentButton";
 import { ClassContext } from "../context/auth/ClassContext";
 
 export default function StudentData() {
+  const { classData } = React.useContext(ClassContext);
 
-  const {classData} = React.useContext(ClassContext);
-  
-  const databaseLogicConverter = a => a === 1 ? "Nappali" : "Esti";  
+  const databaseLogicConverter = (a) => (a === 1 ? "Nappali" : "Esti");
 
   const currentStudentData = () => {
-    if(!classData.tanulok) {
+    if (!classData.tanulok) {
       return [];
-    } 
-    let currClassData =  classData.tanulok.filter(students => students.osztalyid == localStorage.getItem("currentclassid"))
-    let boolConvertedClassData = currClassData.map(o => ({ ...o, nappali_munkarend: databaseLogicConverter(o.nappali_munkarend) }));
+    }
+    let currClassData = classData.tanulok.filter(
+      (students) => students.osztalyid == localStorage.getItem("currentclassid")
+    );
+    let boolConvertedClassData = currClassData.map((o) => ({
+      ...o,
+      nappali_munkarend: databaseLogicConverter(o.nappali_munkarend),
+    }));
     return boolConvertedClassData;
-  }
+  };
 
   const currentClassData = () => {
-    if(!classData.osztalyok) {
+    if (!classData.osztalyok) {
       return [];
-    } 
-    return classData.osztalyok.find(classes => classes.id == localStorage.getItem("currentclassid"))
-    
-  }
-  
-  const [data,setData] = React.useState({
+    }
+    return classData.osztalyok.find(
+      (classes) => classes.id == localStorage.getItem("currentclassid")
+    );
+  };
+
+  const [data, setData] = React.useState({
     columns: [
-      { field: "om_azon", headerName: "OM azonosító", width: 150 ,headerClassName: 'columnsData'},
-      { field: "tanulo_nev", headerName: "Tanuló neve", width: 150 ,headerClassName: 'columnsData'},
-      { field: "agazat_nev", headerName: "Ágazat", width: 150 ,headerClassName: 'columnsData'},
-      { field: "szakma_nev", headerName: "Szakma", width: 150 ,headerClassName: 'columnsData'},
-      { field: "nappali_munkarend", headerName: "Munkarend", width: 150 ,headerClassName: 'columnsData'},
+      {
+        field: "om_azon",
+        headerName: "OM azonosító",
+        width: 150,
+        headerClassName: "columnsData",
+      },
+      {
+        field: "tanulo_nev",
+        headerName: "Tanuló neve",
+        width: 150,
+        headerClassName: "columnsData",
+      },
+      {
+        field: "agazat_nev",
+        headerName: "Ágazat",
+        width: 150,
+        headerClassName: "columnsData",
+      },
+      {
+        field: "szakma_nev",
+        headerName: "Szakma",
+        width: 150,
+        headerClassName: "columnsData",
+      },
+      {
+        field: "nappali_munkarend",
+        headerName: "Munkarend",
+        width: 150,
+        headerClassName: "columnsData",
+      },
       {
         field: "edit",
         headerName: "Módosítás",
@@ -65,81 +95,86 @@ export default function StudentData() {
               <MatEdit index={params.row.id} />
             </div>
           );
-        }
-      }
+        },
+      },
     ],
-    rows:currentStudentData()
+    rows: currentStudentData(),
   });
 
-  const MatEdit = ({ index,prop }) => {
+  const MatEdit = ({ index, prop }) => {
     const handleEditClick = () => {
-      navigate(`/student/${index}/update`,{replace:true});
+      navigate(`/student/${index}/update`, { replace: true });
     };
-  
+
     return (
-      
-        <FormControlLabel
-          control={
-            <IconButton
-              color="secondary"
-              aria-label="add an alarm"
-              onClick={handleEditClick}
-            >
-              <ModeEditOutlineOutlinedIcon color="primary"/>
-            </IconButton>
+      <FormControlLabel
+        control={
+          <IconButton
+            color="secondary"
+            aria-label="add an alarm"
+            onClick={handleEditClick}
+          >
+            <ModeEditOutlineOutlinedIcon color="primary" />
+          </IconButton>
         }
       />
-      
     );
   };
 
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [pageSize, setPageSize] = React.useState(25);
   const navigate = useNavigate();
-  
 
   function CustomToolbar() {
     const date = new Date();
-  
+
     return (
       <GridToolbarContainer>
-        <GridToolbarAddNewStudentButton/>
-        <GridToolbarImportButton/>
-          <GridToolbarExportContainer>
-            <GridToolbarExportExcelButton
-              excelData={selectedRows}
-              fileName={`Diák adatok ${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}. ${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`}
-            />
+        <GridToolbarAddNewStudentButton />
+        <GridToolbarImportButton />
+        <GridToolbarExportContainer>
+          <GridToolbarExportExcelButton
+            excelData={selectedRows}
+            fileName={`Diák adatok ${date.getFullYear()}.${
+              date.getMonth() + 1
+            }.${date.getDate()}. ${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`}
+          />
           <GridCsvExportMenuItem />
           <GridPrintExportMenuItem />
         </GridToolbarExportContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector  />
+        <GridToolbarDensitySelector />
       </GridToolbarContainer>
     );
   }
 
   return (
-    
-
-    <div style={{ height: 800, width: "90%", margin: "1rem auto", marginBottom: 175 }}>
-      <h1>{currentClassData().iskola_nev} / {currentClassData().osztaly_nev}</h1>
+    <div
+      style={{
+        height: 800,
+        width: "90%",
+        margin: "1rem auto",
+        marginBottom: 175,
+      }}
+    >
+      <h1>
+        {currentClassData().iskola_nev} / {currentClassData().osztaly_nev}
+      </h1>
 
       <DataGrid
-      
         /*MUI-hoz tartozó magyar fordítás*/
-        localeText={huHU.components.MuiDataGrid.defaultProps.localeText} 
+        localeText={huHU.components.MuiDataGrid.defaultProps.localeText}
         pageSize={pageSize}
         onPageSizeChange={(newPage) => setPageSize(newPage)}
         pagination
-        getRowId={row => row.om_azon}
+        getRowId={(row) => row.om_azon}
         rowHeight={35}
         checkboxSelection
         columns={data.columns}
         sx={{
           border: 4,
-          borderColor: '#E0E0E0'
+          borderColor: "#E0E0E0",
           /*
           '& .MuiDataGrid-cell:hover': {
             borderColor: 'primary.main',
@@ -149,9 +184,8 @@ export default function StudentData() {
         onSelectionModelChange={(ids) => {
           const selectedIDs = new Set(ids);
           const selectedRowData = currentStudentData().filter((row) => {
-            return selectedIDs.has(row.om_azon)
-          }
-          );
+            return selectedIDs.has(row.om_azon);
+          });
 
           setSelectedRows(selectedRowData);
         }}
@@ -159,7 +193,6 @@ export default function StudentData() {
           Toolbar: CustomToolbar,
         }}
         rows={currentStudentData()}
-        
       />
     </div>
   );
