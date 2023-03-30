@@ -11,6 +11,9 @@ export const AddNewStudent = () => {
   const {classData} = useContext(ClassContext);
 
   const currentClassData = () => {
+    if(!classData.osztalyok) {
+      return [];
+    } 
     return classData.osztalyok.find(classes => classes.id == localStorage.getItem("currentclassid"))
     
   }

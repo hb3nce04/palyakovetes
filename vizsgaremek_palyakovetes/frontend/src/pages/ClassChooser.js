@@ -39,6 +39,7 @@ export const ClassChooser = () => {
                 <Grid container spacing={2}>
 
             {
+            classData.osztalyok ?
             classData.osztalyok.map((el, i) => {
                 return (
                     <Grid item xs={12} sm={6} md={3} key={el.id}>
@@ -70,7 +71,7 @@ export const ClassChooser = () => {
     
     )
             }
-            )
+            ) : []
 
             }
             </Grid>

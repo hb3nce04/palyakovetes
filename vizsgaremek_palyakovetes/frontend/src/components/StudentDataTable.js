@@ -21,22 +21,26 @@ import { ClassContext } from "../context/auth/ClassContext";
 
 export default function StudentData() {
 
-  const databaseLogicConverter = a => a === 1 ? "Nappali" : "Éjszakai";  
+  const {classData} = React.useContext(ClassContext);
+  
+  const databaseLogicConverter = a => a === 1 ? "Nappali" : "Esti";  
 
   const currentStudentData = () => {
-    console.log(studentRows.classData.tanulok);
-    let currClassData =  studentRows.classData.tanulok.filter(students => students.osztalyid == localStorage.getItem("currentclassid"))
+    if(!classData.tanulok) {
+      return [];
+    } 
+    let currClassData =  classData.tanulok.filter(students => students.osztalyid == localStorage.getItem("currentclassid"))
     let boolConvertedClassData = currClassData.map(o => ({ ...o, nappali_munkarend: databaseLogicConverter(o.nappali_munkarend) }));
     return boolConvertedClassData;
   }
 
   const currentClassData = () => {
-    return studentRows.classData.osztalyok.find(classes => classes.id == localStorage.getItem("currentclassid"))
+    if(!classData.osztalyok) {
+      return [];
+    } 
+    return classData.osztalyok.find(classes => classes.id == localStorage.getItem("currentclassid"))
     
   }
-
-  
-  const studentRows = React.useContext(ClassContext);
   
   const [data,setData] = React.useState({
     columns: [
@@ -150,12 +154,12 @@ export default function StudentData() {
           );
 
           setSelectedRows(selectedRowData);
-          console.log(selectedRowData);
         }}
         components={{
           Toolbar: CustomToolbar,
         }}
-        {...data}
+        rows={currentStudentData()}
+        
       />
     </div>
   );
