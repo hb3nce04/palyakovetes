@@ -5,13 +5,16 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Classes } from "./context/auth/ClassContext";
 import { Auth } from "./context/auth/AuthContext";
+import { StudentsRow } from "./context/auth/StudentsRowContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Auth>
       <Classes>
-        <App />
+        <StudentsRow>
+          <App />
+        </StudentsRow>
       </Classes>
     </Auth>
   </React.StrictMode>

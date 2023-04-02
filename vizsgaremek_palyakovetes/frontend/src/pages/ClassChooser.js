@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
@@ -17,7 +17,7 @@ import { ClassContext } from "../context/auth/ClassContext";
 export const ClassChooser = () => {
   const { classData } = useContext(ClassContext);
   const classChooserData = () => {
-    return classData.osztalyok ? classData.osztalyok : [];
+    return classData ? classData : [];
   };
   const navigate = useNavigate();
 

@@ -54,7 +54,7 @@ export const getStudentListByClass = (req, res) => {
         return res.status(StatusCodes.BAD_REQUEST).send("No such class");
       } else {
         db.query(
-          "SELECT tanulo.om_azon, tanulo.nev, tanulo.osztalyid, tanulo.nappali_munkarend, tanulo.agazatid, tanulo.szakid FROM tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id WHERE osztaly.id = ?",
+          "SELECT tanulo.om_azon, tanulo.nev as tanulo_nev, tanulo.osztalyid, tanulo.nappali_munkarend, szakma.nev as szakma_nev, agazat.nev as agazat_nev FROM ( ((tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id ) LEFT JOIN szakma ON tanulo.szakid = szakma.id ) LEFT JOIN agazat ON tanulo.agazatid = agazat.id) WHERE osztaly.id = ?;",
           [class_id],
           (err, data) => {
             if (err) {
@@ -69,5 +69,3 @@ export const getStudentListByClass = (req, res) => {
     });
   }
 };
-
-

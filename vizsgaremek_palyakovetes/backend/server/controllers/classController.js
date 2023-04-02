@@ -21,7 +21,7 @@ export const getClasses = (req, res) => {
           return res.status(StatusCodes.BAD_REQUEST).send("No such user");
         } else {
           db.query(
-            "SELECT * FROM osztaly WHERE felhasznalo_om = ?",
+            "SELECT osztaly.id, osztaly.nev AS osztaly_nev, iskola.nev AS iskola_nev, osztaly.vegzesi_ev FROM osztaly,iskola WHERE felhasznalo_om = ? AND osztaly.iskolaid = iskola.id",
             [om_azon],
             (err, data) => {
               if (err) {

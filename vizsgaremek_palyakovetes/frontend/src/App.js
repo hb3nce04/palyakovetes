@@ -29,8 +29,6 @@ function App() {
     return currentUser.om_azon;
   };
 
-  const class_id = localStorage.getItem("currentclassid");
-
   useEffect(() => {
     axios
       .post(

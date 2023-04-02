@@ -23,10 +23,10 @@ export const UpdateStudent = () => {
   const { classData } = useContext(ClassContext);
 
   const currentClassData = () => {
-    if (!classData.osztalyok) {
+    if (!classData) {
       return {};
     }
-    return classData.osztalyok.find(
+    return classData.find(
       (classes) => classes.id == localStorage.getItem("currentclassid")
     );
   };
