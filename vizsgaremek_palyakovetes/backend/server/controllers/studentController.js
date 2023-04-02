@@ -1,9 +1,15 @@
-import { db } from "../db.js";
-import { StatusCodes } from "http-status-codes";
+import {
+  db
+} from "../db.js";
+import {
+  StatusCodes
+} from "http-status-codes";
 
 export const getStudentByOm = (req, res) => {
   console.log(req.body);
-  const { om_azon } = req.body;
+  const {
+    om_azon
+  } = req.body;
 
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
@@ -29,7 +35,7 @@ export const getStudentByOm = (req, res) => {
                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
                   .send("error : " + err);
               }
-              return res.status(StatusCodes.OK).json(data);
+              return res.status(StatusCodes.OK).json(data[0]);
             }
           );
         }
@@ -37,10 +43,11 @@ export const getStudentByOm = (req, res) => {
     );
   }
 };
-
 export const getStudentListByClass = (req, res) => {
   console.log(req.body);
-  const { class_id } = req.body;
+  const {
+    class_id
+  } = req.body;
 
   if (!class_id) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
@@ -55,7 +62,7 @@ export const getStudentListByClass = (req, res) => {
         return res.status(StatusCodes.BAD_REQUEST).send("No such class");
       } else {
         db.query(
-          "SELECT * FROM tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id WHERE osztaly.id = ?",
+          "SELECT tanulo.om_azon, tanulo.nev, tanulo.osztalyid, tanulo.nappali_munkarend, tanulo.agazatid, tanulo.szakid FROM tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id WHERE osztaly.id = ?",
           [class_id],
           (err, data) => {
             if (err) {
