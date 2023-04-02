@@ -1,15 +1,9 @@
-import {
-  db
-} from "../db.js";
-import {
-  StatusCodes
-} from "http-status-codes";
+import { db } from "../db.js";
+import { StatusCodes } from "http-status-codes";
 
 export const getStudentByOm = (req, res) => {
   console.log(req.body);
-  const {
-    om_azon
-  } = req.body;
+  const { om_azon } = req.body;
 
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
@@ -45,9 +39,7 @@ export const getStudentByOm = (req, res) => {
 };
 export const getStudentListByClass = (req, res) => {
   console.log(req.body);
-  const {
-    class_id
-  } = req.body;
+  const { class_id } = req.body;
 
   if (!class_id) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
@@ -77,3 +69,5 @@ export const getStudentListByClass = (req, res) => {
     });
   }
 };
+
+
