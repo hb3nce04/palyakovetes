@@ -6,10 +6,23 @@ export default function GridToolbarExportExcelButton({ excelData, fileName }) {
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset-UTF-8";
   const fileExtension = ".xlsx";
-
   const exportToExcel = async () => {
     const ws = XLSX.utils.json_to_sheet(excelData);
+  // excel oszlopszélesség
+    var wscols = [
+      {wch:15},
+      {wch:20},
+      {wch:16},
+      {wch:30},
+      {wch:30},
+  ];
+  ws['!cols'] = wscols;
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    wb.Sheets.data.A1.v = "OM azonosító"
+    wb.Sheets.data.B1.v = "Tanuló neve"
+    wb.Sheets.data.C1.v = "Nappali munkarend"
+    wb.Sheets.data.D1.v = "Szakma neve"
+    wb.Sheets.data.E1.v = "Ágazat neve"
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, fileName + fileExtension);

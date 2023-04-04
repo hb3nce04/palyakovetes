@@ -23,7 +23,6 @@ import axios from "axios";
 
 export default function StudentData() {
   const { classData } = React.useContext(ClassContext);
-
   const class_id = localStorage.getItem("currentclassid");
 
   useEffect(() => {
@@ -54,7 +53,11 @@ export default function StudentData() {
       ...o,
       nappali_munkarend: databaseLogicConverter(o.nappali_munkarend),
     }));
-    return boolConvertedClassData;
+    const omitOsztalyId = boolConvertedClassData.map((e)  => {
+      const {osztalyid,...arr} = e;
+      return arr;
+    })
+    return omitOsztalyId;
   };
 
   const currentClassData = () => {
