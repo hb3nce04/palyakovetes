@@ -6,7 +6,7 @@ export const getStudentByOm = (req, res) => {
   const { om_azon } = req.body;
 
   if (!om_azon) {
-    return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
   } else {
     db.query(
       "SELECT * FROM tanulo WHERE om_azon = ?",
@@ -42,7 +42,7 @@ export const getStudentListByClass = (req, res) => {
   const { class_id } = req.body;
 
   if (!class_id) {
-    return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
   } else {
     db.query("SELECT * FROM osztaly WHERE id = ?", [class_id], (err, data) => {
       if (err) {
@@ -70,6 +70,64 @@ export const getStudentListByClass = (req, res) => {
   }
 };
 
+export const addStudent = async (req, res) => {
+  const {
+    om_azon,
+    tanuloNev,
+    osztalyid,
+    nappali_munkarend,
+    agazatid,
+    szakid,
+    kategoriaid,
+    leiras,
+  } = req.body;
+
+  try {
+    await db.query("SELECT * FROM tanulo WHERE om_azon = ?", [om_azon], (err, data) => {
+      if (err) {
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .send("Error: " + err);
+      }
+      if (data.length !== 0) {
+        return res.status(StatusCodes.BAD_REQUEST).send("OM ID already in use");
+      }
+    });
+
+    if (
+      !om_azon ||
+      !osztalyid ||
+      !tanuloNev ||
+      !nappali_munkarend ||
+      !kategoriaid ||
+      !leiras ||
+      !(szakid || agazatid)
+    ) {
+      return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
+    } else {
+      if (agazatid) {
+        await db.query(
+          "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, agazatid) VALUES (?, ?, ?, ?, ?);",
+          [om_azon, tanuloNev, osztalyid, nappali_munkarend, agazatid]
+        );
+      } else if (szakid) {
+        await db.query(
+          "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, szakid) VALUES (?, ?, ?, ?, ?);",
+          [om_azon, tanuloNev, osztalyid, nappali_munkarend, szakid]
+        );
+      }
+      await db.query(
+        "INSERT INTO palya (diak_om_azon, kategoriaid, leiras) VALUES (?, ?, ?);",
+        [om_azon, kategoriaid, leiras]
+      );
+      return res.status(StatusCodes.OK).send("Student and palya have been created");
+    }
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error: " + err);
+  }
+};
+
+
 export const deleteStudent = (req, res) => {
   const { om_azon } = req.body;
   if (!om_azon) {
@@ -96,7 +154,9 @@ export const deleteStudent = (req, res) => {
                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
                   .send("error : " + err);
               }
-              return res.status(StatusCodes.OK).send("student has been deleted");
+              return res
+                .status(StatusCodes.OK)
+                .send("student has been deleted");
             }
           );
         }

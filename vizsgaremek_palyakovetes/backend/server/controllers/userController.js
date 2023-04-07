@@ -6,7 +6,6 @@ export const getUsers = (req, res) => {
     if (!err) {
       return res.status(StatusCodes.OK).json(data);
     } else {
-      console.log("xd");
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send("error : " + err);
