@@ -69,3 +69,38 @@ export const getStudentListByClass = (req, res) => {
     });
   }
 };
+
+export const deleteStudent = (req, res) => {
+  const { om_azon } = req.body;
+  if (!om_azon) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
+  } else {
+    db.query(
+      "SELECT * FROM tanulo WHERE om_azon = ?",
+      [om_azon],
+      (err, data) => {
+        if (err) {
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .send("Error: " + err);
+        }
+        if (data.length === 0) {
+          return res.status(StatusCodes.BAD_REQUEST).send("No such student");
+        } else {
+          db.query(
+            "DELETE FROM tanulo WHERE om_azon = ?;",
+            [om_azon],
+            (err, data) => {
+              if (err) {
+                return res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .send("error : " + err);
+              }
+              return res.status(StatusCodes.OK).json(data[0]);
+            }
+          );
+        }
+      }
+    );
+  }
+};
