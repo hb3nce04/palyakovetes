@@ -96,7 +96,7 @@ export const deleteStudent = (req, res) => {
                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
                   .send("error : " + err);
               }
-              return res.status(StatusCodes.OK).json(data[0]);
+              return res.status(StatusCodes.OK).send("student has been deleted");
             }
           );
         }

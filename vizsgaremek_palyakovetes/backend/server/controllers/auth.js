@@ -8,30 +8,34 @@ dotenv.config();
 
 export const register = (req, res) => {
   const { om_azon, jelszo, admin } = req.body;
-  db.query(
-    "SELECT * FROM felhasznalo WHERE om_azon LIKE ?;",
-    [om_azon],
-    (err, rows) => {
-      if (err) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("Error");
-      }
-      if (rows.length) {
-        return res.status(StatusCodes.NOT_ACCEPTABLE).json("User already exists!");
-      }
-      const salt = bcrypt.genSaltSync(12);
-      const hash = bcrypt.hashSync(jelszo, salt);
-
-      const values = [om_azon, hash, admin];
-      db.query(
-        "INSERT INTO felhasznalo (om_azon, jelszo, admin) VALUES (?);",
-        [values],
-        (err, data) => {
-          if (err) return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
-          else return res.status(StatusCodes.CREATED).json("User has been created.");
+  if(!om_azon || !jelszo || !admin){
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
+  }else{
+    db.query(
+      "SELECT * FROM felhasznalo WHERE om_azon LIKE ?;",
+      [om_azon],
+      (err, rows) => {
+        if (err) {
+          return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json("Error");
         }
-      );
-    }
-  );
+        if (rows.length) {
+          return res.status(StatusCodes.NOT_ACCEPTABLE).json("User already exists!");
+        }
+        const salt = bcrypt.genSaltSync(12);
+        const hash = bcrypt.hashSync(jelszo, salt);
+  
+        const values = [om_azon, hash, admin];
+        db.query(
+          "INSERT INTO felhasznalo (om_azon, jelszo, admin) VALUES (?);",
+          [values],
+          (err, data) => {
+            if (err) return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+            else return res.status(StatusCodes.CREATED).json("User has been created.");
+          }
+        );
+      }
+    );
+  }
 };
 
 export const login = (req, res) => {
