@@ -82,8 +82,20 @@ export const addStudent = async (req, res) => {
     leiras,
   } = req.body;
 
+  if (
+    !om_azon ||
+    !osztalyid ||
+    !tanuloNev ||
+    !nappali_munkarend ||
+    !kategoriaid ||
+    !leiras ||
+    !(szakid || agazatid)
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
+  }
+
   try {
-    await db.query("SELECT * FROM tanulo WHERE om_azon = ?", [om_azon], (err, data) => {
+    db.query("SELECT * FROM tanulo WHERE om_azon = ?", [om_azon], async (err, data) => {
       if (err) {
         return res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -91,37 +103,27 @@ export const addStudent = async (req, res) => {
       }
       if (data.length !== 0) {
         return res.status(StatusCodes.BAD_REQUEST).send("OM ID already in use");
+      } else {
+        if (agazatid) {
+          await db.query(
+            "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, agazatid) VALUES (?, ?, ?, ?, ?);",
+            [om_azon, tanuloNev, osztalyid, nappali_munkarend, agazatid]
+          );
+        } else if (szakid) {
+          await db.query(
+            "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, szakid) VALUES (?, ?, ?, ?, ?);",
+            [om_azon, tanuloNev, osztalyid, nappali_munkarend, szakid]
+          );
+        }
+        await db.query(
+          "INSERT INTO palya (diak_om_azon, kategoriaid, leiras) VALUES (?, ?, ?);",
+          [om_azon, kategoriaid, leiras]
+        );
+        return res.status(StatusCodes.OK).send("Student and palya have been created");
+
       }
     });
 
-    if (
-      !om_azon ||
-      !osztalyid ||
-      !tanuloNev ||
-      !nappali_munkarend ||
-      !kategoriaid ||
-      !leiras ||
-      !(szakid || agazatid)
-    ) {
-      return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
-    } else {
-      if (agazatid) {
-        await db.query(
-          "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, agazatid) VALUES (?, ?, ?, ?, ?);",
-          [om_azon, tanuloNev, osztalyid, nappali_munkarend, agazatid]
-        );
-      } else if (szakid) {
-        await db.query(
-          "INSERT INTO tanulo (om_azon, nev, osztalyid, nappali_munkarend, szakid) VALUES (?, ?, ?, ?, ?);",
-          [om_azon, tanuloNev, osztalyid, nappali_munkarend, szakid]
-        );
-      }
-      await db.query(
-        "INSERT INTO palya (diak_om_azon, kategoriaid, leiras) VALUES (?, ?, ?);",
-        [om_azon, kategoriaid, leiras]
-      );
-      return res.status(StatusCodes.OK).send("Student and palya have been created");
-    }
   } catch (err) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error: " + err);
   }
