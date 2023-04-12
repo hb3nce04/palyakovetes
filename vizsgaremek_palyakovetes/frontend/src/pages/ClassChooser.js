@@ -8,17 +8,17 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useContext } from "react";
+import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 import { ClassContext } from "../context/auth/ClassContext";
 
+const classId = createContext();
+
 export const ClassChooser = () => {
   const { classData } = useContext(ClassContext);
-  const classChooserData = () => {
-    return classData ? classData : [];
-  };
+  console.log(classData);
   const navigate = useNavigate();
 
   return (
@@ -34,7 +34,7 @@ export const ClassChooser = () => {
         </Typography>
 
         <Grid container spacing={2}>
-          {classChooserData().map((el, i) => {
+          {classData.map((el, i) => {
             return (
               <Grid item xs={12} sm={6} md={3} key={el.id}>
                 <Grow
@@ -69,7 +69,7 @@ export const ClassChooser = () => {
                 </Grow>
               </Grid>
             );
-          })}
+          }) || []}
         </Grid>
       </Paper>
       <Footer trademark versionNumber />

@@ -13,7 +13,7 @@ export const Auth = ({ children }) => {
       withCredentials: true,
     });
     setCurrentUser(res.data);
-    console.log(res.data);
+    console.log(res.token);
   };
 
   const logout = async () => {

@@ -30,9 +30,7 @@ export default function SignIn() {
     event.preventDefault();
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
       try {
-        login(formData).then(() =>
-          setTimeout(() => navigate("/classchooser"), 0)
-        );
+        login(formData).then(() => navigate("/classchooser"));
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });
