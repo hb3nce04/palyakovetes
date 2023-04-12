@@ -9,7 +9,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useContext } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
@@ -18,14 +19,33 @@ import { ClassContext } from "../context/auth/ClassContext";
 
 export const AddNewStudent = () => {
   const { classData } = useContext(ClassContext);
+  const [categories, setCategories] = useState([]);
+  const [professions, setProfessions] = useState([]);
+  const [sectors, setSectors] = useState([]);
+
   const currentClassData = () => {
+    console.log(classData);
     if (!classData) {
       return [];
     }
-    return classData.find(
-      (classes) => classes.id == localStorage.getItem("currentclassid")
+    return (
+      classData.find(
+        (classes) => classes.id == localStorage.getItem("currentclassid")
+      ) || []
     );
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/categories/getCategories")
+      .then((e) => setCategories(e.data));
+    axios
+      .get("http://localhost:8080/categories/getProfessions")
+      .then((e) => setProfessions(e.data));
+    axios
+      .get("http://localhost:8080/categories/getSectors")
+      .then((e) => setSectors(e.data));
+  }, []);
 
   return (
     <>
@@ -35,7 +55,8 @@ export const AddNewStudent = () => {
           ÚJ TANULÓ FELVÉTELE
         </Typography>
         <h2>
-          {currentClassData().iskola_nev} : {currentClassData().osztaly_nev}
+          {currentClassData().iskola_nev || ""} :{" "}
+          {currentClassData().osztaly_nev || ""}
         </h2>
         <div style={{ display: "flex" }}>
           <div className="formstest" style={{ width: "35%", display: "grid" }}>
@@ -57,8 +78,6 @@ export const AddNewStudent = () => {
                 label="Szakma / ágazat"
               >
                 <MenuItem value={"Ágazat 1"}>Ágazat 1</MenuItem>
-                <MenuItem value={"Ágazat 2"}>Ágazat 2</MenuItem>
-                <MenuItem value={"Ágazat 3"}>Ágazat 3</MenuItem>
               </Select>
             </FormControl>
             <FormControlLabel
@@ -87,9 +106,9 @@ export const AddNewStudent = () => {
                 id="demo-simple-select"
                 label="Pálya kategóriája"
               >
-                <MenuItem value={"Kategória 1"}>Kategória 1</MenuItem>
-                <MenuItem value={"Kategória 2"}>Kategória 2</MenuItem>
-                <MenuItem value={"Kategória 3"}>Kategória 3</MenuItem>
+                {categories.map((e) => {
+                  return <MenuItem value={e.id}>{e.megnevezes}</MenuItem>;
+                }) || []}
               </Select>
 
               <TextField
