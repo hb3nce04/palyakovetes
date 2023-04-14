@@ -184,3 +184,66 @@ export const deleteStudent = (req, res) => {
   }
 };
 
+
+export const editStudent = async (req, res) => {
+  const {
+    om_azon,
+    tanuloNev,
+    nappali_munkarend,
+    agazatid,
+    szakid,
+    kategoriaid,
+    leiras,
+  } = req.body;
+
+  if (
+    !om_azon ||
+    !tanuloNev ||
+    !nappali_munkarend ||
+    !kategoriaid ||
+    !leiras ||
+    !(szakid || agazatid)
+  ) {
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
+  }
+
+  try {
+    db.query(
+      "SELECT * FROM tanulo WHERE om_azon = ?",
+      [om_azon],
+      async (err, data) => {
+        if (err) {
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .send("Error: " + err);
+        }
+        if (data.length === 0) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .send("No such student");
+        } else {
+          if (agazatid) {
+            await db.query(
+              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, agazatid = ? WHERE om_azon = ?",
+              [tanuloNev, nappali_munkarend, agazatid, om_azon]
+            );
+          } else if (szakid) {
+            await db.query(
+              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, szakid = ? WHERE om_azon = ?",
+              [tanuloNev, nappali_munkarend, szakid, om_azon]
+            );
+          }
+          await db.query(
+            "UPDATE palya SET kategoriaid = ?, leiras = ? WHERE diak_om_azon = ?",
+            [kategoriaid, leiras, om_azon]
+          );
+          return res
+            .status(StatusCodes.OK)
+            .send("Student and palya have been edited");
+        }
+      }
+    );
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send("Error: " + err);
+  }
+};
