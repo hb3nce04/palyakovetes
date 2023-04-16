@@ -1,15 +1,9 @@
-import {
-  db
-} from "../db.js";
-import {
-  StatusCodes
-} from "http-status-codes";
+import { db } from "../db.js";
+import { StatusCodes } from "http-status-codes";
 
 export const getStudentByOm = (req, res) => {
   console.log(req.body);
-  const {
-    om_azon
-  } = req.body;
+  const { om_azon } = req.body;
 
   if (!om_azon) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
@@ -43,14 +37,13 @@ export const getStudentByOm = (req, res) => {
     );
   }
 };
+
 export const getStudentListByClass = (req, res) => {
   console.log(req.body);
-  const {
-    class_id
-  } = req.body;
+  const { class_id } = req.body;
 
   if (!class_id) {
-    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing class ID");
   } else {
     db.query("SELECT * FROM osztaly WHERE id = ?", [class_id], (err, data) => {
       if (err) {
@@ -62,7 +55,7 @@ export const getStudentListByClass = (req, res) => {
         return res.status(StatusCodes.BAD_REQUEST).send("No such class");
       } else {
         db.query(
-          "SELECT tanulo.om_azon, tanulo.nev as tanulo_nev, tanulo.osztalyid, tanulo.nappali_munkarend, szakma.nev as szakma_nev, agazat.nev as agazat_nev FROM ( ((tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id ) LEFT JOIN szakma ON tanulo.szakid = szakma.id ) LEFT JOIN agazat ON tanulo.agazatid = agazat.id) WHERE osztaly.id = ?;",
+          "SELECT tanulo.om_azon, tanulo.nev as tanulo_nev, tanulo.osztalyid, tanulo.nappali_munkarend, szakma.nev as szakma_nev, agazat.nev as agazat_nev FROM (((tanulo INNER JOIN osztaly ON tanulo.osztalyid = osztaly.id ) LEFT JOIN szakma ON tanulo.szakid = szakma.id ) LEFT JOIN agazat ON tanulo.agazatid = agazat.id) WHERE osztaly.id = ?;",
           [class_id],
           (err, data) => {
             if (err) {
@@ -77,6 +70,60 @@ export const getStudentListByClass = (req, res) => {
     });
   }
 };
+
+export const getPalyaByStudent = (req, res) => {
+  const { om_azon } = req.body;
+  if (!om_azon) {
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
+  } else if (om_azon.length !== 11) {
+    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
+  } else {
+    db.query(
+      "SELECT * FROM tanulo WHERE om_azon = ?",
+      [om_azon],
+      (err, data) => {
+        if (err) {
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .send("Error: " + err);
+        }
+        if (data.length === 0) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .send("There is no student with this OM ID");
+        } else {
+          db.query(
+            "SELECT diak_om_azon, leiras, kategoria.megnevezes FROM palya INNER JOIN kategoria ON palya.kategoriaid = kategoria.id WHERE diak_om_azon = ?;",
+            [om_azon],
+            (err, data) => {
+              if (err) {
+                return res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .send("Error: " + err);
+              }
+              return res.status(StatusCodes.OK).json(data);
+            }
+          );
+        }
+      }
+    );
+  }
+};
+
+/*export const getPalyaByStudent = (req, res) =>{
+  const {om_azon} = req.body;
+  if(!om_azon){
+    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
+  }else if (om_azon.length !== 11){
+    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
+  }else if(){
+
+  }else{
+    db.query(
+      "SELECT palya.id as palya_id, diak_om_azon, kategoriaid as palya_kategoriaid, leiras, kategoria.id as kategoria_id, kategoria.megnevezes FROM palya INNER JOIN kategoria ON palya.kategoriaid = kategoria.id WHERE diak_om_azon = ?;"
+    );
+  }
+}*/
 
 export const addStudent = async (req, res) => {
   const {
@@ -148,9 +195,7 @@ export const addStudent = async (req, res) => {
 };
 
 export const deleteStudent = (req, res) => {
-  const {
-    om_azon
-  } = req.body;
+  const { om_azon } = req.body;
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
@@ -198,7 +243,6 @@ export const deleteStudent = (req, res) => {
   }
 };
 
-
 export const editStudent = async (req, res) => {
   const {
     om_azon,
@@ -231,9 +275,7 @@ export const editStudent = async (req, res) => {
             .send("Error: " + err);
         }
         if (data.length === 0) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .send("No such student");
+          return res.status(StatusCodes.BAD_REQUEST).send("No such student");
         } else {
           if (agazatid) {
             await db.query(
