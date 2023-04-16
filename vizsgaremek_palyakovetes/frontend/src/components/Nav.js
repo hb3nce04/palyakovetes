@@ -10,7 +10,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import fingerprint from "../images/fingerprint.svg";
 import { ColorModeContext } from "./DarkMode";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -18,12 +18,19 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/auth/AuthContext";
 
-const pages = ["Menüpont 1", "Menüpont 2", "Menüpont 3"];
+const pages = ["Menüpont 1", "Menüpont 2", "Kapcsolat"];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
 
 function Nav() {
   const { mode, toggleColorMode } = useContext(ColorModeContext);
   const { logout } = useContext(AuthContext);
+  const [darkModeIcon, setDarkModeIcon] = useState(
+    localStorage.getItem("mode") === "dark" ? (
+      <Brightness4Icon />
+    ) : (
+      <Brightness7Icon />
+    )
+  );
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
@@ -53,7 +60,7 @@ function Nav() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Avatar src={fingerprint} sx={{ bgcolor: "white", mr: 2 }}></Avatar>
           <Typography
             variant="h6"
             noWrap
@@ -64,12 +71,12 @@ function Nav() {
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".3rem",
+              letterSpacing: ".15rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
-            LOGO
+            Pályakövetés
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -108,7 +115,6 @@ function Nav() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -125,7 +131,7 @@ function Nav() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Pályakövetés
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -139,14 +145,25 @@ function Nav() {
             ))}
           </Box>
 
-          <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-            {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+          <IconButton
+            sx={{ ml: 1 }}
+            onClick={() => {
+              toggleColorMode();
+              if (localStorage.getItem("mode") === "dark") {
+                setDarkModeIcon(<Brightness4Icon />);
+              } else if (localStorage.getItem("mode") === "light") {
+                setDarkModeIcon(<Brightness7Icon />);
+              }
+            }}
+            color="inherit"
+          >
+            {darkModeIcon}
           </IconButton>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

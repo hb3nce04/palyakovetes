@@ -1,9 +1,15 @@
-import { db } from "../db.js";
-import { StatusCodes } from "http-status-codes";
+import {
+  db
+} from "../db.js";
+import {
+  StatusCodes
+} from "http-status-codes";
 
 export const getStudentByOm = (req, res) => {
   console.log(req.body);
-  const { om_azon } = req.body;
+  const {
+    om_azon
+  } = req.body;
 
   if (!om_azon) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
@@ -21,7 +27,7 @@ export const getStudentByOm = (req, res) => {
           return res.status(StatusCodes.BAD_REQUEST).send("No such student");
         } else {
           db.query(
-            "SELECT * FROM tanulo WHERE om_azon = ?",
+            "SELECT tanulo.om_azon,palya.leiras,palya.kategoriaid AS kategoriaid,tanulo.nev,tanulo.nappali_munkarend,tanulo.agazatid,tanulo.szakid FROM tanulo,palya WHERE om_azon = ? AND tanulo.om_azon = palya.diak_om_azon;",
             [om_azon],
             (err, data) => {
               if (err) {
@@ -39,7 +45,9 @@ export const getStudentByOm = (req, res) => {
 };
 export const getStudentListByClass = (req, res) => {
   console.log(req.body);
-  const { class_id } = req.body;
+  const {
+    class_id
+  } = req.body;
 
   if (!class_id) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
@@ -86,12 +94,16 @@ export const addStudent = async (req, res) => {
     !om_azon ||
     !osztalyid ||
     !tanuloNev ||
-    !nappali_munkarend ||
+    !(nappali_munkarend === 0 || nappali_munkarend === 1) ||
     !kategoriaid ||
     !leiras ||
     !(szakid || agazatid)
   ) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
+  }
+
+  if (om_azon.length != 11) {
+    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
   }
 
   try {
@@ -136,7 +148,9 @@ export const addStudent = async (req, res) => {
 };
 
 export const deleteStudent = (req, res) => {
-  const { om_azon } = req.body;
+  const {
+    om_azon
+  } = req.body;
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
@@ -195,11 +209,10 @@ export const editStudent = async (req, res) => {
     kategoriaid,
     leiras,
   } = req.body;
-
   if (
     !om_azon ||
     !tanuloNev ||
-    !nappali_munkarend ||
+    !(nappali_munkarend === 0 || nappali_munkarend === 1) ||
     !kategoriaid ||
     !leiras ||
     !(szakid || agazatid)
@@ -224,12 +237,12 @@ export const editStudent = async (req, res) => {
         } else {
           if (agazatid) {
             await db.query(
-              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, agazatid = ? WHERE om_azon = ?",
+              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, agazatid = ?, szakid = NULL WHERE om_azon = ?",
               [tanuloNev, nappali_munkarend, agazatid, om_azon]
             );
           } else if (szakid) {
             await db.query(
-              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, szakid = ? WHERE om_azon = ?",
+              "UPDATE tanulo SET nev = ?, nappali_munkarend = ?, szakid = ?, agazatid = NULL WHERE om_azon = ?",
               [tanuloNev, nappali_munkarend, szakid, om_azon]
             );
           }

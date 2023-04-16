@@ -13,8 +13,8 @@ export const getCategories = (req, res) => {
     });
   };
 
-  export const getProfessions = (req, res) => {
-    db.query("SELECT * FROM szakma;", (err, data) => {
+export const getProfessions = (req, res) => {
+    db.query("SELECT id AS szakmaid,nev,szam FROM szakma;", (err, data) => {
       if (!err) {
         return res.status(StatusCodes.OK).json(data);
       } else {
@@ -26,7 +26,7 @@ export const getCategories = (req, res) => {
   };
 
   export const getSectors = (req, res) => {
-    db.query("SELECT * FROM agazat;", (err, data) => {
+    db.query("SELECT id AS agazatid,nev,szam FROM agazat;", (err, data) => {
       if (!err) {
         return res.status(StatusCodes.OK).json(data);
       } else {

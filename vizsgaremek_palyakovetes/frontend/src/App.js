@@ -71,9 +71,7 @@ function App() {
               <Route path="classchooser" element={<ClassChooser />} />
               <Route path="student">
                 <Route path="add" element={<AddNewStudent />}></Route>
-                <Route path=":studentId">
-                  <Route path="update" element={<UpdateStudent />}></Route>
-                </Route>
+                <Route path="update" element={<UpdateStudent />}></Route>
               </Route>
             </Route>
             <Route path="/">

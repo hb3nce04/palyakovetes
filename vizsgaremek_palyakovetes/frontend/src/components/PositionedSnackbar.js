@@ -1,11 +1,11 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import { useNavigate } from "react-router-dom";
 import { Alert } from "@mui/material";
+import { AxiosError } from "axios";
 
 export default function PositionedSnackbar(props) {
-  const autoHideDurationDefault = 1000;
+  const autoHideDurationDefault = 100000;
 
   const [state, setState] = React.useState({
     open: false,
@@ -14,11 +14,9 @@ export default function PositionedSnackbar(props) {
   });
   const { vertical, horizontal, open } = state;
 
-  const navigate = useNavigate();
-
-  const handleClick = (newState) => () => {
+  const handleClick = (newState, click) => () => {
     setState({ open: true, ...newState });
-    setTimeout(() => navigate(props.navigateTo), props.navigateAfter);
+    click();
   };
 
   const handleClose = () => {
@@ -28,12 +26,16 @@ export default function PositionedSnackbar(props) {
   return (
     <div>
       <Button
+        className={props.className}
         variant={props.variant}
         color={props.color}
-        onClick={handleClick({
-          vertical: "bottom",
-          horizontal: "center",
-        })}
+        onClick={handleClick(
+          {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+          props.onClick
+        )}
       >
         {props.buttonMessage}
       </Button>
@@ -49,7 +51,7 @@ export default function PositionedSnackbar(props) {
         }
       >
         <Alert variant="filled" severity={props.severity}>
-          {props.alertMessage}
+          {props.severity === "success" ? "Siker" : "Hiba történt"}
         </Alert>
       </Snackbar>
     </div>

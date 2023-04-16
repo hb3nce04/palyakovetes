@@ -1,17 +1,17 @@
 import React, { createContext, useState } from "react";
 
-export const StudentsRowContext = createContext();
+export const StudentRowContext = createContext();
 
 export const StudentsRow = ({ children }) => {
-  const [studentsData, setStudentsData] = useState([]);
+  const [studentRow, setStudentRow] = useState({});
 
   const handleSet = (students) => {
-    setStudentsData(studentsData);
+    setStudentRow(students);
   };
 
   return (
-    <StudentsRowContext.Provider value={{ studentsData, handleSet }}>
+    <StudentRowContext.Provider value={{ studentRow, handleSet }}>
       {children}
-    </StudentsRowContext.Provider>
+    </StudentRowContext.Provider>
   );
 };
