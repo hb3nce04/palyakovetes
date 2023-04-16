@@ -68,6 +68,3 @@ export const createClass = (req, res) => {
     }
   );
 };
-
-
-
