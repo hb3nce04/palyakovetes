@@ -25,6 +25,7 @@ import axios from "axios";
 import { UserRoute } from "./route/UserRoute";
 import { AdminRoute } from "./route/AdminRoute";
 import { GenericError } from "./pages/error-pages/GenericError";
+import { UserPage } from "./pages/UserPage";
 
 function App() {
   const { logout } = useContext(AuthContext);
@@ -69,6 +70,7 @@ function App() {
               <Route path="contact" element={<Contact />} />
               <Route path="/" element={<Home />} />
               <Route path="classchooser" element={<ClassChooser />} />
+              <Route path="user" element={<UserPage />} />
               <Route path="student">
                 <Route path="add" element={<AddNewStudent />}></Route>
                 <Route path="update" element={<UpdateStudent />}></Route>

@@ -56,6 +56,12 @@ function Nav() {
     }
   };
 
+  const handleProfile = async (text) => {
+    if (text === "Profil") {
+      navigate("/user");
+    }
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -186,7 +192,10 @@ function Nav() {
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography
                     textAlign="center"
-                    onClick={() => handleLogout(setting)}
+                    onClick={() => {
+                      handleLogout(setting);
+                      handleProfile(setting);
+                    }}
                   >
                     {setting}
                   </Typography>
