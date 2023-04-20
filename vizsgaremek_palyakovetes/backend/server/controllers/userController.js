@@ -3,6 +3,11 @@ import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcryptjs";
 
 export const getUsers = (req, res) => {
+  const token = req.user;
+  console.log(token);
+  if(token.isAdmin === 0){
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized access");
+  }else{
   db.query("SELECT * FROM felhasznalo;", (err, data) => {
     if (!err) {
       return res.status(StatusCodes.OK).json(data);
@@ -12,9 +17,12 @@ export const getUsers = (req, res) => {
         .send("error : " + err);
     }
   });
+}
 };
 
 export const deleteUser = (req, res) => {
+  const token = req.user;
+  if(token.isAdmin === 1){
   const { om_azon } = req.body;
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
@@ -47,6 +55,7 @@ export const deleteUser = (req, res) => {
       }
     );
   }
+}
 };
 
 export const updatePassword = (req, res) => {

@@ -3,7 +3,7 @@ import { getClasses, createClass } from "../controllers/classController.js";
 
 const router = express.Router();
 
-router.post("/class_chooser", getClasses);
+router.get("/class_chooser", getClasses);
 router.post("/create", createClass);
 
 

@@ -62,7 +62,7 @@ export const login = (req, res) => {
         
       }
 
-      const token = jwt.sign({ id: data[0].id }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
+      const token = jwt.sign({ om_azon: data[0].om_azon, isAdmin: data[0].admin }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
 
       res
         .cookie("access_token", token, {

@@ -2,15 +2,16 @@ import { db } from "../db.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getClasses = (req, res) => {
-  console.log(req.body);
-  const { om_azon } = req.body;
+  //const { om_azon } = req.body;
+  const token = req.user;
 
-  if (!om_azon) {
+  console.log(token.om_azon);
+  if (!token.om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
     db.query(
       "SELECT * FROM felhasznalo WHERE om_azon = ?",
-      [om_azon],
+      [token.om_azon],
       (err, data) => {
         if (err) {
           return res
@@ -22,7 +23,7 @@ export const getClasses = (req, res) => {
         } else {
           db.query(
             "SELECT osztaly.id, osztaly.nev AS osztaly_nev, iskola.nev AS iskola_nev, osztaly.vegzesi_ev FROM osztaly,iskola WHERE felhasznalo_om = ? AND osztaly.iskolaid = iskola.id",
-            [om_azon],
+            [token.om_azon],
             (err, data) => {
               if (err) {
                 return res

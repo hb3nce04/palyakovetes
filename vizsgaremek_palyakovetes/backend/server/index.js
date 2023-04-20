@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
 import dotenv from 'dotenv';
+import authorize from "./middlewares/auth-mw.js";
 
 dotenv.config();
 
@@ -20,10 +21,10 @@ app.use(cookieParser());
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
 app.use("/auth", authRoute);
-app.use("/classes", classRoute);
-app.use("/users", userRoute);
-app.use("/students", studentRoute);
-app.use("/categories", categoryRoute);
+app.use("/classes",authorize, classRoute);
+app.use("/users", authorize, userRoute);
+app.use("/students", authorize, studentRoute);
+app.use("/categories", authorize, categoryRoute);
 
 db.connect((err) => {
   if (err) console.log(err);
