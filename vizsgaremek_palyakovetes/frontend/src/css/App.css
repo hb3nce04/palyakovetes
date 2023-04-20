@@ -82,6 +82,7 @@ input[type="file"] {
   .add-new-student-text {
     text-align: center;
   }
+
   .formMain {
     display: flex;
     align-items: center;
@@ -139,4 +140,8 @@ th {
   border: 3px solid grey;
   text-align: left;
   padding: 1px;
+}
+
+.add-user-form * {
+  margin-bottom: 0.5rem;
 }

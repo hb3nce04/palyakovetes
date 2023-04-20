@@ -26,6 +26,7 @@ import { UserRoute } from "./route/UserRoute";
 import { AdminRoute } from "./route/AdminRoute";
 import { GenericError } from "./pages/error-pages/GenericError";
 import { UserPage } from "./pages/UserPage";
+import { AddUser } from "./pages/admin/AddUser";
 
 function App() {
   const { logout } = useContext(AuthContext);
@@ -76,12 +77,15 @@ function App() {
                 <Route path="update" element={<UpdateStudent />}></Route>
               </Route>
             </Route>
-            <Route path="/">
-              <Route
-                path="admin"
-                element={<AdminRoute redirectPath={false} user={currentUser} />}
-              >
-                <Route path="editusers" element={<EditUsers />} />
+            <Route
+              path="/"
+              element={<AdminRoute redirectPath={false} user={currentUser} />}
+            >
+              <Route path="admin">
+                <Route path="users">
+                  <Route path="edit" element={<EditUsers />} />
+                  <Route path="add" element={<AddUser />} />
+                </Route>
               </Route>
             </Route>
           </Routes>
