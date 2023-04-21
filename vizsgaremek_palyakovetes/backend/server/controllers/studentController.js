@@ -110,21 +110,6 @@ export const getPalyaByStudent = (req, res) => {
   }
 };
 
-/*export const getPalyaByStudent = (req, res) =>{
-  const {om_azon} = req.body;
-  if(!om_azon){
-    return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
-  }else if (om_azon.length !== 11){
-    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
-  }else if(){
-
-  }else{
-    db.query(
-      "SELECT palya.id as palya_id, diak_om_azon, kategoriaid as palya_kategoriaid, leiras, kategoria.id as kategoria_id, kategoria.megnevezes FROM palya INNER JOIN kategoria ON palya.kategoriaid = kategoria.id WHERE diak_om_azon = ?;"
-    );
-  }
-}*/
-
 export const addStudent = async (req, res) => {
   const {
     om_azon,

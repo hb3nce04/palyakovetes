@@ -22,14 +22,16 @@ export const getUsers = (req, res) => {
 
 export const deleteUser = (req, res) => {
   const token = req.user;
-  if(token.isAdmin === 1){
+  if(token.isAdmin === 0){
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized access");
+  }else{
   const { om_azon } = req.body;
   if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
     db.query(
       "SELECT * FROM felhasznalo WHERE om_azon = ?",
-      [om_azon],
+      [token.om_azon],
       (err, data) => {
         if (err) {
           return res
