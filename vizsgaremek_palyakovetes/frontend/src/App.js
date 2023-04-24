@@ -32,30 +32,19 @@ function App() {
   const { logout } = useContext(AuthContext);
   const { currentUser } = useContext(AuthContext);
   const { classData, handleSet: handleClasses } = useContext(ClassContext);
-  //const om_azon = currentUser.om_azon;
-  const om_azon = () => {
-    if (currentUser == null) {
-      return 0;
-    } else {
-      return currentUser.om_azon;
-    }
-  };
-
+console.log(currentUser)
   useEffect(() => {
     axios
-      .post(
+      .get(
         "http://localhost:8080/classes/class_chooser",
-        { om_azon: om_azon() },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { withCredentials: true },
       )
       .then((res) => {
         handleClasses(res.data);
+      }).catch(err => {
+        console.log(err)
       });
-  }, [om_azon()]);
+  }, [currentUser]);
 
   return (
     <div className="App">

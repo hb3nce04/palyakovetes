@@ -28,7 +28,7 @@ export const UserDataTable = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/users/userList")
+      .get("http://localhost:8080/users/userList",{withCredentials:true})
       .then((e) => setUserData(e.data));
   }, []);
 

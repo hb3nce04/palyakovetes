@@ -24,13 +24,21 @@ REGEX
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login,currentUser } = useContext(AuthContext);
 
   const handleClick = async (event) => {
     event.preventDefault();
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
       try {
-        login(formData).then(() => navigate("/classchooser"));
+        login(formData).then((e) => {
+          console.log(e);
+            if(e.isAdmin === 1) {
+              navigate("/admin/users/edit");
+            } else if(e.isAdmin === 0) {
+              navigate("/classchooser");
+            }
+          })
+         
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });

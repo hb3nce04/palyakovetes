@@ -41,6 +41,7 @@ export default function StudentData(props) {
       .post(
         "http://localhost:8080/students/studentList",
         { class_id },
+        {withCredentials:true},
         {
           headers: {
             "Content-Type": "application/json",
@@ -153,28 +154,30 @@ export default function StudentData(props) {
     navigate("/student/update");
   };
 
+
   const onButtonClickDelete = (e, row) => {
     e.stopPropagation();
-    axios.post("http://localhost:8080/students/deleteStudent", {
+    console.log(row.om_azon)
+    axios.post("http://localhost:8080/students/deleteStudent",
+     {
       om_azon: row.om_azon,
-    });
+},{withCredentials:true}).then(e => {
+  axios
+  .post(
+    "http://localhost:8080/students/studentList",
+    {class_id:class_id},
+    {withCredentials:true},
+  )
+  .then((res) => {
+    setData(res.data);
+    console.log(res.data);
+  }).catch(e => console.log(e));
+}).catch(e => console.log(e.response.data));
 
-    axios
-      .post(
-        "http://localhost:8080/students/studentList",
-        { class_id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        setData(res.data);
-        console.log(res.data);
-      });
+
+      
   };
-
+ 
   const MatEdit = ({ params }) => {
     return (
       <ModeEditOutlineOutlinedIcon

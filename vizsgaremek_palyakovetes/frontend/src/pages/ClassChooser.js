@@ -19,7 +19,6 @@ const classId = createContext();
 export const ClassChooser = () => {
   const { classData } = useContext(ClassContext);
   const navigate = useNavigate();
-
   return (
     <>
       <Nav />

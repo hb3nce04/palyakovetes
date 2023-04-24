@@ -68,10 +68,10 @@ export const AddNewStudent = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/categories/getCategories")
+      .get("http://localhost:8080/categories/getCategories",{withCredentials:true})
       .then((e) => setCategories(e.data));
     axios
-      .get("http://localhost:8080/categories/getProfessions")
+      .get("http://localhost:8080/categories/getProfessions",{withCredentials:true})
       .then((e) => {
         const updatedArray = e.data.map((obj) => {
           const updatedObj = { ...obj };
@@ -90,7 +90,7 @@ export const AddNewStudent = () => {
       });
 
     axios
-      .get("http://localhost:8080/categories/getSectors")
+      .get("http://localhost:8080/categories/getSectors",{withCredentials:true})
       .then((e) => {
         const updatedArray = e.data.map((obj) => {
           const updatedObj = { ...obj };

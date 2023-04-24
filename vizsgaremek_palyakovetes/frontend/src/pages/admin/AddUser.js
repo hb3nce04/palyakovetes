@@ -32,10 +32,12 @@ export const AddUser = () => {
 
   const handleAddUser = () => {
     console.log(formData);
-    axios
-      .post("http://localhost:8080/auth/register", formData, {
-        withCredentials: true,
-      })
+    axios.post("http://localhost:8080/auth/register", formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    })
       .then(
         (res) => {
           if (res) {
@@ -46,6 +48,7 @@ export const AddUser = () => {
           }
         },
         (error) => {
+          console.log(error);
           setSeverity("error");
         }
       );
