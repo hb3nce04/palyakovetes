@@ -13,7 +13,6 @@ const authorize = (req, res, next) =>{
             }
                 req.user = decodedToken;
                 next();
-            
         })
     }
 }
