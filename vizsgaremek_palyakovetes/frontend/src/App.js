@@ -27,22 +27,23 @@ import { AdminRoute } from "./route/AdminRoute";
 import { GenericError } from "./pages/error-pages/GenericError";
 import { UserPage } from "./pages/UserPage";
 import { AddUser } from "./pages/admin/AddUser";
+import { UserAdminCommonRoute } from "./route/UserAdminCommonRoute";
 
 function App() {
   const { logout } = useContext(AuthContext);
   const { currentUser } = useContext(AuthContext);
   const { classData, handleSet: handleClasses } = useContext(ClassContext);
-console.log(currentUser)
+  console.log(currentUser);
   useEffect(() => {
     axios
-      .get(
-        "http://localhost:8080/classes/class_chooser",
-        { withCredentials: true },
-      )
+      .get("http://localhost:8080/classes/class_chooser", {
+        withCredentials: true,
+      })
       .then((res) => {
         handleClasses(res.data);
-      }).catch(err => {
-        console.log(err)
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [currentUser]);
 
@@ -60,22 +61,24 @@ console.log(currentUser)
               <Route path="contact" element={<Contact />} />
               <Route path="/" element={<Home />} />
               <Route path="classchooser" element={<ClassChooser />} />
-              <Route path="user" element={<UserPage />} />
               <Route path="student">
                 <Route path="add" element={<AddNewStudent />}></Route>
                 <Route path="update" element={<UpdateStudent />}></Route>
               </Route>
             </Route>
-            <Route
-              path="/"
-              element={<AdminRoute redirectPath={false} user={currentUser} />}
-            >
+            <Route path="/" element={<AdminRoute user={currentUser} />}>
               <Route path="admin">
                 <Route path="users">
                   <Route path="edit" element={<EditUsers />} />
                   <Route path="add" element={<AddUser />} />
                 </Route>
               </Route>
+            </Route>
+            <Route
+              path="/"
+              element={<UserAdminCommonRoute user={currentUser} />}
+            >
+              <Route path="user" element={<UserPage />} />
             </Route>
           </Routes>
         </DarkMode>

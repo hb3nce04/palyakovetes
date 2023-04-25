@@ -17,13 +17,22 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/auth/AuthContext";
-
-const pages = ["Menüpont 1", "Menüpont 2", "Kapcsolat"];
+//
+const contact = (
+  <a
+    href="mailto:tanulopalyakovetorendszer@gmail.com"
+    style={{ textDecoration: "none", color: "inherit" }}
+  >
+    Kapcsolat
+  </a>
+);
+const userPages = ["Osztály kiválasztása", "Profil", contact];
+const adminPages = ["Főoldal", "Profil", contact];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
 
 function Nav() {
   const { mode, toggleColorMode } = useContext(ColorModeContext);
-  const { logout } = useContext(AuthContext);
+  const { logout, currentUser } = useContext(AuthContext);
   const [darkModeIcon, setDarkModeIcon] = useState(
     localStorage.getItem("mode") === "dark" ? (
       <Brightness4Icon />
@@ -50,16 +59,20 @@ function Nav() {
     setAnchorElUser(null);
   };
 
-  const handleLogout = async (text) => {
-    if (text === "Kijelentkezés") {
-      logout().then(() => navigate("/login"));
-    }
+  const handleLogoutNavigation = () => {
+    logout().then(() => navigate("/login"));
   };
 
-  const handleProfile = async (text) => {
-    if (text === "Profil") {
-      navigate("/user");
-    }
+  const handleProfileNavigation = () => {
+    navigate("/user");
+  };
+
+  const handleClassChooserNavigation = () => {
+    navigate("/classchooser");
+  };
+
+  const handleAdminDataTableNavigation = () => {
+    navigate("/admin/users/edit");
   };
 
   return (
@@ -71,7 +84,6 @@ function Nav() {
             variant="h6"
             noWrap
             component="a"
-            href="/classchooser"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -114,18 +126,45 @@ function Nav() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              {currentUser.isAdmin === 1
+                ? adminPages.map((page) => (
+                    <MenuItem
+                      key={page}
+                      onClick={(e) => {
+                        if (page === "Profil") {
+                          handleProfileNavigation();
+                        }
+                        if (page === "Főoldal") {
+                          handleAdminDataTableNavigation();
+                        }
+                        handleCloseUserMenu();
+                      }}
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  ))
+                : userPages.map((page) => (
+                    <MenuItem
+                      key={page}
+                      onClick={(e) => {
+                        if (page === "Profil") {
+                          handleProfileNavigation();
+                        }
+                        if (page === "Osztály kiválasztása") {
+                          handleClassChooserNavigation();
+                        }
+                        handleCloseUserMenu();
+                      }}
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  ))}
             </Menu>
           </Box>
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href=""
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -140,15 +179,39 @@ function Nav() {
             Pályakövetés
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
+            {currentUser.isAdmin === 1
+              ? adminPages.map((page) => (
+                  <MenuItem
+                    key={page}
+                    onClick={(e) => {
+                      if (page === "Profil") {
+                        handleProfileNavigation();
+                      }
+                      if (page === "Főoldal") {
+                        handleAdminDataTableNavigation();
+                      }
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))
+              : userPages.map((page) => (
+                  <MenuItem
+                    key={page}
+                    onClick={(e) => {
+                      if (page === "Profil") {
+                        handleProfileNavigation();
+                      }
+                      if (page === "Osztály kiválasztása") {
+                        handleClassChooserNavigation();
+                      }
+                      handleCloseUserMenu();
+                    }}
+                  >
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
           </Box>
 
           <IconButton
@@ -189,16 +252,19 @@ function Nav() {
               onClose={handleCloseUserMenu}
             >
               {dropdownButtons.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography
-                    textAlign="center"
-                    onClick={() => {
-                      handleLogout(setting);
-                      handleProfile(setting);
-                    }}
-                  >
-                    {setting}
-                  </Typography>
+                <MenuItem
+                  key={setting}
+                  value={setting}
+                  onClick={(e) => {
+                    if (setting === "Profil") {
+                      handleProfileNavigation(setting);
+                    } else if (setting === "Kijelentkezés") {
+                      handleLogoutNavigation(setting);
+                    }
+                    handleCloseUserMenu();
+                  }}
+                >
+                  {setting}
                 </MenuItem>
               ))}
             </Menu>

@@ -18,6 +18,7 @@ const classId = createContext();
 
 export const ClassChooser = () => {
   const { classData } = useContext(ClassContext);
+  console.log(classData);
   const navigate = useNavigate();
   return (
     <>
@@ -32,15 +33,38 @@ export const ClassChooser = () => {
         </Typography>
 
         <Grid container spacing={2}>
-          {classData.map((el, i) => {
-            return (
+          {[0, ...classData].map((el, i) => {
+            console.log(i);
+            return el === 0 ? (
+              <Grid item xs={12} sm={6} md={3} key={el.id}>
+                <Card sx={{ minWidth: 150, height: "100%" }}>
+                  <CardActions sx={{ height: "100%" }}>
+                    <Button
+                      color="success"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                      }}
+                      onClick={() => {
+                        //localStorage.setItem("currentclassid", el.id);
+                        //navigate("/");
+                      }}
+                    >
+                      + OSZTÁLY HOZZÁADÁSA
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ) : (
               <Grid item xs={12} sm={6} md={3} key={el.id}>
                 <Grow
                   in={true}
                   style={{ transformOrigin: "0 0 0" }}
                   timeout={1500}
                 >
-                  <Card sx={{ minWidth: 150 }}>
+                  <Card sx={{ minWidth: 150, height: "100%" }}>
                     <CardContent>
                       <Typography variant="h5" gutterBottom>
                         Osztály: {el.osztaly_nev}
