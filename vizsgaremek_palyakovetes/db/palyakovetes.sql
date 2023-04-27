@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Gép: 127.0.0.1:3306
--- Létrehozás ideje: 2023. Ápr 02. 13:34
--- Kiszolgáló verziója: 10.4.27-MariaDB
--- PHP verzió: 8.1.12
+-- Host: 127.0.0.1
+-- Generation Time: Apr 27, 2023 at 03:24 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Adatbázis: `palyakovetes`
+-- Database: `palyakovetes`
 --
 CREATE DATABASE IF NOT EXISTS `palyakovetes` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci;
 USE `palyakovetes`;
@@ -26,17 +26,17 @@ USE `palyakovetes`;
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `agazat`
+-- Table structure for table `agazat`
 --
 
 CREATE TABLE `agazat` (
   `id` int(3) NOT NULL,
-  `nev` varchar(255) NOT NULL,
-  `szam` varchar(255) NOT NULL
+  `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
+  `szam` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `agazat`
+-- Dumping data for table `agazat`
 --
 
 INSERT INTO `agazat` (`id`, `nev`, `szam`) VALUES
@@ -106,36 +106,36 @@ INSERT INTO `agazat` (`id`, `nev`, `szam`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `felhasznalo`
+-- Table structure for table `felhasznalo`
 --
 
 CREATE TABLE `felhasznalo` (
   `om_azon` bigint(11) NOT NULL,
-  `jelszo` varchar(60) NOT NULL,
+  `jelszo` varchar(60) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `felhasznalo`
+-- Dumping data for table `felhasznalo`
 --
 
 INSERT INTO `felhasznalo` (`om_azon`, `jelszo`, `admin`) VALUES
 (11111111111, '$2a$12$jSE6tVSj5JTIZxBgN7wpKeHn7oqUVBim0zO/R3iCA5HBvjgM7u5m6', 1),
-(22222222222, '$2a$12$7eWjhG.OcKNAeYR3NZVOg.kYEUtWsXKBWcnUGgbXlkM57EbEorqku', 0);
+(22222222222, '$2a$12$qdySoYVuqA8S4u8dpLjY0evcrLTpN6QfaVZcfEm4V0zvAfOYqqa5m', 0);
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `iskola`
+-- Table structure for table `iskola`
 --
 
 CREATE TABLE `iskola` (
   `id` int(2) NOT NULL,
-  `nev` varchar(255) NOT NULL
+  `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `iskola`
+-- Dumping data for table `iskola`
 --
 
 INSERT INTO `iskola` (`id`, `nev`) VALUES
@@ -153,16 +153,16 @@ INSERT INTO `iskola` (`id`, `nev`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `kategoria`
+-- Table structure for table `kategoria`
 --
 
 CREATE TABLE `kategoria` (
   `id` int(2) NOT NULL,
-  `megnevezes` varchar(255) NOT NULL
+  `megnevezes` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `kategoria`
+-- Dumping data for table `kategoria`
 --
 
 INSERT INTO `kategoria` (`id`, `megnevezes`) VALUES
@@ -183,60 +183,59 @@ INSERT INTO `kategoria` (`id`, `megnevezes`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `osztaly`
+-- Table structure for table `osztaly`
 --
 
 CREATE TABLE `osztaly` (
   `id` int(4) NOT NULL,
   `iskolaid` int(2) NOT NULL,
   `felhasznalo_om` bigint(11) NOT NULL,
-  `nev` varchar(255) NOT NULL,
+  `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `vegzesi_ev` int(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `osztaly`
+-- Dumping data for table `osztaly`
 --
 
 INSERT INTO `osztaly` (`id`, `iskolaid`, `felhasznalo_om`, `nev`, `vegzesi_ev`) VALUES
-(1, 8, 22222222222, '10.C', 2019),
-(2, 2, 22222222222, '11.F', 2021),
-(3, 4, 22222222222, '10.D', 1982),
-(4, 4, 22222222222, '11.F', 2005),
-(5, 8, 22222222222, '11.C', 1975),
-(6, 5, 22222222222, '10.A', 1976),
-(7, 3, 22222222222, '13.A', 2006),
-(8, 4, 22222222222, '9.E', 2016),
-(9, 1, 22222222222, '11.C', 1974),
-(10, 10, 22222222222, '13.E', 1980);
+(1, 3, 22222222222, '12.A', 2018),
+(15, 3, 22222222222, '12.D', 2022);
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `palya`
+-- Table structure for table `palya`
 --
 
 CREATE TABLE `palya` (
   `id` int(11) NOT NULL,
   `diak_om_azon` bigint(11) NOT NULL,
   `kategoriaid` int(2) NOT NULL,
-  `leiras` varchar(255) NOT NULL
+  `leiras` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- Dumping data for table `palya`
+--
+
+INSERT INTO `palya` (`id`, `diak_om_azon`, `kategoriaid`, `leiras`) VALUES
+(24, 12345678912, 5, 'Példa szöveg.');
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `szakma`
+-- Table structure for table `szakma`
 --
 
 CREATE TABLE `szakma` (
   `id` int(3) NOT NULL,
-  `nev` varchar(255) NOT NULL,
-  `szam` varchar(255) NOT NULL
+  `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
+  `szam` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `szakma`
+-- Dumping data for table `szakma`
 --
 
 INSERT INTO `szakma` (`id`, `nev`, `szam`) VALUES
@@ -290,12 +289,12 @@ INSERT INTO `szakma` (`id`, `nev`, `szam`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `tanulo`
+-- Table structure for table `tanulo`
 --
 
 CREATE TABLE `tanulo` (
   `om_azon` bigint(11) NOT NULL,
-  `nev` varchar(255) NOT NULL,
+  `nev` varchar(255) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `osztalyid` int(4) NOT NULL,
   `nappali_munkarend` tinyint(1) NOT NULL DEFAULT 1,
   `agazatid` int(3) DEFAULT NULL,
@@ -303,244 +302,45 @@ CREATE TABLE `tanulo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `tanulo`
+-- Dumping data for table `tanulo`
 --
 
 INSERT INTO `tanulo` (`om_azon`, `nev`, `osztalyid`, `nappali_munkarend`, `agazatid`, `szakid`) VALUES
-(10254124410, 'Szona', 9, 1, 22, NULL),
-(10486636543, 'Ézsaiás', 6, 0, 1, NULL),
-(10522084059, 'Markéta', 5, 0, NULL, 23),
-(11790909404, 'Melina', 2, 0, NULL, 12),
-(12221704185, 'Anelma', 8, 1, 22, NULL),
-(12410944519, 'Dilon', 5, 1, NULL, 8),
-(12476898067, 'Lukrécia', 8, 0, 12, NULL),
-(12521600696, 'Alen', 8, 0, 22, NULL),
-(12646075251, 'Max', 4, 1, NULL, 22),
-(13644609376, 'Bíborka', 3, 1, NULL, 23),
-(13669293080, 'Elinor', 3, 1, NULL, 19),
-(13776034864, 'Karolin', 3, 0, NULL, 12),
-(13914261227, 'Bogát', 4, 1, NULL, 5),
-(14323889477, 'Vadvirág', 10, 1, 20, NULL),
-(14407757379, 'Zsadán', 3, 0, NULL, 4),
-(15335479214, 'Tibád', 4, 0, NULL, 9),
-(15367396091, 'Jáel', 5, 1, NULL, 20),
-(16193383080, 'Hana', 7, 1, 16, NULL),
-(17017249335, 'Eponin', 1, 0, NULL, 11),
-(17362699244, 'Raid', 10, 0, 8, NULL),
-(18294325339, 'Ernesztó', 5, 1, NULL, 20),
-(19477554102, 'Kordélia', 9, 1, 20, NULL),
-(20357064730, 'Káldor', 1, 0, NULL, 3),
-(20524067692, 'Líviusz', 1, 0, NULL, 21),
-(20599804920, 'Szidalisz', 9, 0, 17, NULL),
-(20679382960, 'Jelek', 9, 1, 25, NULL),
-(21212143124, 'Nonna', 7, 0, 19, NULL),
-(21441827094, 'Bertel', 4, 0, NULL, 15),
-(21539527743, 'Ajnácska', 7, 1, 17, NULL),
-(21940163130, 'Arszlán', 2, 0, NULL, 15),
-(22164931541, 'Arszlán', 10, 0, 5, NULL),
-(22630799918, 'Hetti', 1, 1, NULL, 25),
-(22912463803, 'Ajád', 9, 0, 21, NULL),
-(23415269701, 'Karolt', 5, 0, NULL, 19),
-(23536030650, 'Dália', 3, 1, NULL, 8),
-(23773150177, 'Illés', 9, 0, 25, NULL),
-(24092513224, 'Gede', 3, 0, NULL, 1),
-(24680101699, 'Kinizs', 8, 0, 12, NULL),
-(25387127311, 'Bedő', 7, 0, 18, NULL),
-(25845000212, 'Hunor', 8, 1, 22, NULL),
-(26127900410, 'Kán', 9, 1, 1, NULL),
-(26397099390, 'Johanka', 8, 0, 3, NULL),
-(27218143363, 'Ráchel', 2, 0, NULL, 10),
-(27487312630, 'Ottilia', 6, 0, 18, NULL),
-(27849196376, 'Zsüsztin', 8, 0, 13, NULL),
-(28599925707, 'Manda', 2, 0, NULL, 11),
-(28624582110, 'Pázmán', 6, 1, 7, NULL),
-(29726024776, 'Pippa', 10, 1, 8, NULL),
-(29840644345, 'Adala', 3, 0, NULL, 21),
-(30003829008, 'Nikoletta', 5, 1, NULL, 24),
-(30021651625, 'Hanife', 5, 0, NULL, 1),
-(30971493752, 'Nadinka', 1, 0, NULL, 20),
-(31632182357, 'Olena', 5, 0, NULL, 9),
-(32049847275, 'Morgána', 3, 0, NULL, 3),
-(32280645197, 'Manóhar', 7, 1, 20, NULL),
-(33917054065, 'Szedra', 9, 0, 18, NULL),
-(35413195115, 'Nikosz', 9, 0, 18, NULL),
-(36845443989, 'Szende', 5, 0, NULL, 16),
-(37075842896, 'Dezmér', 4, 0, NULL, 4),
-(37855806943, 'Gvendolin', 2, 0, NULL, 4),
-(38304742837, 'Amadil', 6, 1, 22, NULL),
-(38709252917, 'Jefte', 1, 0, NULL, 25),
-(39059615102, 'Primula', 8, 0, 24, NULL),
-(39218099124, 'Navid', 5, 1, NULL, 6),
-(39772308980, 'Zenóbia', 9, 0, 1, NULL),
-(39898203116, 'Emőd', 3, 1, NULL, 14),
-(39941495288, 'Gellén', 4, 1, NULL, 22),
-(40460974472, 'Frida', 7, 0, 6, NULL),
-(40620748513, 'Evódia', 6, 1, 22, NULL),
-(40905782357, 'Avenár', 7, 1, 2, NULL),
-(41609806963, 'Annalujza', 8, 1, 7, NULL),
-(41724403965, 'Milán', 8, 1, 12, NULL),
-(43534218643, 'Celesztin', 9, 1, 17, NULL),
-(44554240702, 'Színes', 1, 0, NULL, 3),
-(45167716358, 'Lagerta', 8, 0, 14, NULL),
-(45705012588, 'Arita', 7, 0, 23, NULL),
-(45831756131, 'Modeszta', 5, 0, NULL, 12),
-(45930005195, 'Mariska', 5, 1, NULL, 3),
-(46673719922, 'Parker', 4, 0, NULL, 16),
-(46930116398, 'Devana', 7, 0, 13, NULL),
-(47040942085, 'Dejte', 3, 1, NULL, 23),
-(49424656841, 'Juszuf', 2, 1, NULL, 21),
-(49649687077, 'Jáel', 3, 0, NULL, 11),
-(49694567524, 'Aníziusz', 5, 0, NULL, 25),
-(49757988133, 'Ahillész', 8, 0, 16, NULL),
-(50250061554, 'Erneszta', 6, 0, 18, NULL),
-(51148317276, 'Léni', 10, 0, 10, NULL),
-(51153897833, 'Eduán', 1, 0, NULL, 20),
-(51338976570, 'Bóbita', 3, 0, NULL, 17),
-(52985416672, 'Kemal', 4, 1, NULL, 1),
-(53195580424, 'Adela', 7, 0, 12, NULL),
-(53437234376, 'Milágrosz', 3, 1, NULL, 10),
-(53508469756, 'Joel', 9, 1, 16, NULL),
-(53807940081, 'Berill', 6, 0, 19, NULL),
-(53876799910, 'Tinetta', 4, 0, NULL, 3),
-(53961997051, 'Zajzon', 9, 0, 11, NULL),
-(54021014436, 'Lula', 4, 1, NULL, 10),
-(54079518448, 'Alap', 10, 0, 24, NULL),
-(54163352166, 'Zamira', 4, 0, NULL, 16),
-(54176328472, 'Manóhar', 10, 1, 19, NULL),
-(54253175912, 'Avitál', 6, 1, 13, NULL),
-(54866363658, 'Ernán', 8, 1, 13, NULL),
-(55873609303, 'Mendi', 9, 1, 22, NULL),
-(55931385144, 'Zsigmond', 5, 0, NULL, 5),
-(56420718340, 'Kunigunda', 4, 1, NULL, 22),
-(57284174229, 'Agrippína', 8, 1, 21, NULL),
-(57337323591, 'Aba', 2, 0, NULL, 7),
-(58122662048, 'Abelárd', 4, 0, NULL, 12),
-(58330979760, 'Borcsa', 7, 0, 6, NULL),
-(58698420752, 'Szaléz', 2, 0, NULL, 14),
-(59435738506, 'Sztefani', 6, 0, 16, NULL),
-(59505017940, 'Rápolt', 2, 0, NULL, 24),
-(59859297803, 'Tánya', 2, 0, NULL, 4),
-(60375923309, 'Elvir', 10, 0, 6, NULL),
-(60644165796, 'Vító', 6, 0, 11, NULL),
-(61043408571, 'Génia', 10, 1, 22, NULL),
-(61492574172, 'Véta', 8, 1, 20, NULL),
-(61770049108, 'Lizi', 2, 1, NULL, 17),
-(64327221606, 'Héda', 6, 1, 17, NULL),
-(64327534328, 'Gyula', 8, 0, 25, NULL),
-(64418639803, 'Mirjam', 7, 0, 2, NULL),
-(65742563998, 'Katalina', 8, 1, 3, NULL),
-(65751767037, 'Rozalinda', 4, 1, NULL, 15),
-(66092910062, 'Verka', 9, 0, 10, NULL),
-(66279187806, 'Szamira', 7, 1, 9, NULL),
-(66904996220, 'Torontál', 10, 0, 19, NULL),
-(67508903588, 'Melissza', 1, 0, NULL, 3),
-(67730900674, 'Ancilla', 2, 1, NULL, 11),
-(67954201975, 'Ábris', 5, 0, NULL, 8),
-(68885664799, 'Bardó', 7, 1, 2, NULL),
-(69642155179, 'Brett', 7, 1, 15, NULL),
-(69748012522, 'Ilárion', 9, 0, 3, NULL),
-(70223383996, 'Nemere', 3, 0, NULL, 18),
-(70331076583, 'Sarel', 10, 0, 5, NULL),
-(70762502285, 'Iréneusz', 4, 0, NULL, 6),
-(73394021995, 'Mór', 1, 1, NULL, 10),
-(73874500027, 'Boris', 1, 0, NULL, 1),
-(74810074100, 'Frézia', 6, 0, 17, NULL),
-(75093092523, 'Szeverina', 1, 0, NULL, 13),
-(75896885505, 'Elektra', 4, 0, NULL, 25),
-(76017802989, 'Mikán', 7, 0, 25, NULL),
-(76348023515, 'Médea', 8, 1, 18, NULL),
-(76751513106, 'Zsanett', 4, 1, NULL, 1),
-(77452793879, 'Bekes', 1, 0, NULL, 17),
-(77541613975, 'Zsuzsa', 3, 0, NULL, 4),
-(77832495844, 'Edizon', 5, 0, NULL, 6),
-(78356153952, 'Mateusz', 1, 0, NULL, 5),
-(78582283010, 'Néva', 5, 1, NULL, 19),
-(78792665319, 'Magda', 2, 1, NULL, 24),
-(78837536112, 'Bodó', 7, 1, 4, NULL),
-(79064710837, 'Zelinda', 5, 0, NULL, 20),
-(79317965445, 'Uros', 8, 0, 12, NULL),
-(80062379440, 'Balmaz', 1, 1, NULL, 18),
-(80495998103, 'Marinka', 5, 0, NULL, 10),
-(80652426462, 'Balassa', 5, 1, NULL, 5),
-(82405413981, 'Floransz', 9, 0, 11, NULL),
-(83213273747, 'Gordon', 9, 0, 3, NULL),
-(84099280967, 'Ágas', 3, 0, NULL, 7),
-(85056702978, 'Ádomás', 9, 1, 24, NULL),
-(85691638657, 'Max', 2, 0, NULL, 5),
-(85951890616, 'Mona', 10, 1, 10, NULL),
-(86404801214, 'Nella', 9, 1, 2, NULL),
-(86984356010, 'Milanna', 5, 0, NULL, 4),
-(87372346462, 'Jagelló', 1, 1, NULL, 15),
-(87727221354, 'Jeles', 9, 0, 11, NULL),
-(87941146602, 'Anatol', 3, 1, NULL, 15),
-(88522021166, 'Nóna', 5, 1, NULL, 19),
-(89141003480, 'Zorka', 4, 1, NULL, 21),
-(89269691107, 'Milton', 7, 1, 1, NULL),
-(89431015843, 'Bertina', 10, 0, 15, NULL),
-(90209869685, 'Szaffi', 6, 1, 19, NULL),
-(90788777912, 'Émi', 7, 0, 1, NULL),
-(91548229532, 'Tuzson', 5, 0, NULL, 11),
-(91632752315, 'Szemira', 5, 0, NULL, 9),
-(91665987681, 'Tamerlán', 1, 1, NULL, 5),
-(92537101403, 'Dzsenni', 5, 0, NULL, 7),
-(93156466309, 'Eufémia', 8, 0, 10, NULL),
-(93437874920, 'Levendula', 4, 1, NULL, 16),
-(94085675580, 'Údó', 6, 1, 18, NULL),
-(94094949256, 'Nasszer', 6, 1, 3, NULL),
-(94163933685, 'Helmond', 1, 1, NULL, 22),
-(94413132626, 'Melióra', 9, 0, 14, NULL),
-(94925118050, 'Karacs', 2, 0, NULL, 9),
-(95081400838, 'Krisztin', 8, 0, 9, NULL),
-(95226871596, 'Sarolt', 9, 1, 25, NULL),
-(95356185377, 'Csejte', 6, 1, 16, NULL),
-(95965258643, 'Peggi', 7, 0, 24, NULL),
-(95974861915, 'Ambos', 2, 1, NULL, 10),
-(96167230045, 'Polda', 5, 1, NULL, 5),
-(96178747480, 'Ingmár', 1, 0, NULL, 2),
-(96762740742, 'Héra', 10, 0, 12, NULL),
-(97159318968, 'Gilda', 6, 0, 18, NULL),
-(97172435105, 'Kreola', 10, 0, 22, NULL),
-(97274519582, 'Blanka', 6, 1, 25, NULL),
-(97376248859, 'Csende', 7, 0, 2, NULL),
-(98025320638, 'Eleanor', 3, 0, NULL, 25),
-(98759224612, 'Zena', 5, 0, NULL, 16),
-(99792999973, 'Józsiás', 7, 1, 6, NULL),
-(99873776019, 'Honorát', 5, 1, NULL, 12),
-(99895344333, 'Rezső', 10, 0, 3, NULL);
+(12345678912, 'Kovács Anita', 15, 0, 6, NULL);
 
 --
--- Indexek a kiírt táblákhoz
+-- Indexes for dumped tables
 --
 
 --
--- A tábla indexei `agazat`
+-- Indexes for table `agazat`
 --
 ALTER TABLE `agazat`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `szam` (`szam`);
 
 --
--- A tábla indexei `felhasznalo`
+-- Indexes for table `felhasznalo`
 --
 ALTER TABLE `felhasznalo`
   ADD PRIMARY KEY (`om_azon`),
   ADD UNIQUE KEY `jelszo` (`jelszo`);
 
 --
--- A tábla indexei `iskola`
+-- Indexes for table `iskola`
 --
 ALTER TABLE `iskola`
   ADD PRIMARY KEY (`id`);
 
 --
--- A tábla indexei `kategoria`
+-- Indexes for table `kategoria`
 --
 ALTER TABLE `kategoria`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `megnevezes` (`megnevezes`);
 
 --
--- A tábla indexei `osztaly`
+-- Indexes for table `osztaly`
 --
 ALTER TABLE `osztaly`
   ADD PRIMARY KEY (`id`),
@@ -548,7 +348,7 @@ ALTER TABLE `osztaly`
   ADD KEY `iskolaid` (`iskolaid`);
 
 --
--- A tábla indexei `palya`
+-- Indexes for table `palya`
 --
 ALTER TABLE `palya`
   ADD PRIMARY KEY (`id`),
@@ -556,14 +356,14 @@ ALTER TABLE `palya`
   ADD KEY `kategoriaid` (`kategoriaid`);
 
 --
--- A tábla indexei `szakma`
+-- Indexes for table `szakma`
 --
 ALTER TABLE `szakma`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `szam` (`szam`);
 
 --
--- A tábla indexei `tanulo`
+-- Indexes for table `tanulo`
 --
 ALTER TABLE `tanulo`
   ADD PRIMARY KEY (`om_azon`),
@@ -572,65 +372,65 @@ ALTER TABLE `tanulo`
   ADD KEY `szakid` (`szakid`);
 
 --
--- A kiírt táblák AUTO_INCREMENT értéke
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT a táblához `agazat`
+-- AUTO_INCREMENT for table `agazat`
 --
 ALTER TABLE `agazat`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
--- AUTO_INCREMENT a táblához `iskola`
+-- AUTO_INCREMENT for table `iskola`
 --
 ALTER TABLE `iskola`
   MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT a táblához `kategoria`
+-- AUTO_INCREMENT for table `kategoria`
 --
 ALTER TABLE `kategoria`
   MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT a táblához `osztaly`
+-- AUTO_INCREMENT for table `osztaly`
 --
 ALTER TABLE `osztaly`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT a táblához `palya`
+-- AUTO_INCREMENT for table `palya`
 --
 ALTER TABLE `palya`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT a táblához `szakma`
+-- AUTO_INCREMENT for table `szakma`
 --
 ALTER TABLE `szakma`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
--- Megkötések a kiírt táblákhoz
+-- Constraints for dumped tables
 --
 
 --
--- Megkötések a táblához `osztaly`
+-- Constraints for table `osztaly`
 --
 ALTER TABLE `osztaly`
   ADD CONSTRAINT `osztaly_ibfk_1` FOREIGN KEY (`iskolaid`) REFERENCES `iskola` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `osztaly_ibfk_2` FOREIGN KEY (`felhasznalo_om`) REFERENCES `felhasznalo` (`om_azon`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Megkötések a táblához `palya`
+-- Constraints for table `palya`
 --
 ALTER TABLE `palya`
   ADD CONSTRAINT `palya_ibfk_1` FOREIGN KEY (`diak_om_azon`) REFERENCES `tanulo` (`om_azon`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `palya_ibfk_2` FOREIGN KEY (`kategoriaid`) REFERENCES `kategoria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Megkötések a táblához `tanulo`
+-- Constraints for table `tanulo`
 --
 ALTER TABLE `tanulo`
   ADD CONSTRAINT `tanulo_ibfk_1` FOREIGN KEY (`osztalyid`) REFERENCES `osztaly` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

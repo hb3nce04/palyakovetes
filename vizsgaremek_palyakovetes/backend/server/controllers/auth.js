@@ -11,8 +11,6 @@ export const register = (req, res) => {
 
   if(!om_azon || !jelszo || !admin){
     return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
-  }else if (om_azon.length != 11) {
-    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
   } else {
     db.query(
       "SELECT * FROM felhasznalo WHERE om_azon LIKE ?;",

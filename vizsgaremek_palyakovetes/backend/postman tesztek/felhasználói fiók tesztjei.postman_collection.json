@@ -1,0 +1,367 @@
+{
+	"info": {
+		"_postman_id": "497cf94d-610a-4cf2-869c-41e681b09341",
+		"name": "felhasználói fiók tesztjei",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "bejelentkezés",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"om_azon\": 22222222222,\r\n    \"jelszo\": \"Felhasznalo_123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "felhasználóhoz tartozó osztályok listájának lekérése",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/classes/class_chooser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"classes",
+						"class_chooser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "új osztály létrehozása",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"iskolaid\": 3,\r\n    \"felhasznalo_om\": 222222222222,\r\n    \"nev\": \"12.D\",\r\n    \"vegzesi_ev\": 2022\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/classes/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"classes",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "új diák mentése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas József\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 10,\r\n    \"leiras\": \"Ismeretlen okokból nem dolgozik.\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/addStudent",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"addStudent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "új diák mentése 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas József\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 10,\r\n    \"leiras\": \"Ismeretlen okokból nem dolgozik.\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/addStudent",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"addStudent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "létező diák adatainak lekérése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"om_azon\": 12345678910\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/getStudent",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"getStudent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "létező diák módosítása",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas Antal\",\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 7,\r\n    \"leiras\": \"Munkába állt a TEVA debreceni gyógyszertárában.\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/editStudent",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"editStudent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "osztály tanulóinak lekérése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"class_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/studentList",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"studentList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "egy tanuló pályájának lekérdezése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"class_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/studentList",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"studentList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "egy tanuló törlése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"class_id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/students/studentList",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"studentList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "osztály és tanulóinak törlése",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/classes/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"classes",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "felhasználó saját jelszavának megváltoztatása",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"regiJelszo\": \"Felhasznalo_123\",\r\n    \"ujJelszo\": \"User_123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/updatePassword",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"updatePassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "kijelentkezés",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"regiJelszo\": \"Felhasznalo_123\",\r\n    \"ujJelszo\": \"User_123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/auth/logout",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

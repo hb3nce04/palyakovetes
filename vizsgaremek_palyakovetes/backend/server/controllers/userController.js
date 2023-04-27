@@ -8,7 +8,7 @@ export const getUsers = (req, res) => {
   if (token.isAdmin === 0) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized access");
   } else {
-    db.query("SELECT * FROM felhasznalo;", (err, data) => {
+    db.query("SELECT * FROM felhasznalo WHERE om_azon <> ?;", [token.om_azon], (err, data) => {
       if (!err) {
         return res.status(StatusCodes.OK).json(data);
       } else {

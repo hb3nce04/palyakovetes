@@ -75,8 +75,6 @@ export const getPalyaByStudent = (req, res) => {
   const { om_azon } = req.body;
   if (!om_azon) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
-  } else if (om_azon.length !== 11) {
-    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
   } else {
     db.query(
       "SELECT * FROM tanulo WHERE om_azon = ?",
@@ -101,7 +99,7 @@ export const getPalyaByStudent = (req, res) => {
                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
                   .send("Error: " + err);
               }
-              return res.status(StatusCodes.OK).json(data);
+              return res.status(StatusCodes.OK).json(data[0]);
             }
           );
         }
@@ -132,10 +130,6 @@ export const addStudent = async (req, res) => {
     !(szakid || agazatid)
   ) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
-  }
-
-  if (om_azon.length != 11) {
-    return res.status(StatusCodes.BAD_REQUEST).send("Incompatible OM format");
   }
 
   try {
