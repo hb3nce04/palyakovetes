@@ -14,6 +14,7 @@ import lightprofile from "../images/lightprofile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/auth/AuthContext";
+import { BackToPageButton } from "../components/BackToPageButton";
 
 export const UserPage = () => {
   const [formData, setFormData] = useState({});
@@ -34,17 +35,26 @@ export const UserPage = () => {
           formData.newPasswordAgain.length >= 8
         ) {
           axios
-            .post("http://localhost:8080/users/updatePassword", {
-              om_azon: currentUser.om_azon,
-              jelszo: formData.newPassword,
-            })
+            .post(
+              "http://localhost:8080/users/updatePassword",
+              {
+                om_azon: currentUser.om_azon,
+                regiJelszo: formData.oldPassword,
+                ujJelszo: formData.newPassword,
+              },
+              { withCredentials: true }
+            )
             .then((e) => {
+              console.log(e);
               navigate("/login");
+            })
+            .catch((e) => {
+              console.log(e);
             });
         }
       } catch ({ response: { data } }) {
         alert(data.message);
-        setFormData({ newPasswordAgain: "", newPassword: "" });
+        setFormData({ newPasswordAgain: "", newPassword: "", oldPassword: "" });
       }
     }
   };
@@ -64,6 +74,14 @@ export const UserPage = () => {
             flexDirection: "column",
           }}
         >
+          <BackToPageButton
+            style={{ width: "30%", marginBottom: "1rem" }}
+            onClick={() => {
+              currentUser.isAdmin === 1
+                ? navigate("/admin/users/edit")
+                : navigate("/");
+            }}
+          />
           <Typography variant="h4" color="primary">
             Felhasználói profil
           </Typography>
@@ -85,6 +103,19 @@ export const UserPage = () => {
           </Typography>
           <CssBaseline />
           <TextField
+            value={formData?.oldPassword || ""}
+            onChange={({ target: { name, value } }) =>
+              setFormData({ ...formData, [name]: value })
+            }
+            margin="normal"
+            required
+            name="oldPassword"
+            label="Régi jelszó"
+            type="password"
+            //autoComplete="current-password"
+            //inputProps={{inputMode:'text', pattern: passwordPattern}}
+          />
+          <TextField
             value={formData?.newPassword || ""}
             onChange={({ target: { name, value } }) =>
               setFormData({ ...formData, [name]: value })
@@ -99,9 +130,10 @@ export const UserPage = () => {
           />
           <TextField
             value={formData?.newPasswordAgain || ""}
-            onChange={({ target: { name, value } }) =>
-              setFormData({ ...formData, [name]: value })
-            }
+            onChange={({ target: { name, value } }) => {
+              console.log(formData);
+              setFormData({ ...formData, [name]: value });
+            }}
             margin="normal"
             required
             name="newPasswordAgain"

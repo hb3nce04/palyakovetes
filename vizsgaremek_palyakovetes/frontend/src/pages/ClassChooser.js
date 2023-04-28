@@ -8,18 +8,35 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { createContext, useContext } from "react";
+import axios from "axios";
+import { createContext, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 import { ClassContext } from "../context/auth/ClassContext";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import AlertDialog from "../components/AlertDialog";
 
 const classId = createContext();
 
 export const ClassChooser = () => {
-  const { classData } = useContext(ClassContext);
+  const { classData, handleSet: handleClasses } = useContext(ClassContext);
   console.log(classData);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/classes/class_chooser", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        handleClasses(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <>
       <Nav />
@@ -48,8 +65,7 @@ export const ClassChooser = () => {
                         fontSize: "1.5rem",
                       }}
                       onClick={() => {
-                        //localStorage.setItem("currentclassid", el.id);
-                        //navigate("/");
+                        navigate("/addclass");
                       }}
                     >
                       + OSZTÁLY HOZZÁADÁSA
@@ -76,7 +92,9 @@ export const ClassChooser = () => {
                         {el.iskola_nev}
                       </Typography>
                     </CardContent>
-                    <CardActions>
+                    <CardActions
+                      style={{ justifyContent: "space-between", width: "100%" }}
+                    >
                       <Button
                         onClick={() => {
                           localStorage.setItem("currentclassid", el.id);
@@ -86,6 +104,68 @@ export const ClassChooser = () => {
                       >
                         Tovább
                       </Button>
+                      <AlertDialog
+                        alertButton={
+                          <Button color="error">
+                            <DeleteForeverIcon
+                              variant="contained"
+                              color="error"
+                            />
+                            {"Törlés"}
+                          </Button>
+                        }
+                        dialogTitle="Biztosan szeretné törölni ezt az osztályt?"
+                        dialogContent={
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Osztály</th>
+                                <th>Végzési év</th>
+                                <th>Iskola</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{el.osztaly_nev}</td>
+                                <td>{el.vegzesi_ev}</td>
+                                <td>{el.iskola_nev}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        }
+                        onAgreeButtonMessage={"Igen"}
+                        onDisagreeButtonColor={"primary"}
+                        onAgreeButtonColor={"error"}
+                        onDisagreeButtonMessage={"Nem"}
+                        onAgreeEvent={(e) => {
+                          e.stopPropagation();
+
+                          axios
+                            .post(
+                              "http://localhost:8080/classes/delete",
+                              { id: el.id },
+                              {
+                                withCredentials: true,
+                              }
+                            )
+                            .then(() => {
+                              axios
+                                .get(
+                                  "http://localhost:8080/classes/class_chooser",
+                                  {
+                                    withCredentials: true,
+                                  }
+                                )
+                                .then((res) => {
+                                  handleClasses(res.data);
+                                });
+                            })
+
+                            .catch((err) => {
+                              console.log(err);
+                            });
+                        }}
+                      />
                     </CardActions>
                   </Card>
                 </Grow>

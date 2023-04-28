@@ -24,7 +24,7 @@ REGEX
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const { login,currentUser } = useContext(AuthContext);
+  const { login, currentUser } = useContext(AuthContext);
 
   const handleClick = async (event) => {
     event.preventDefault();
@@ -32,13 +32,12 @@ export default function SignIn() {
       try {
         login(formData).then((e) => {
           console.log(e);
-            if(e.isAdmin === 1) {
-              navigate("/admin/users/edit");
-            } else if(e.isAdmin === 0) {
-              navigate("/classchooser");
-            }
-          })
-         
+          if (e.isAdmin === 1) {
+            navigate("/admin/users/edit");
+          } else if (e.isAdmin === 0) {
+            navigate("/classchooser");
+          }
+        });
       } catch ({ response: { data } }) {
         alert(data.message);
         setFormData({ om_azon: formData.om_azon, jelszo: "" });

@@ -16,6 +16,7 @@ import axios, { AxiosError } from "axios";
 import { useContext, useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { BackToPageButton } from "../../components/BackToPageButton";
 import Footer from "../../components/Footer";
 import Nav from "../../components/Nav";
 import PositionedSnackbar from "../../components/PositionedSnackbar";
@@ -32,12 +33,13 @@ export const AddUser = () => {
 
   const handleAddUser = () => {
     console.log(formData);
-    axios.post("http://localhost:8080/auth/register", formData, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true
-    })
+    axios
+      .post("http://localhost:8080/auth/register", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
       .then(
         (res) => {
           if (res) {
@@ -58,6 +60,12 @@ export const AddUser = () => {
     <>
       <Nav />
       <Paper elevation={2} className="wrapper">
+        <BackToPageButton
+          style={{ marginBottom: "1rem" }}
+          onClick={() => {
+            navigate("/admin/users/edit");
+          }}
+        />
         <Typography
           variant="h4"
           color="primary"
@@ -92,7 +100,8 @@ export const AddUser = () => {
               label="Jelszó"
               name="jelszo"
               autoFocus
-              inputProps={{ inputMode: "numeric", pattern: "" }}
+              type="password"
+              inputProps={{ inputMode: "", pattern: "" }}
             />
             <div>
               <Switch

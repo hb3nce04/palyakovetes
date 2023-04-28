@@ -9,7 +9,7 @@ dotenv.config();
 export const register = (req, res) => {
   const { om_azon, jelszo, admin } = req.body;
 
-  if(!om_azon || !jelszo || !admin){
+  if(!om_azon || !jelszo || !(admin === 0 || admin === 1)){
     return res.status(StatusCodes.BAD_REQUEST).send("Missing parameters");
   } else {
     db.query(

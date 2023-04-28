@@ -24,7 +24,6 @@ export default function AlertDialog(props) {
       <div onClick={handleClickOpen}>{props.alertButton}</div>
 
       <Dialog
-        disa
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -35,22 +34,25 @@ export default function AlertDialog(props) {
         {props.dialogContent}
 
         <DialogActions>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={props.onAgreeEvent}
-            autoFocus
-          >
-            {props.onAgreeButtonMessage}
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
-            onDisagreeButtonColor={props.color}
-            onClick={handleClose}
-          >
-            {props.onDisagreeButtonMessage}
-          </Button>
+          {props.disableAgreeButton ? (
+            <></>
+          ) : (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={props.onAgreeEvent}
+              autoFocus
+            >
+              {props.onAgreeButtonMessage}
+            </Button>
+          )}
+          {props.disableDisagreeButton ? (
+            <></>
+          ) : (
+            <Button color="primary" variant="contained" onClick={handleClose}>
+              {props.onDisagreeButtonMessage}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

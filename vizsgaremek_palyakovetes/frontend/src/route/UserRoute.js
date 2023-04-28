@@ -10,5 +10,6 @@ export const UserRoute = ({ user, redirectPath = "/login" }) => {
   if (user.isAdmin === 1) {
     return <GenericError message={"Ehhez az oldalhoz nincs hozzáférésed."} />;
   }
+
   return <Outlet />;
 };

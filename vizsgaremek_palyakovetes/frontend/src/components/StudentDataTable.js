@@ -36,22 +36,67 @@ export default function StudentData(props) {
     StudentRowContext
   );
   const [data, setData] = React.useState([]);
-  useEffect(() => {
-    axios
-      .post(
-        "http://localhost:8080/students/studentList",
-        { class_id },
-        {withCredentials:true},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        setData(res.data);
-        console.log(res.data);
+
+  const fetchStudents = () => {
+    return axios.post(
+      "http://localhost:8080/students/studentList",
+      { class_id },
+      { withCredentials: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  };
+  const fetchPalya = (studentOM) => {
+    return axios.post(
+      "http://localhost:8080/students/getPalya",
+      { om_azon: studentOM },
+      { withCredentials: true },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  };
+
+  const fetchPalyaWithStudents = () => {
+    const arr = [];
+    fetchStudents()
+      .then((e) => {
+        return e.data;
+      })
+      .then((students) => {
+        return students.map((item) => {
+          return fetchPalya(item.om_azon)
+            .then((e) => {
+              arr.push(e.data);
+              return [arr, students];
+            })
+            .then((e) => {
+              const mergedData = e[1].map((data) => {
+                return {
+                  ...data,
+                  ...e[0].find(
+                    (newData) => newData.diak_om_azon === data.om_azon
+                  ),
+                };
+              });
+              const omitDuplicateOmIdentifier = mergedData.map(
+                ({ diak_om_azon, ...data }) => {
+                  return data;
+                }
+              );
+              setData(omitDuplicateOmIdentifier);
+            });
+        });
       });
+  };
+
+  useEffect(() => {
+    fetchPalyaWithStudents();
   }, []);
 
   const databaseLogicConverter = (a) => (a === 1 ? "Nappali" : "Esti");
@@ -111,6 +156,24 @@ export default function StudentData(props) {
       headerClassName: "columnsData",
     },
     {
+      field: "palya",
+      headerName: "Pálya",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 140,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <MatView params={params} />
+          </div>
+        );
+      },
+    },
+    {
       field: "edit",
       headerName: "Módosítás",
       sortable: false,
@@ -154,30 +217,72 @@ export default function StudentData(props) {
     navigate("/student/update");
   };
 
+  const onButtonClickView = (e, row) => {
+    e.stopPropagation();
+    console.log(row);
+  };
 
   const onButtonClickDelete = (e, row) => {
     e.stopPropagation();
-    console.log(row.om_azon)
-    axios.post("http://localhost:8080/students/deleteStudent",
-     {
-      om_azon: row.om_azon,
-},{withCredentials:true}).then(e => {
-  axios
-  .post(
-    "http://localhost:8080/students/studentList",
-    {class_id:class_id},
-    {withCredentials:true},
-  )
-  .then((res) => {
-    setData(res.data);
-    console.log(res.data);
-  }).catch(e => console.log(e));
-}).catch(e => console.log(e.response.data));
-
-
-      
+    console.log(row.om_azon);
+    axios
+      .post(
+        "http://localhost:8080/students/deleteStudent",
+        {
+          om_azon: row.om_azon,
+        },
+        { withCredentials: true }
+      )
+      .then((e) => {
+        fetchPalyaWithStudents();
+      })
+      .catch((e) => console.log(e.response.data));
   };
- 
+
+  const MatView = ({ params }) => {
+    return (
+      <AlertDialog
+        alertButton={
+          <Button variant="contained" color="info">
+            Megtekintés
+          </Button>
+        }
+        dialogTitle={
+          <h3 style={{ margin: 0, borderBottom: "3px solid grey" }}>
+            {params.row.tanulo_nev + " " + "pályája"}
+          </h3>
+        }
+        dialogContent={
+          <div style={{ width: "75%", margin: "0 auto" }}>
+            <h2>
+              {params.row.agazat_nev
+                ? "Ágazat: " + params.row.agazat_nev
+                : "Szakma: " + params.row.szakma_nev}
+            </h2>
+            <h2>{params.row.megnevezes}</h2>
+            <p>{params.row.leiras}</p>
+          </div>
+        }
+        onDisagreeButtonMessage={"Bezárás"}
+        disableAgreeButton
+        onAgreeEvent={(e) => {
+          e.stopPropagation();
+          onButtonClickView(e, params.row);
+        }}
+      />
+      /*
+      <Button
+        onClick={(e) => {
+          onButtonClickView(e, params.row);
+        }}
+        color="warning"
+      >
+        Megtekintés
+      </Button>
+      */
+    );
+  };
+
   const MatEdit = ({ params }) => {
     return (
       <ModeEditOutlineOutlinedIcon
@@ -219,8 +324,6 @@ export default function StudentData(props) {
             </table>
           }
           onAgreeButtonMessage={"Igen"}
-          onDisagreeButtonColor={"primary"}
-          onAgreeButtonColor={"error"}
           onDisagreeButtonMessage={"Nem"}
           onAgreeEvent={(e) => {
             e.stopPropagation();
@@ -269,7 +372,10 @@ export default function StudentData(props) {
       }}
     >
       <h1>
-        {currentClassData().iskola_nev} / {currentClassData().osztaly_nev}
+        {currentClassData()
+          ? currentClassData().iskola_nev
+          : navigate("/classchooser")}{" "}
+        {currentClassData() ? currentClassData().osztaly_nev : ""}
       </h1>
 
       <DataGrid

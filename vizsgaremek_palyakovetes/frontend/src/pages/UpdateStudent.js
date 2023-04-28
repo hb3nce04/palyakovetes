@@ -20,6 +20,7 @@ import { ClassContext } from "../context/auth/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { StudentRowContext } from "../context/auth/StudentsRowContext";
 import { resolveTo } from "@remix-run/router";
+import { BackToPageButton } from "../components/BackToPageButton";
 
 export const UpdateStudent = () => {
   const { classData } = useContext(ClassContext);
@@ -103,10 +104,14 @@ export const UpdateStudent = () => {
     });
 
     axios
-      .get("http://localhost:8080/categories/getCategories",{withCredentials:true})
+      .get("http://localhost:8080/categories/getCategories", {
+        withCredentials: true,
+      })
       .then((e) => setCategories(e.data));
     axios
-      .get("http://localhost:8080/categories/getProfessions",{withCredentials:true})
+      .get("http://localhost:8080/categories/getProfessions", {
+        withCredentials: true,
+      })
       .then((e) => {
         const updatedArray = e.data.map((obj) => {
           const updatedObj = { ...obj };
@@ -125,7 +130,9 @@ export const UpdateStudent = () => {
       });
 
     axios
-      .get("http://localhost:8080/categories/getSectors",{withCredentials:true})
+      .get("http://localhost:8080/categories/getSectors", {
+        withCredentials: true,
+      })
       .then((e) => {
         const updatedArray = e.data.map((obj) => {
           const updatedObj = { ...obj };
@@ -146,6 +153,12 @@ export const UpdateStudent = () => {
     <>
       <Nav />
       <Paper elevation={2} className="wrapper">
+        <BackToPageButton
+          style={{ marginBottom: "1rem" }}
+          onClick={() => {
+            navigate("/");
+          }}
+        />
         <Typography
           variant="h4"
           color="primary"
