@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -10,20 +11,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import Autocomplete from "@mui/material/Autocomplete";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
 import PositionedSnackbar from "../components/PositionedSnackbar";
 import { ClassContext } from "../context/auth/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { StudentRowContext } from "../context/auth/StudentsRowContext";
-import { resolveTo } from "@remix-run/router";
 import { BackToPageButton } from "../components/BackToPageButton";
+import { AuthContext } from "../context/auth/AuthContext";
+const studentNameRegex = new RegExp("([A-Za-z]+(['|-|s]?[A-Za-z]+)*)+");
 
 export const UpdateStudent = () => {
   const { classData } = useContext(ClassContext);
+  const { logout } = useContext(AuthContext);
   const { studentRow, handleSet: handleStudentRow } = useContext(
     StudentRowContext
   );
@@ -41,8 +43,7 @@ export const UpdateStudent = () => {
   const [categories, setCategories] = useState([]);
   const [professions, setProfessions] = useState([]);
   const [sectors, setSectors] = useState([]);
-
-  const [severity, setSeverity] = useState("");
+  const [valid, setValid] = useState(true);
 
   const handleUpdateStudent = () => {
     console.log(formData);
@@ -50,19 +51,13 @@ export const UpdateStudent = () => {
       .post("http://localhost:8080/students/editStudent", formData, {
         withCredentials: true,
       })
-      .then(
-        (res) => {
-          if (res) {
-            setSeverity("success");
-            setTimeout(() => {
-              navigate("/");
-            }, 250);
-          }
-        },
-        (error) => {
-          setSeverity("error");
-        }
-      );
+      .then((res) => {
+        navigate("/");
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
   };
 
   const currentClassData = () => {
@@ -100,6 +95,10 @@ export const UpdateStudent = () => {
             leiras: e.data.leiras || "",
             kategoriaid: e.data.kategoriaid || null,
           });
+        })
+        .catch((err) => {
+          if (err.code === "ERR_NETWORK") navigate("/login");
+          if (err.response.status === 401) logout();
         });
     });
 
@@ -127,6 +126,10 @@ export const UpdateStudent = () => {
       })
       .then((e) => {
         setProfessions(e);
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
 
     axios
@@ -146,6 +149,10 @@ export const UpdateStudent = () => {
       })
       .then((e) => {
         setSectors(e);
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
   }, []);
 
@@ -185,9 +192,18 @@ export const UpdateStudent = () => {
               inputProps={{ inputMode: "", pattern: "" }}
             />
             <TextField
+              helperText={
+                formData.tanuloNev.trim() === ""
+                  ? "Kérjük, írja be egy tanuló nevét!"
+                  : " " && studentNameRegex.test(formData.tanuloNev) === false
+                  ? "A megadott név nem felel meg a formátumnak."
+                  : " " || setValid(true)
+              }
+              error={!valid}
               value={formData?.tanuloNev || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
+                setValid(studentNameRegex.test(value));
               }}
               required
               fullWidth
@@ -263,15 +279,19 @@ export const UpdateStudent = () => {
               }
               label="Nappali munkarend"
             />
-            <PositionedSnackbar
-              className="add-new-student-button"
-              onClick={(event) => {
-                handleUpdateStudent();
+            <Button
+              style={{
+                width: "50%",
+                margin: "0 auto",
+                height: "80%",
               }}
-              severity={severity}
+              onClick={(event) => {
+                if (valid) handleUpdateStudent();
+              }}
               variant="contained"
-              buttonMessage="TANULÓ MÓDOSÍTÁSA"
-            />
+            >
+              TANULÓ MÓDOSÍTÁSA
+            </Button>
           </div>
           <div className="form2">
             <FormControl required>
@@ -299,6 +319,9 @@ export const UpdateStudent = () => {
               <TextField
                 id="outlined-multiline-static"
                 label="Pálya leírása"
+                helperText={
+                  "A pálya leírása maximum 255 karakter hosszú lehet."
+                }
                 multiline
                 rows={10}
                 defaultValue=""

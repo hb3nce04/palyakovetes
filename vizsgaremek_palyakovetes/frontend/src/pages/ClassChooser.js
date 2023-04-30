@@ -16,12 +16,14 @@ import Nav from "../components/Nav";
 import { ClassContext } from "../context/auth/ClassContext";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import AlertDialog from "../components/AlertDialog";
+import { AuthContext } from "../context/auth/AuthContext";
 
 const classId = createContext();
 
 export const ClassChooser = () => {
   const { classData, handleSet: handleClasses } = useContext(ClassContext);
   console.log(classData);
+  const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +35,8 @@ export const ClassChooser = () => {
         handleClasses(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
   }, []);
 
@@ -162,7 +165,9 @@ export const ClassChooser = () => {
                             })
 
                             .catch((err) => {
-                              console.log(err);
+                              if (err.code === "ERR_NETWORK")
+                                navigate("/login");
+                              if (err.response.status === 401) logout();
                             });
                         }}
                       />

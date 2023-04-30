@@ -19,17 +19,26 @@ import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../../components/BackToPageButton";
 import Footer from "../../components/Footer";
 import Nav from "../../components/Nav";
-import PositionedSnackbar from "../../components/PositionedSnackbar";
+import { AuthContext } from "../../context/auth/AuthContext";
+
+const omIdentifierPattern = new RegExp("^[0-9]{11}$");
+const passwordPattern = new RegExp(
+  "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,24}$"
+);
 
 export const AddUser = () => {
+  const { logout } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     om_azon: "",
     jelszo: "",
     admin: 0,
   });
+
   const navigate = useNavigate();
 
-  const [severity, setSeverity] = useState("");
+  const [validOM, setValidOM] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
 
   const handleAddUser = () => {
     console.log(formData);
@@ -40,20 +49,12 @@ export const AddUser = () => {
         },
         withCredentials: true,
       })
-      .then(
-        (res) => {
-          if (res) {
-            setSeverity("success");
-            setTimeout(() => {
-              navigate("/admin/users/edit");
-            }, 250);
-          }
-        },
-        (error) => {
-          console.log(error);
-          setSeverity("error");
-        }
-      );
+      .then((res) => {
+        navigate("/admin/users/edit");
+      })
+      .catch((err) => {
+        if (err.response.status === 401) logout();
+      });
   };
 
   return (
@@ -78,9 +79,19 @@ export const AddUser = () => {
         <div className="add-user-form">
           <div className="form1">
             <TextField
+              error={!validOM}
+              helperText={
+                formData.om_azon === ""
+                  ? "Kérjük, írja be felvenni kívánt felhasználó OM azonosítóját!"
+                  : " " && omIdentifierPattern.test(formData.om_azon) === false
+                  ? "A megadott OM azonosító nem felel meg a formátumnak. [11 hosszú, csak számok]"
+                  : " "
+              }
               value={formData?.om_azon || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
+                console.log(formData);
+                setValidOM(omIdentifierPattern.test(value));
               }}
               required
               fullWidth
@@ -88,12 +99,21 @@ export const AddUser = () => {
               name="om_azon"
               autoComplete="om_azon"
               autoFocus
-              inputProps={{ inputMode: "", pattern: "0-9" }}
+              inputProps={{ pattern: omIdentifierPattern }}
             />
             <TextField
+              error={!validPassword}
+              helperText={
+                formData.jelszo === ""
+                  ? "Kérjük, írja be felvenni kívánt felhasználó jelszavát!"
+                  : " " && passwordPattern.test(formData.jelszo) === false
+                  ? "A megadott jelszó nem felel meg a formátumnak. [(8-24 hosszú), 1 nagy betű, 1 kis betű, 1 szám, 1 speciális karakter(#?!@$%^&*-)]"
+                  : " "
+              }
               value={formData?.jelszo || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
+                setValidPassword(passwordPattern.test(value));
               }}
               required
               fullWidth
@@ -101,7 +121,7 @@ export const AddUser = () => {
               name="jelszo"
               autoFocus
               type="password"
-              inputProps={{ inputMode: "", pattern: "" }}
+              inputProps={{ pattern: passwordPattern }}
             />
             <div>
               <Switch
@@ -120,12 +140,14 @@ export const AddUser = () => {
             </div>
           </div>
         </div>
-        <PositionedSnackbar
-          buttonMessage={"FELHASZNÁLÓ FELVÉTELE"}
-          severity={severity}
-          onClick={handleAddUser}
+        <Button
+          onClick={() => {
+            if (validOM || validPassword) handleAddUser();
+          }}
           variant="contained"
-        />
+        >
+          FELHASZNÁLÓ FELVÉTELE
+        </Button>
       </Paper>
       <Footer trademark versionNumber />
     </>

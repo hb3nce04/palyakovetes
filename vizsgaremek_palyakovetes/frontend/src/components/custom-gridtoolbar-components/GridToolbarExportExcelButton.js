@@ -7,6 +7,12 @@ export default function GridToolbarExportExcelButton({ excelData, fileName }) {
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset-UTF-8";
   const fileExtension = ".xlsx";
   const exportToExcel = async () => {
+    if (excelData.length === 0) {
+      console.log(excelData);
+      alert("Nincs kiválasztva sor...");
+      return;
+    }
+
     const ws = XLSX.utils.json_to_sheet(excelData);
     // excel oszlopszélesség
     var wscols = [
@@ -25,8 +31,8 @@ export default function GridToolbarExportExcelButton({ excelData, fileName }) {
     wb.Sheets.data.C1.v = "Munkarend";
     wb.Sheets.data.D1.v = "Szakma neve";
     wb.Sheets.data.E1.v = "Ágazat neve";
-    wb.Sheets.data.F1.v = "Pálya megnevezése";
-    wb.Sheets.data.G1.v = "Pálya leírása";
+    wb.Sheets.data.F1.v = "Pálya leírása";
+    wb.Sheets.data.G1.v = "Pálya megnevezése";
 
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });

@@ -32,7 +32,7 @@ function App() {
   const { logout } = useContext(AuthContext);
   const { currentUser } = useContext(AuthContext);
   const { classData, handleSet: handleClasses } = useContext(ClassContext);
-  console.log(currentUser);
+
   useEffect(() => {
     axios
       .get("http://localhost:8080/classes/class_chooser", {
@@ -43,6 +43,14 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        if (
+          err.code === "ERR_NETWORK" &&
+          window.location.href.split("/")[
+            window.location.href.split("/").length - 1
+          ] !== "login"
+        ) {
+          window.location.href = "/login";
+        }
       });
   }, [currentUser]);
 
@@ -53,7 +61,7 @@ function App() {
           <Routes>
             <Route
               path="*"
-              element={<GenericError message="Valami hiba történt :(" />}
+              element={<GenericError message="Valami hiba történt..." />}
             />
             <Route path="/login" index element={<Login />} />
             <Route path="/" element={<UserRoute user={currentUser} />}>

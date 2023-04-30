@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -19,7 +20,13 @@ import Nav from "../components/Nav";
 import PositionedSnackbar from "../components/PositionedSnackbar";
 import { AuthContext } from "../context/auth/AuthContext";
 
+const classNameRegex = new RegExp(
+  /^[\w!@#$%^&*()\-+=[\]{};':"\\|,.<>/?]{1,15}$/i
+);
+
 export const AddClass = () => {
+  const { logout } = useContext(AuthContext);
+
   useEffect(() => {
     axios
       .get("http://localhost:8080/schools/getSchools", {
@@ -29,8 +36,9 @@ export const AddClass = () => {
         setSchoolsData(e.data);
         console.log(e);
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
   }, []);
 
@@ -38,6 +46,7 @@ export const AddClass = () => {
   const [schoolsData, setSchoolsData] = useState([]);
   const year = new Date().getFullYear();
   const years = Array.from(new Array(50), (val, index) => String(year - index));
+  const [valid, setValid] = useState(false);
 
   const [formData, setFormData] = useState({
     om_azon: currentUser.om_azon,
@@ -47,31 +56,22 @@ export const AddClass = () => {
   });
   const navigate = useNavigate();
 
-  const [severity, setSeverity] = useState("");
-
   const handleAddClass = () => {
-    console.log(formData);
-    axios
-      .post("http://localhost:8080/classes/create", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-      .then(
-        (res) => {
-          if (res) {
-            setSeverity("success");
-            setTimeout(() => {
-              navigate("/classchooser");
-            }, 250);
-          }
-        },
-        (error) => {
-          console.log(error);
-          setSeverity("error");
-        }
-      );
+    if (valid)
+      axios
+        .post("http://localhost:8080/classes/create", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        })
+        .then((res) => {
+          navigate("/classchooser");
+        })
+        .catch((err) => {
+          if (err.code === "ERR_NETWORK") navigate("/login");
+          if (err.response.status === 401) logout();
+        });
   };
 
   return (
@@ -96,11 +96,21 @@ export const AddClass = () => {
         <div className="add-user-form">
           <div className="form1">
             <TextField
+              error={!valid}
+              helperText={
+                formData.nev === ""
+                  ? "Kérjük, írjon be egy osztály nevet!"
+                  : " " && classNameRegex.test(formData.nev) === false
+                  ? "A megadott osztály nem felel meg a formátumnak. [1-15 karakter]"
+                  : " "
+              }
               value={formData?.nev}
               onChange={({ target: { name, value } }) => {
                 console.log(formData);
                 setFormData({ ...formData, [name]: value });
+                setValid(classNameRegex.test(value));
               }}
+              inputProps={{ pattern: classNameRegex }}
               required
               fullWidth
               label="Osztály neve"
@@ -143,12 +153,16 @@ export const AddClass = () => {
             </FormControl>
           </div>
         </div>
-        <PositionedSnackbar
-          buttonMessage={"OSZTÁLY FELVÉTELE"}
-          severity={severity}
-          onClick={handleAddClass}
+        <Button
+          onClick={() => {
+            if (valid) {
+              handleAddClass();
+            }
+          }}
           variant="contained"
-        />
+        >
+          OSZTÁLY FELVÉTELE
+        </Button>
       </Paper>
       <Footer trademark versionNumber />
     </>

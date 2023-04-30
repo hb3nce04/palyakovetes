@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -19,10 +20,17 @@ import PositionedSnackbar from "../components/PositionedSnackbar";
 import { ClassContext } from "../context/auth/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
+import { AuthContext } from "../context/auth/AuthContext";
+const studentNameRegex = new RegExp("([A-Za-z]+(['|-|s]?[A-Za-z]+)*)+");
+const omIdentifierPattern = new RegExp("^[0-9]{11}$");
 
 export const AddNewStudent = () => {
+  const { logout } = useContext(AuthContext);
   const { classData } = useContext(ClassContext);
   const [formData, setFormData] = useState({
+    leiras: " ",
+    om_azon: "",
+    tanuloNev: "",
     nappali_munkarend: 1,
     osztalyid: Number(localStorage.getItem("currentclassid")),
     szakid: null,
@@ -32,27 +40,21 @@ export const AddNewStudent = () => {
   const [categories, setCategories] = useState([]);
   const [professions, setProfessions] = useState([]);
   const [sectors, setSectors] = useState([]);
-
-  const [severity, setSeverity] = useState("");
+  const [valid, setValid] = useState(false);
+  const [validOM, setValidOM] = useState(false);
 
   const handleAddStudent = (formData) => {
     axios
       .post("http://localhost:8080/students/addStudent", formData, {
         withCredentials: true,
       })
-      .then(
-        (res) => {
-          if (res) {
-            setSeverity("success");
-            setTimeout(() => {
-              navigate("/");
-            }, 250);
-          }
-        },
-        (error) => {
-          setSeverity("error");
-        }
-      );
+      .then((res) => {
+        navigate("/");
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
   };
 
   const currentClassData = () => {
@@ -72,7 +74,11 @@ export const AddNewStudent = () => {
       .get("http://localhost:8080/categories/getCategories", {
         withCredentials: true,
       })
-      .then((e) => setCategories(e.data));
+      .then((e) => setCategories(e.data))
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
     axios
       .get("http://localhost:8080/categories/getProfessions", {
         withCredentials: true,
@@ -92,6 +98,10 @@ export const AddNewStudent = () => {
       })
       .then((e) => {
         setProfessions(e);
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
 
     axios
@@ -111,6 +121,10 @@ export const AddNewStudent = () => {
       })
       .then((e) => {
         setSectors(e);
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
       });
   }, []);
 
@@ -139,10 +153,19 @@ export const AddNewStudent = () => {
         <div className="formMain">
           <div className="form1">
             <TextField
+              error={!validOM}
+              helperText={
+                formData.om_azon === ""
+                  ? "Kérjük, írjon be egy létező OM azonosítót!"
+                  : " " && omIdentifierPattern.test(formData.om_azon) === false
+                  ? "A megadott OM azonosító nem felel meg a formátumnak. [11 hosszú, csak számok]"
+                  : " "
+              }
               value={formData?.om_azon || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
                 console.log(formData);
+                setValidOM(omIdentifierPattern.test(value));
               }}
               required
               fullWidth
@@ -150,12 +173,21 @@ export const AddNewStudent = () => {
               name="om_azon"
               autoComplete="om_azon"
               autoFocus
-              inputProps={{ inputMode: "", pattern: "" }}
+              inputProps={{ pattern: omIdentifierPattern }}
             />
             <TextField
+              helperText={
+                formData.tanuloNev.trim() === ""
+                  ? "Kérjük, írja be egy tanuló nevét!"
+                  : " " && studentNameRegex.test(formData.tanuloNev) === false
+                  ? "A megadott név nem felel meg a formátumnak."
+                  : " "
+              }
+              error={!valid}
               value={formData?.tanuloNev || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
+                setValid(studentNameRegex.test(value));
               }}
               required
               fullWidth
@@ -163,7 +195,9 @@ export const AddNewStudent = () => {
               name="tanuloNev"
               autoComplete="tanuloNev"
               autoFocus
-              inputProps={{ inputMode: "", pattern: "" }}
+              inputProps={{
+                pattern: studentNameRegex,
+              }}
             />
 
             <FormControl required>
@@ -234,15 +268,19 @@ export const AddNewStudent = () => {
               }
               label="Nappali munkarend"
             />
-            <PositionedSnackbar
-              className="add-new-student-button"
-              onClick={(event) => {
-                handleAddStudent(formData);
+            <Button
+              style={{
+                width: "50%",
+                margin: "0 auto",
+                height: "80%",
               }}
-              severity={severity}
+              onClick={(event) => {
+                if (valid || validOM) handleAddStudent(formData);
+              }}
               variant="contained"
-              buttonMessage="TANULÓ HOZZÁADÁSA"
-            />
+            >
+              TANULÓ HOZZÁADÁSA
+            </Button>
           </div>
           <div className="form2">
             <FormControl required>
@@ -270,15 +308,17 @@ export const AddNewStudent = () => {
               <TextField
                 id="outlined-multiline-static"
                 label="Pálya leírása"
+                helperText={
+                  "A pálya leírása maximum 255 karakter hosszú lehet."
+                }
                 multiline
                 rows={10}
-                defaultValue=""
+                defaultValue=" "
                 value={formData?.leiras || ""}
                 onChange={({ target: { name, value } }) => {
                   setFormData({ ...formData, [name]: value });
                 }}
                 margin="normal"
-                required
                 fullWidth
                 name="leiras"
                 autoFocus

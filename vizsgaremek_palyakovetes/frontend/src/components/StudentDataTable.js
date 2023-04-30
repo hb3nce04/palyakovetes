@@ -28,6 +28,8 @@ import axios from "axios";
 import { StudentRowContext } from "../context/auth/StudentsRowContext";
 import AlertDialog from "./AlertDialog";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { AuthContext } from "../context/auth/AuthContext";
 
 export default function StudentData(props) {
   const { classData } = React.useContext(ClassContext);
@@ -35,31 +37,41 @@ export default function StudentData(props) {
   const { studentRow, handleSet: handleStudentRow } = React.useContext(
     StudentRowContext
   );
+  const { currentUser, logout } = React.useContext(AuthContext);
   const [data, setData] = React.useState([]);
-
   const fetchStudents = () => {
-    return axios.post(
-      "http://localhost:8080/students/studentList",
-      { class_id },
-      { withCredentials: true },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return axios
+      .post(
+        "http://localhost:8080/students/studentList",
+        { class_id },
+        { withCredentials: true },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
   };
   const fetchPalya = (studentOM) => {
-    return axios.post(
-      "http://localhost:8080/students/getPalya",
-      { om_azon: studentOM },
-      { withCredentials: true },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return axios
+      .post(
+        "http://localhost:8080/students/getPalya",
+        { om_azon: studentOM },
+        { withCredentials: true },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
   };
 
   const fetchPalyaWithStudents = () => {
@@ -89,6 +101,8 @@ export default function StudentData(props) {
                   return data;
                 }
               );
+              //console.log(omitDuplicateOmIdentifier);
+
               setData(omitDuplicateOmIdentifier);
             });
         });
@@ -156,8 +170,8 @@ export default function StudentData(props) {
       headerClassName: "columnsData",
     },
     {
-      field: "palya",
-      headerName: "Pálya",
+      field: "leiras",
+      headerName: "Pálya leírása",
       sortable: false,
       disableColumnMenu: true,
       width: 140,
@@ -174,11 +188,19 @@ export default function StudentData(props) {
       },
     },
     {
+      field: "megnevezes",
+      headerName: "Pálya megnevezése",
+      disableColumnMenu: true,
+      width: 140,
+      disableClickEventBubbling: true,
+    },
+    {
       field: "edit",
       headerName: "Módosítás",
       sortable: false,
       disableColumnMenu: true,
       width: 140,
+      disableExport: true,
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
@@ -198,6 +220,7 @@ export default function StudentData(props) {
       disableColumnMenu: true,
       width: 140,
       disableClickEventBubbling: true,
+      disableExport: true,
       renderCell: (params) => {
         return (
           <div
@@ -224,7 +247,6 @@ export default function StudentData(props) {
 
   const onButtonClickDelete = (e, row) => {
     e.stopPropagation();
-    console.log(row.om_azon);
     axios
       .post(
         "http://localhost:8080/students/deleteStudent",
@@ -234,17 +256,26 @@ export default function StudentData(props) {
         { withCredentials: true }
       )
       .then((e) => {
+        console.log(data);
+
         fetchPalyaWithStudents();
       })
-      .catch((e) => console.log(e.response.data));
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
+        if (err.response.status === 401) logout();
+      });
   };
 
   const MatView = ({ params }) => {
     return (
       <AlertDialog
         alertButton={
-          <Button variant="contained" color="info">
-            Megtekintés
+          <Button
+            style={{ leftMargin: 0, border: 0 }}
+            variant="outlined"
+            color="primary"
+          >
+            <ZoomInIcon></ZoomInIcon> Megtekint
           </Button>
         }
         dialogTitle={
