@@ -8,15 +8,19 @@ export const getUsers = (req, res) => {
   if (token.isAdmin === 0) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized access");
   } else {
-    db.query("SELECT * FROM felhasznalo WHERE om_azon <> ?;", [token.om_azon], (err, data) => {
-      if (!err) {
-        return res.status(StatusCodes.OK).json(data);
-      } else {
-        return res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .send("error : " + err);
+    db.query(
+      "SELECT * FROM felhasznalo WHERE om_azon <> ?;",
+      [token.om_azon],
+      (err, data) => {
+        if (!err) {
+          return res.status(StatusCodes.OK).json(data);
+        } else {
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .send("error : " + err);
+        }
       }
-    });
+    );
   }
 };
 
@@ -50,7 +54,9 @@ export const deleteUser = (req, res) => {
                     .status(StatusCodes.INTERNAL_SERVER_ERROR)
                     .send("error : " + err);
                 }
-                return res.status(StatusCodes.OK).send("User has been deleted...");
+                return res
+                  .status(StatusCodes.OK)
+                  .send("User has been deleted...");
               }
             );
           }
@@ -78,21 +84,28 @@ export const updatePassword = (req, res) => {
         if (err) {
           return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
         } else {
-          const isCorrectPassword = bcrypt.compareSync(regiJelszo, data[0].jelszo);
-          if (isCorrectPassword) {           
+          const isCorrectPassword = bcrypt.compareSync(
+            regiJelszo,
+            data[0].jelszo
+          );
+          if (isCorrectPassword) {
             const hash = bcrypt.hashSync(ujJelszo, salt);
             db.query(
               "UPDATE felhasznalo SET jelszo = ? WHERE om_azon = ?;",
               [hash, token.om_azon],
               (err) => {
                 if (err) {
-                  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+                  return res
+                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                    .json(err);
                 } else {
-                  return res.status(StatusCodes.OK).send("Password has been modified");
+                  return res
+                    .status(StatusCodes.OK)
+                    .send("Password has been modified");
                 }
               }
             );
-          }else{
+          } else {
             return res.status(StatusCodes.UNAUTHORIZED).send("Wrong password");
           }
         }
@@ -100,4 +113,3 @@ export const updatePassword = (req, res) => {
     );
   }
 };
-

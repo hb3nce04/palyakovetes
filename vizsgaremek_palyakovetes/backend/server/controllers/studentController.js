@@ -4,10 +4,13 @@ import { StatusCodes } from "http-status-codes";
 export const getStudentByOm = (req, res) => {
   console.log(req.body);
   const { om_azon } = req.body;
+  const token = req.user;
 
-  if (!om_azon) {
+  if (token.isAdmin === 1) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+  } else if(!om_azon ){
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
-  } else {
+  }else{
     db.query(
       "SELECT * FROM tanulo WHERE om_azon = ?",
       [om_azon],
@@ -40,9 +43,11 @@ export const getStudentByOm = (req, res) => {
 
 export const getStudentListByClass = (req, res) => {
   console.log(req.body);
+  const token = req.user;
   const { class_id } = req.body;
-
-  if (!class_id) {
+  if (token.isAdmin === 1) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+  } else if (!class_id) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing class ID");
   } else {
     db.query("SELECT * FROM osztaly WHERE id = ?", [class_id], (err, data) => {
@@ -73,7 +78,10 @@ export const getStudentListByClass = (req, res) => {
 
 export const getPalyaByStudent = (req, res) => {
   const { om_azon } = req.body;
-  if (!om_azon) {
+  const token = req.user;
+  if (token.isAdmin === 1) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+  } else if (!om_azon) {
     return res.status(StatusCodes.BAD_REQUEST).send("Missing OM ID");
   } else {
     db.query(
@@ -175,7 +183,10 @@ export const addStudent = async (req, res) => {
 
 export const deleteStudent = (req, res) => {
   const { om_azon } = req.body;
-  if (!om_azon) {
+  const token = req.user;
+  if (token.isAdmin === 1) {
+    return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+  } else if (!om_azon) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Missing OM ID");
   } else {
     db.query(

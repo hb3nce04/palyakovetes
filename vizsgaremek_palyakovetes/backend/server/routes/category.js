@@ -1,5 +1,9 @@
 import express from "express";
-import{ getCategories, getProfessions, getSectors} from "../controllers/categoryController.js";
+import {
+  getCategories,
+  getProfessions,
+  getSectors,
+} from "../controllers/categoryController.js";
 
 const router = express.Router();
 
