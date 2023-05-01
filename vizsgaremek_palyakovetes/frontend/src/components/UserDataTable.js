@@ -1,31 +1,22 @@
-import {
-  DataGrid,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  huHU,
-} from "@mui/x-data-grid";
+import { DataGrid, huHU } from "@mui/x-data-grid";
 import React, { useContext, useEffect, useState } from "react";
-import AlertDialog from "./AlertDialog";
-import { GridToolbarAddNewUserButton } from "./custom-gridtoolbar-components/GridToolBarAddNewUserButton";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import axios from "axios";
 import { AuthContext } from "../context/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { UserToolBar } from "./custom-gridtoolbars/UserToolBar";
+import { isAdminFromDatabaseLogicConverter } from "../utils/utils";
+import { UserRowDeleteAction } from "./user-row-actions/UserRowDeleteAction";
 
 export const UserDataTable = () => {
   const [userData, setUserData] = useState([]);
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const databaseLogicConverter = (a) => (a === 1 ? "Admin" : "Felhasználó");
 
   const currentUserData = () => {
     let boolConvertedClassData = userData.map((o) => ({
       ...o,
-      admin: databaseLogicConverter(o.admin),
+      admin: isAdminFromDatabaseLogicConverter(o.admin),
     }));
-    console.log(boolConvertedClassData);
     return boolConvertedClassData;
   };
 
@@ -55,7 +46,10 @@ export const UserDataTable = () => {
             className="d-flex justify-content-between align-items-center"
             style={{ cursor: "pointer" }}
           >
-            <MatDelete params={params} />
+            <UserRowDeleteAction
+              params={params}
+              clickEvent={onButtonClickDelete}
+            />
           </div>
         );
       },
@@ -80,52 +74,10 @@ export const UserDataTable = () => {
           .then((e) => setUserData(e.data));
       })
       .catch((err) => {
+        if (err.code === "ERR_NETWORK") navigate("/login");
         if (err.response.status === 401) logout();
       });
   };
-
-  const MatDelete = ({ params }) => {
-    return (
-      <div color="error">
-        <AlertDialog
-          alertButton={<DeleteForeverIcon variant="contained" color="error" />}
-          dialogTitle="Biztosan szeretné törölni ezt a felhasználót?"
-          dialogContent={
-            <table>
-              <thead>
-                <tr>
-                  <th>{columns[0].headerName}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{params.row.om_azon}</td>
-                </tr>
-              </tbody>
-            </table>
-          }
-          onAgreeButtonMessage={"Igen"}
-          onDisagreeButtonColor={"primary"}
-          onAgreeButtonColor={"error"}
-          onDisagreeButtonMessage={"Nem"}
-          onAgreeEvent={(e) => {
-            e.stopPropagation();
-            onButtonClickDelete(e, params.row);
-          }}
-        />
-      </div>
-    );
-  };
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarAddNewUserButton />
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-      </GridToolbarContainer>
-    );
-  }
 
   return (
     <div
@@ -141,35 +93,16 @@ export const UserDataTable = () => {
         localeText={huHU.components.MuiDataGrid.defaultProps.localeText}
         rows={currentUserData()}
         columns={columns}
-        checkboxSelection
         disableRowSelectionOnClick={true}
-        //pageSize={pageSize}
-        //onPageSizeChange={(newPage) => setPageSize(newPage)}
         pagination
         getRowId={(row) => row.om_azon}
-        //getRowId={(row) => row.om_azon}
         rowHeight={35}
         sx={{
           border: 2,
           borderColor: "#E0E0E0",
-          /*
-          '& .MuiDataGrid-cell:hover': {
-            borderColor: 'primary.main',
-          },
-          */
         }}
-        /*onSelectionModelChange={(ids) => {
-          const selectedIDs = new Set(ids);
-          const selectedRowData = currentStudentData().filter((row) => {
-            return selectedIDs.has(row.om_azon);
-          });
-      
-
-          setSelectedRows(selectedRowData);
-          
-        }}*/
         components={{
-          Toolbar: CustomToolbar,
+          Toolbar: UserToolBar,
         }}
       />
     </div>

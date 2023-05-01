@@ -7,10 +7,9 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import fingerprint from "../images/fingerprint.svg";
+import lightfingerprint from "../images/lightfingerprint.png";
 import { ColorModeContext } from "./DarkMode";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -31,7 +30,7 @@ const adminPages = ["Főoldal", "Profil", contact];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
 
 function Nav() {
-  const { mode, toggleColorMode } = useContext(ColorModeContext);
+  const { toggleColorMode } = useContext(ColorModeContext);
   const { logout, currentUser } = useContext(AuthContext);
   const [darkModeIcon, setDarkModeIcon] = useState(
     localStorage.getItem("mode") === "dark" ? (
@@ -79,7 +78,7 @@ function Nav() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Avatar src={fingerprint} sx={{ bgcolor: "white", mr: 2 }}></Avatar>
+          <Avatar src={lightfingerprint} sx={{ mr: 2 }} />
           <Typography
             variant="h6"
             noWrap

@@ -11,14 +11,12 @@ import {
   Typography,
 } from "@mui/material";
 import lightprofile from "../images/lightprofile.png";
+import darkprofile from "../images/darkprofile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/auth/AuthContext";
 import { BackToPageButton } from "../components/BackToPageButton";
-
-const passwordPattern = new RegExp(
-  "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,24}$"
-);
+import { passwordPattern } from "../utils/utils";
 
 export const UserPage = () => {
   const [formData, setFormData] = useState({});
@@ -46,7 +44,6 @@ export const UserPage = () => {
           { withCredentials: true }
         )
         .then((e) => {
-          console.log(e);
           navigate("/login");
         })
         .catch((err) => {
@@ -60,17 +57,7 @@ export const UserPage = () => {
     <>
       <Nav />
       <Paper elevation={2}>
-        <Box
-          component="form"
-          onSubmit={handleClick}
-          sx={{
-            marginLeft: "4rem",
-            padding: "3rem",
-            width: "30rem",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div className="user-form" onSubmit={handleClick}>
           <BackToPageButton
             style={{ width: "30%", marginBottom: "1rem" }}
             onClick={() => {
@@ -100,6 +87,7 @@ export const UserPage = () => {
           </Typography>
           <CssBaseline />
           <TextField
+            style={{ width: "100%" }}
             value={formData?.oldPassword || ""}
             onChange={({ target: { name, value } }) =>
               setFormData({ ...formData, [name]: value })
@@ -109,16 +97,15 @@ export const UserPage = () => {
             label="Régi jelszó"
             type="password"
             name="oldPassword"
-            //autoComplete="current-password"
-            //inputProps={{inputMode:'text', pattern: passwordPattern}}
           />
           <TextField
+            style={{ width: "100%" }}
             error={!newValidPassword}
             helperText={
               formData.newPassword === ""
                 ? "Kérjük, írja be felvenni kívánt felhasználó jelszavát!"
                 : " " && passwordPattern.test(formData.newPassword) === false
-                ? "Az új jelszó nem felel meg a formátumnak. [(8-24 hosszú), 1 nagy betű, 1 kis betű, 1 szám, 1 speciális karakter(#?!@$%^&*-)]"
+                ? "Az új jelszó nem felel meg a formátumnak. [(8-24 hosszú), 1 nagy betű, 1 kis betű, 1 szám, 1 speciális karakter(#?!@$%^&*-_)]"
                 : " "
             }
             value={formData?.newPassword || ""}
@@ -133,12 +120,13 @@ export const UserPage = () => {
             type="password"
           />
           <TextField
+            style={{ width: "100%" }}
             error={formData.newPassword !== formData.newPasswordAgain}
             helperText={
               formData.newPasswordAgain === ""
                 ? "Kérjük, írja be felvenni kívánt felhasználó jelszavát mégegyszer!"
                 : " " && formData.newPassword === formData.newPasswordAgain
-                ? " "
+                ? ""
                 : "A két jelszó nem egyezik."
             }
             value={formData?.newPasswordAgain || ""}
@@ -152,18 +140,17 @@ export const UserPage = () => {
             label="Új jelszó mégegyszer"
             type="password"
           />
-          {/*
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Emlékezzen rám"
-            />
-            */}
-          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <Button
+            onClick={handleClick}
+            type="submit"
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
             Jelszó módosítása
           </Button>
-        </Box>
+        </div>
       </Paper>
-      <Footer />
+      <Footer trademark versionNumber />
     </>
   );
 };

@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { createContext, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
@@ -18,11 +18,8 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import AlertDialog from "../components/AlertDialog";
 import { AuthContext } from "../context/auth/AuthContext";
 
-const classId = createContext();
-
 export const ClassChooser = () => {
   const { classData, handleSet: handleClasses } = useContext(ClassContext);
-  console.log(classData);
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -38,7 +35,7 @@ export const ClassChooser = () => {
         if (err.code === "ERR_NETWORK") navigate("/login");
         if (err.response.status === 401) logout();
       });
-  }, []);
+  }, [currentUser]);
 
   return (
     <>
@@ -54,7 +51,6 @@ export const ClassChooser = () => {
 
         <Grid container spacing={2}>
           {[0, ...classData].map((el, i) => {
-            console.log(i);
             return el === 0 ? (
               <Grid item xs={12} sm={6} md={3} key={el.id}>
                 <Card sx={{ minWidth: 150, height: "100%" }}>

@@ -21,8 +21,7 @@ import { ClassContext } from "../context/auth/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
 import { AuthContext } from "../context/auth/AuthContext";
-const studentNameRegex = new RegExp("([A-Za-z]+(['|-|s]?[A-Za-z]+)*)+");
-const omIdentifierPattern = new RegExp("^[0-9]{11}$");
+import { omIdentifierPattern, studentNameRegexPattern } from "../utils/utils";
 
 export const AddNewStudent = () => {
   const { logout } = useContext(AuthContext);
@@ -49,7 +48,7 @@ export const AddNewStudent = () => {
         withCredentials: true,
       })
       .then((res) => {
-        navigate("/");
+        if (valid && validOM) navigate("/");
       })
       .catch((err) => {
         if (err.code === "ERR_NETWORK") navigate("/login");
@@ -58,7 +57,6 @@ export const AddNewStudent = () => {
   };
 
   const currentClassData = () => {
-    console.log(classData);
     if (!classData) {
       return [];
     }
@@ -88,12 +86,10 @@ export const AddNewStudent = () => {
           const updatedObj = { ...obj };
 
           if (typeof obj.szakmaid === "number") {
-            console.log(updatedObj);
             updatedObj.szakmaid = obj.szakmaid + "p";
           }
           return updatedObj;
         });
-        console.log(updatedArray);
         return updatedArray;
       })
       .then((e) => {
@@ -116,7 +112,6 @@ export const AddNewStudent = () => {
           }
           return updatedObj;
         });
-        console.log(updatedArray);
         return updatedArray;
       })
       .then((e) => {
@@ -164,7 +159,6 @@ export const AddNewStudent = () => {
               value={formData?.om_azon || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
-                console.log(formData);
                 setValidOM(omIdentifierPattern.test(value));
               }}
               required
@@ -179,7 +173,8 @@ export const AddNewStudent = () => {
               helperText={
                 formData.tanuloNev.trim() === ""
                   ? "Kérjük, írja be egy tanuló nevét!"
-                  : " " && studentNameRegex.test(formData.tanuloNev) === false
+                  : " " &&
+                    studentNameRegexPattern.test(formData.tanuloNev) === false
                   ? "A megadott név nem felel meg a formátumnak."
                   : " "
               }
@@ -187,7 +182,7 @@ export const AddNewStudent = () => {
               value={formData?.tanuloNev || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
-                setValid(studentNameRegex.test(value));
+                setValid(studentNameRegexPattern.test(value));
               }}
               required
               fullWidth
@@ -196,7 +191,7 @@ export const AddNewStudent = () => {
               autoComplete="tanuloNev"
               autoFocus
               inputProps={{
-                pattern: studentNameRegex,
+                pattern: studentNameRegexPattern,
               }}
             />
 
@@ -229,7 +224,6 @@ export const AddNewStudent = () => {
                     });
                     event.target.name = "agazatid";
                   }
-                  console.log(formData.szakmaid + "  " + formData.agazatid);
                 }}
               >
                 <ListSubheader>Szakma</ListSubheader>
@@ -261,8 +255,6 @@ export const AddNewStudent = () => {
                       ...formData,
                       nappali_munkarend: event.target.checked ? 1 : 0,
                     });
-                    console.log(event.target.checked);
-                    console.log(formData.nappali_munkarend);
                   }}
                 />
               }
@@ -275,7 +267,7 @@ export const AddNewStudent = () => {
                 height: "80%",
               }}
               onClick={(event) => {
-                if (valid || validOM) handleAddStudent(formData);
+                handleAddStudent(formData);
               }}
               variant="contained"
             >

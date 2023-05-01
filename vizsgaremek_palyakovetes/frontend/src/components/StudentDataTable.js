@@ -1,35 +1,17 @@
 import * as React from "react";
-import {
-  DataGrid,
-  GridCsvExportMenuItem,
-  GridPrintExportMenuItem,
-  GridToolbarContainer,
-  GridToolbarExportContainer,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-  huHU,
-} from "@mui/x-data-grid";
-import {
-  Button,
-  FormControlLabel,
-  IconButton,
-  Typography,
-} from "@mui/material";
-import GridToolbarExportExcelButton from "./custom-gridtoolbar-components/GridToolbarExportExcelButton";
-import { GridToolbarImportButton } from "./custom-gridtoolbar-components/GridToolbarImportButton";
+import { DataGrid, huHU } from "@mui/x-data-grid";
 import "../css/App.css";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import { useNavigate } from "react-router-dom";
-import { GridToolbarAddNewStudentButton } from "./custom-gridtoolbar-components/GridToolbarAddNewStudentButton";
 import { ClassContext } from "../context/auth/ClassContext";
 import { useEffect } from "react";
 import axios from "axios";
 import { StudentRowContext } from "../context/auth/StudentsRowContext";
-import AlertDialog from "./AlertDialog";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import { AuthContext } from "../context/auth/AuthContext";
+import { StudentToolBar } from "./custom-gridtoolbars/StudentToolBar";
+import { workScheduleFromDatabaseLogicConverter } from "../utils/utils";
+import { StudentRowViewAction } from "./student-row-actions/StudentRowViewAction";
+import { StudentRowEditAction } from "./student-row-actions/StudentRowEditAction";
+import { StudentRowDeleteAction } from "./student-row-actions/StudentRowDeleteAction";
 
 export default function StudentData(props) {
   const { classData } = React.useContext(ClassContext);
@@ -37,8 +19,121 @@ export default function StudentData(props) {
   const { studentRow, handleSet: handleStudentRow } = React.useContext(
     StudentRowContext
   );
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [pageSize, setPageSize] = React.useState(25);
+  const navigate = useNavigate();
   const { currentUser, logout } = React.useContext(AuthContext);
   const [data, setData] = React.useState([]);
+
+  useEffect(() => {
+    fetchPalyaWithStudents();
+  }, []);
+
+  const columns = [
+    {
+      field: "om_azon",
+      headerName: "OM azonosító",
+      width: 150,
+      headerClassName: "columnsData",
+    },
+    {
+      field: "tanulo_nev",
+      headerName: "Tanuló neve",
+      width: 150,
+      headerClassName: "columnsData",
+    },
+    {
+      field: "agazat_nev",
+      headerName: "Ágazat",
+      width: 150,
+      headerClassName: "columnsData",
+    },
+    {
+      field: "szakma_nev",
+      headerName: "Szakma",
+      width: 150,
+      headerClassName: "columnsData",
+    },
+    {
+      field: "nappali_munkarend",
+      headerName: "Munkarend",
+      width: 150,
+      headerClassName: "columnsData",
+    },
+    {
+      field: "leiras",
+      headerName: "Pálya leírása",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 140,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <StudentRowViewAction
+              params={params}
+              clickEvent={onButtonClickView}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      field: "megnevezes",
+      headerName: "Pálya megnevezése",
+      disableColumnMenu: true,
+      width: 140,
+      disableClickEventBubbling: true,
+    },
+    {
+      field: "edit",
+      headerName: "Módosítás",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 140,
+      disableExport: true,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <StudentRowEditAction
+              params={params}
+              clickEvent={onButtonClickEdit}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      field: "delete",
+      headerName: "Törlés",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 140,
+      disableClickEventBubbling: true,
+      disableExport: true,
+      renderCell: (params) => {
+        return (
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <StudentRowDeleteAction
+              params={params}
+              clickEvent={onButtonClickDelete}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   const fetchStudents = () => {
     return axios
       .post(
@@ -101,19 +196,11 @@ export default function StudentData(props) {
                   return data;
                 }
               );
-              //console.log(omitDuplicateOmIdentifier);
-
               setData(omitDuplicateOmIdentifier);
             });
         });
       });
   };
-
-  useEffect(() => {
-    fetchPalyaWithStudents();
-  }, []);
-
-  const databaseLogicConverter = (a) => (a === 1 ? "Nappali" : "Esti");
 
   const currentStudentData = () => {
     let currStudentsData = data.filter(
@@ -121,7 +208,9 @@ export default function StudentData(props) {
     );
     let boolConvertedClassData = currStudentsData.map((o) => ({
       ...o,
-      nappali_munkarend: databaseLogicConverter(o.nappali_munkarend),
+      nappali_munkarend: workScheduleFromDatabaseLogicConverter(
+        o.nappali_munkarend
+      ),
     }));
     const omitOsztalyId = boolConvertedClassData.map((e) => {
       const { osztalyid, ...arr } = e;
@@ -138,101 +227,6 @@ export default function StudentData(props) {
       (classes) => classes.id == localStorage.getItem("currentclassid")
     );
   };
-  const columns = [
-    {
-      field: "om_azon",
-      headerName: "OM azonosító",
-      width: 150,
-      headerClassName: "columnsData",
-    },
-    {
-      field: "tanulo_nev",
-      headerName: "Tanuló neve",
-      width: 150,
-      headerClassName: "columnsData",
-    },
-    {
-      field: "agazat_nev",
-      headerName: "Ágazat",
-      width: 150,
-      headerClassName: "columnsData",
-    },
-    {
-      field: "szakma_nev",
-      headerName: "Szakma",
-      width: 150,
-      headerClassName: "columnsData",
-    },
-    {
-      field: "nappali_munkarend",
-      headerName: "Munkarend",
-      width: 150,
-      headerClassName: "columnsData",
-    },
-    {
-      field: "leiras",
-      headerName: "Pálya leírása",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 140,
-      disableClickEventBubbling: true,
-      renderCell: (params) => {
-        return (
-          <div
-            className="d-flex justify-content-between align-items-center"
-            style={{ cursor: "pointer" }}
-          >
-            <MatView params={params} />
-          </div>
-        );
-      },
-    },
-    {
-      field: "megnevezes",
-      headerName: "Pálya megnevezése",
-      disableColumnMenu: true,
-      width: 140,
-      disableClickEventBubbling: true,
-    },
-    {
-      field: "edit",
-      headerName: "Módosítás",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 140,
-      disableExport: true,
-      disableClickEventBubbling: true,
-      renderCell: (params) => {
-        return (
-          <div
-            className="d-flex justify-content-between align-items-center"
-            style={{ cursor: "pointer" }}
-          >
-            <MatEdit params={params} />
-          </div>
-        );
-      },
-    },
-    {
-      field: "delete",
-      headerName: "Törlés",
-      sortable: false,
-      disableColumnMenu: true,
-      width: 140,
-      disableClickEventBubbling: true,
-      disableExport: true,
-      renderCell: (params) => {
-        return (
-          <div
-            className="d-flex justify-content-between align-items-center"
-            style={{ cursor: "pointer" }}
-          >
-            <MatDelete params={params} />
-          </div>
-        );
-      },
-    },
-  ];
 
   const onButtonClickEdit = (e, row) => {
     e.stopPropagation();
@@ -242,7 +236,6 @@ export default function StudentData(props) {
 
   const onButtonClickView = (e, row) => {
     e.stopPropagation();
-    console.log(row);
   };
 
   const onButtonClickDelete = (e, row) => {
@@ -256,142 +249,14 @@ export default function StudentData(props) {
         { withCredentials: true }
       )
       .then((e) => {
-        console.log(data);
-
         fetchPalyaWithStudents();
+        if (data.length <= 1) window.location.reload();
       })
       .catch((err) => {
         if (err.code === "ERR_NETWORK") navigate("/login");
         if (err.response.status === 401) logout();
       });
   };
-
-  const MatView = ({ params }) => {
-    return (
-      <AlertDialog
-        alertButton={
-          <Button
-            style={{ leftMargin: 0, border: 0 }}
-            variant="outlined"
-            color="primary"
-          >
-            <ZoomInIcon></ZoomInIcon> Megtekint
-          </Button>
-        }
-        dialogTitle={
-          <h3 style={{ margin: 0, borderBottom: "3px solid grey" }}>
-            {params.row.tanulo_nev + " " + "pályája"}
-          </h3>
-        }
-        dialogContent={
-          <div style={{ width: "75%", margin: "0 auto" }}>
-            <h2>
-              {params.row.agazat_nev
-                ? "Ágazat: " + params.row.agazat_nev
-                : "Szakma: " + params.row.szakma_nev}
-            </h2>
-            <h2>{params.row.megnevezes}</h2>
-            <p>{params.row.leiras}</p>
-          </div>
-        }
-        onDisagreeButtonMessage={"Bezárás"}
-        disableAgreeButton
-        onAgreeEvent={(e) => {
-          e.stopPropagation();
-          onButtonClickView(e, params.row);
-        }}
-      />
-      /*
-      <Button
-        onClick={(e) => {
-          onButtonClickView(e, params.row);
-        }}
-        color="warning"
-      >
-        Megtekintés
-      </Button>
-      */
-    );
-  };
-
-  const MatEdit = ({ params }) => {
-    return (
-      <ModeEditOutlineOutlinedIcon
-        onClick={(e) => {
-          onButtonClickEdit(e, params.row);
-        }}
-        color="info"
-      >
-        Módosítás
-      </ModeEditOutlineOutlinedIcon>
-    );
-  };
-  const MatDelete = ({ params }) => {
-    return (
-      <div color="error">
-        <AlertDialog
-          alertButton={<DeleteForeverIcon variant="contained" color="error" />}
-          dialogTitle="Biztosan szeretné törölni ezt a tanulót?"
-          dialogContent={
-            <table>
-              <thead>
-                <tr>
-                  <th>{columns[0].headerName}</th>
-                  <th>{columns[1].headerName}</th>
-                  <th>{columns[2].headerName}</th>
-                  <th>{columns[3].headerName}</th>
-                  <th>{columns[4].headerName}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{params.row.om_azon}</td>
-                  <td>{params.row.tanulo_nev}</td>
-                  <td>{params.row.agazat_nev}</td>
-                  <td>{params.row.szakma_nev}</td>
-                  <td>{params.row.nappali_munkarend}</td>
-                </tr>
-              </tbody>
-            </table>
-          }
-          onAgreeButtonMessage={"Igen"}
-          onDisagreeButtonMessage={"Nem"}
-          onAgreeEvent={(e) => {
-            e.stopPropagation();
-            onButtonClickDelete(e, params.row);
-          }}
-        />
-      </div>
-    );
-  };
-
-  const [selectedRows, setSelectedRows] = React.useState([]);
-  const [pageSize, setPageSize] = React.useState(25);
-  const navigate = useNavigate();
-
-  function CustomToolbar() {
-    const date = new Date();
-
-    return (
-      <GridToolbarContainer>
-        <GridToolbarAddNewStudentButton />
-        <GridToolbarImportButton />
-        <GridToolbarExportContainer>
-          <GridToolbarExportExcelButton
-            excelData={selectedRows}
-            fileName={`Diák adatok ${date.getFullYear()}.${
-              date.getMonth() + 1
-            }.${date.getDate()}. ${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`}
-          />
-          <GridCsvExportMenuItem />
-          <GridPrintExportMenuItem />
-        </GridToolbarExportContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-      </GridToolbarContainer>
-    );
-  }
 
   return (
     <div
@@ -424,11 +289,6 @@ export default function StudentData(props) {
         sx={{
           border: 2,
           borderColor: "#E0E0E0",
-          /*
-          '& .MuiDataGrid-cell:hover': {
-            borderColor: 'primary.main',
-          },
-          */
         }}
         onSelectionModelChange={(ids) => {
           const selectedIDs = new Set(ids);
@@ -439,7 +299,10 @@ export default function StudentData(props) {
           setSelectedRows(selectedRowData);
         }}
         components={{
-          Toolbar: CustomToolbar,
+          Toolbar: StudentToolBar,
+        }}
+        componentsProps={{
+          toolbar: { selectedRows },
         }}
       />
     </div>

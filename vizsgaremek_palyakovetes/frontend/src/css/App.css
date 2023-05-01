@@ -83,6 +83,15 @@ input[type="file"] {
     text-align: center;
   }
 
+  div.user-form {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+  div.user-form * {
+    text-align: center;
+    width: 100%;
+  }
+
   .formMain {
     display: flex;
     align-items: center;
@@ -125,6 +134,14 @@ input[type="file"] {
   .form2 {
     display: grid;
     width: 35%;
+  }
+
+  .user-form {
+    margin-left: 4rem;
+    padding: 3rem;
+    width: 30rem;
+    display: "flex";
+    flex-direction: "column";
   }
 }
 

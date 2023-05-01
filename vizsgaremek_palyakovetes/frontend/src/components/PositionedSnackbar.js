@@ -2,7 +2,6 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
-import { AxiosError } from "axios";
 
 export default function PositionedSnackbar(props) {
   const autoHideDurationDefault = 100000;

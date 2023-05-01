@@ -10,19 +10,10 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth/AuthContext";
 import fingerprint from "../images/fingerprint.svg";
-import PositionedSnackbar from "../components/PositionedSnackbar";
-
-/*
-REGEX
-*/
-
-const omIdentifierPattern = new RegExp("^[0-9]{11}$");
-
-/*
-REGEX
-*/
+import { omIdentifierPattern } from "../utils/utils";
 
 export default function SignIn() {
+  localStorage.setItem("user", null);
   const [formData, setFormData] = useState({
     om_azon: "",
     jelszo: "",
@@ -30,7 +21,6 @@ export default function SignIn() {
   const navigate = useNavigate();
   const { login, currentUser } = useContext(AuthContext);
   const [validOM, setValidOM] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
 
   const handleClick = async (event) => {
     if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
@@ -76,7 +66,6 @@ export default function SignIn() {
             value={formData?.om_azon || ""}
             onChange={({ target: { name, value } }) => {
               setFormData({ ...formData, [name]: value });
-              console.log(formData);
               setValidOM(omIdentifierPattern.test(value));
             }}
             margin="normal"
@@ -106,12 +95,6 @@ export default function SignIn() {
             label="Jelszó"
             type="password"
           />
-          {/*
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Emlékezzen rám"
-            />
-            */}
           <Button fullWidth onClick={handleClick} variant="contained">
             Bejelentkezés
           </Button>

@@ -1,8 +1,8 @@
 import { Button, Menu, MenuItem } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Papa from "papaparse";
 import axios from "axios";
-import { AuthContext } from "../../context/auth/AuthContext";
+import { AuthContext } from "../../../context/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const GridToolbarImportButton = () => {
@@ -16,10 +16,6 @@ export const GridToolbarImportButton = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const [categories, setCategories] = useState([]);
-  const [professions, setProfessions] = useState([]);
-  const [sectors, setSectors] = useState([]);
 
   const handleChange = (event) => {
     Papa.parse(event.target.files[0], {
@@ -108,10 +104,7 @@ export const GridToolbarImportButton = () => {
               return { ...item1, ...item2 };
             });
 
-            console.log(mergedArray3);
-
             mergedArray3.forEach((e) => {
-              console.log(e);
               axios.post(
                 "http://localhost:8080/students/addStudent",
                 {

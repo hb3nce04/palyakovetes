@@ -1,12 +1,10 @@
 import {
-  Autocomplete,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Paper,
   Select,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,12 +15,8 @@ import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import PositionedSnackbar from "../components/PositionedSnackbar";
 import { AuthContext } from "../context/auth/AuthContext";
-
-const classNameRegex = new RegExp(
-  /^[\w!@#$%^&*()\-+=[\]{};':"\\|,.<>/?]{1,15}$/i
-);
+import { classNameRegexPattern } from "../utils/utils";
 
 export const AddClass = () => {
   const { logout } = useContext(AuthContext);
@@ -34,7 +28,6 @@ export const AddClass = () => {
       })
       .then((e) => {
         setSchoolsData(e.data);
-        console.log(e);
       })
       .catch((err) => {
         if (err.code === "ERR_NETWORK") navigate("/login");
@@ -100,17 +93,16 @@ export const AddClass = () => {
               helperText={
                 formData.nev === ""
                   ? "Kérjük, írjon be egy osztály nevet!"
-                  : " " && classNameRegex.test(formData.nev) === false
-                  ? "A megadott osztály nem felel meg a formátumnak. [1-15 karakter]"
+                  : " " && classNameRegexPattern.test(formData.nev) === false
+                  ? "A megadott osztály nem felel meg a formátumnak."
                   : " "
               }
               value={formData?.nev}
               onChange={({ target: { name, value } }) => {
-                console.log(formData);
                 setFormData({ ...formData, [name]: value });
-                setValid(classNameRegex.test(value));
+                setValid(classNameRegexPattern.test(value));
               }}
-              inputProps={{ pattern: classNameRegex }}
+              inputProps={{ pattern: classNameRegexPattern }}
               required
               fullWidth
               label="Osztály neve"

@@ -8,7 +8,6 @@ export default function GridToolbarExportExcelButton({ excelData, fileName }) {
   const fileExtension = ".xlsx";
   const exportToExcel = async () => {
     if (excelData.length === 0) {
-      console.log(excelData);
       alert("Nincs kiválasztva sor...");
       return;
     }

@@ -7,13 +7,9 @@ import Link from "@mui/material/Link";
 
 function Footer(props) {
   const trademark = "Pályakövetőrendszer ™";
-  const versionNumber = "Verziószám: 1.0.0"; //jelenleg statikus, később githubról leszedni az adott verziószámot?
-  const privacyPolicy = (
-    <Link href="">Adatvédelmi tájékoztató</Link>
-  ); /*href link csere később */
-  const supportedBrowsers = (
-    <Link href="">Támogatott böngészők</Link>
-  ); /*href link csere később */
+  const versionNumber = "Verziószám: 1.0.0";
+  const privacyPolicy = <Link href="">Adatvédelmi tájékoztató</Link>;
+  const supportedBrowsers = <Link href="">Támogatott böngészők</Link>;
 
   return (
     <Box
@@ -35,10 +31,10 @@ function Footer(props) {
         }}
       >
         <Container maxWidth="sm" className="footerContent">
-          <Typography variant="body1">
+          <Typography variant="body1" data-testid="trademark">
             {props.trademark ? trademark : ""}
           </Typography>
-          <Typography variant="body1">
+          <Typography variant="body1" data-testid="versionNumber">
             {props.versionNumber ? versionNumber : ""}
           </Typography>
           <Typography variant="body1">

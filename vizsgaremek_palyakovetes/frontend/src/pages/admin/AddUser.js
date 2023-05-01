@@ -1,47 +1,26 @@
-import {
-  Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  ListSubheader,
-  MenuItem,
-  Paper,
-  Select,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
-import axios, { AxiosError } from "axios";
-import { useContext, useEffect, useState } from "react";
+import { Button, Paper, Switch, TextField, Typography } from "@mui/material";
+import axios from "axios";
+import { useContext, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../../components/BackToPageButton";
 import Footer from "../../components/Footer";
 import Nav from "../../components/Nav";
 import { AuthContext } from "../../context/auth/AuthContext";
-
-const omIdentifierPattern = new RegExp("^[0-9]{11}$");
-const passwordPattern = new RegExp(
-  "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,24}$"
-);
+import { omIdentifierPattern, passwordPattern } from "../../utils/utils";
 
 export const AddUser = () => {
   const { logout } = useContext(AuthContext);
-
+  const navigate = useNavigate();
+  const [validOM, setValidOM] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
   const [formData, setFormData] = useState({
     om_azon: "",
     jelszo: "",
     admin: 0,
   });
 
-  const navigate = useNavigate();
-
-  const [validOM, setValidOM] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
-
   const handleAddUser = () => {
-    console.log(formData);
     axios
       .post("http://localhost:8080/auth/register", formData, {
         headers: {
@@ -90,7 +69,6 @@ export const AddUser = () => {
               value={formData?.om_azon || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
-                console.log(formData);
                 setValidOM(omIdentifierPattern.test(value));
               }}
               required
@@ -107,7 +85,7 @@ export const AddUser = () => {
                 formData.jelszo === ""
                   ? "Kérjük, írja be felvenni kívánt felhasználó jelszavát!"
                   : " " && passwordPattern.test(formData.jelszo) === false
-                  ? "A megadott jelszó nem felel meg a formátumnak. [(8-24 hosszú), 1 nagy betű, 1 kis betű, 1 szám, 1 speciális karakter(#?!@$%^&*-)]"
+                  ? "A megadott jelszó nem felel meg a formátumnak. [(8-24 hosszú), 1 nagy betű, 1 kis betű, 1 szám, 1 speciális karakter(#?!@$%^&*-_)]"
                   : " "
               }
               value={formData?.jelszo || ""}
@@ -142,7 +120,7 @@ export const AddUser = () => {
         </div>
         <Button
           onClick={() => {
-            if (validOM || validPassword) handleAddUser();
+            if (validOM && validPassword) handleAddUser();
           }}
           variant="contained"
         >

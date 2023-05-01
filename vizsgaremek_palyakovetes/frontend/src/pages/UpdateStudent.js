@@ -15,17 +15,21 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import PositionedSnackbar from "../components/PositionedSnackbar";
 import { ClassContext } from "../context/auth/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { StudentRowContext } from "../context/auth/StudentsRowContext";
 import { BackToPageButton } from "../components/BackToPageButton";
 import { AuthContext } from "../context/auth/AuthContext";
-const studentNameRegex = new RegExp("([A-Za-z]+(['|-|s]?[A-Za-z]+)*)+");
+import { studentNameRegexPattern } from "../utils/utils";
 
 export const UpdateStudent = () => {
   const { classData } = useContext(ClassContext);
   const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [professions, setProfessions] = useState([]);
+  const [sectors, setSectors] = useState([]);
+  const [valid, setValid] = useState(true);
   const { studentRow, handleSet: handleStudentRow } = useContext(
     StudentRowContext
   );
@@ -39,14 +43,8 @@ export const UpdateStudent = () => {
     kategoriaid: null,
     leiras: "",
   });
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
-  const [professions, setProfessions] = useState([]);
-  const [sectors, setSectors] = useState([]);
-  const [valid, setValid] = useState(true);
 
   const handleUpdateStudent = () => {
-    console.log(formData);
     axios
       .post("http://localhost:8080/students/editStudent", formData, {
         withCredentials: true,
@@ -61,7 +59,6 @@ export const UpdateStudent = () => {
   };
 
   const currentClassData = () => {
-    console.log(classData);
     if (!classData) {
       return [];
     }
@@ -85,7 +82,6 @@ export const UpdateStudent = () => {
           }
         )
         .then((e) => {
-          console.log(e.data);
           setFormData({
             om_azon: e.data.om_azon || "",
             tanuloNev: e.data.nev || "",
@@ -116,12 +112,10 @@ export const UpdateStudent = () => {
           const updatedObj = { ...obj };
 
           if (typeof obj.szakmaid === "number") {
-            console.log(updatedObj);
             updatedObj.szakmaid = obj.szakmaid + "p";
           }
           return updatedObj;
         });
-        console.log(updatedArray);
         return updatedArray;
       })
       .then((e) => {
@@ -144,7 +138,6 @@ export const UpdateStudent = () => {
           }
           return updatedObj;
         });
-        console.log(updatedArray);
         return updatedArray;
       })
       .then((e) => {
@@ -195,7 +188,8 @@ export const UpdateStudent = () => {
               helperText={
                 formData.tanuloNev.trim() === ""
                   ? "Kérjük, írja be egy tanuló nevét!"
-                  : " " && studentNameRegex.test(formData.tanuloNev) === false
+                  : " " &&
+                    studentNameRegexPattern.test(formData.tanuloNev) === false
                   ? "A megadott név nem felel meg a formátumnak."
                   : " " || setValid(true)
               }
@@ -203,7 +197,7 @@ export const UpdateStudent = () => {
               value={formData?.tanuloNev || ""}
               onChange={({ target: { name, value } }) => {
                 setFormData({ ...formData, [name]: value });
-                setValid(studentNameRegex.test(value));
+                setValid(studentNameRegexPattern.test(value));
               }}
               required
               fullWidth
@@ -211,7 +205,7 @@ export const UpdateStudent = () => {
               name="tanuloNev"
               autoComplete="tanuloNev"
               autoFocus
-              inputProps={{ inputMode: "", pattern: "" }}
+              inputProps={{ pattern: studentNameRegexPattern }}
             />
 
             <FormControl required>

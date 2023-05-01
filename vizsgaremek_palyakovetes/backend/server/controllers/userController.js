@@ -1,5 +1,9 @@
-import { db } from "../db.js";
-import { StatusCodes } from "http-status-codes";
+import {
+  db
+} from "../db.js";
+import {
+  StatusCodes
+} from "http-status-codes";
 import bcrypt from "bcryptjs";
 
 export const getUsers = (req, res) => {
@@ -26,7 +30,9 @@ export const getUsers = (req, res) => {
 
 export const deleteUser = (req, res) => {
   const token = req.user;
-  const { om_azon } = req.body;
+  const {
+    om_azon
+  } = req.body;
   if (token.isAdmin === 0) {
     return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized access");
   } else {
@@ -67,7 +73,10 @@ export const deleteUser = (req, res) => {
 };
 
 export const updatePassword = (req, res) => {
-  const { regiJelszo, ujJelszo } = req.body;
+  const {
+    regiJelszo,
+    ujJelszo
+  } = req.body;
   const token = req.user;
   const salt = bcrypt.genSaltSync(12);
   if (!ujJelszo || !regiJelszo) {
