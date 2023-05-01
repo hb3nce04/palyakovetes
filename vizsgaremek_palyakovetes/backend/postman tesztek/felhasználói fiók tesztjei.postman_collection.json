@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"iskolaid\": 3,\r\n    \"felhasznalo_om\": 222222222222,\r\n    \"nev\": \"12.D\",\r\n    \"vegzesi_ev\": 2022\r\n}",
+					"raw": "{\r\n    \"iskolaid\": 3,\r\n    \"nev\": \"12.A\",\r\n    \"vegzesi_ev\": 2018\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,7 +87,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas József\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 10,\r\n    \"leiras\": \"Ismeretlen okokból nem dolgozik.\"\r\n\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678913,\r\n    \"tanuloNev\": \"Vas József\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 10,\r\n    \"leiras\": \"Ismeretlen okokból nem dolgozik.\"\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -115,7 +115,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas József\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 10,\r\n    \"leiras\": \"Ismeretlen okokból nem dolgozik.\"\r\n\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678914,\r\n    \"tanuloNev\": \"Nagy Rita\",\r\n    \"osztalyid\": 1,\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 9,\r\n    \"leiras\": \"Nemrég autóbalesetet szenvedett el, így nem állt munkába.\"\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -143,7 +143,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 12345678910\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678913\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -171,7 +171,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 12345678911,\r\n    \"tanuloNev\": \"Vas Antal\",\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 7,\r\n    \"leiras\": \"Munkába állt a TEVA debreceni gyógyszertárában.\"\r\n\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678913,\r\n    \"tanuloNev\": \"Vas Antal\",\r\n    \"nappali_munkarend\": 1,\r\n    \"agazatid\": 1,\r\n    \"kategoriaid\": 7,\r\n    \"leiras\": \"Munkába állt a TEVA debreceni gyógyszertárában.\"\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -227,7 +227,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"class_id\": 1\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678913\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -235,14 +235,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/students/studentList",
+					"raw": "localhost:8080/students/getPalya",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"students",
-						"studentList"
+						"getPalya"
 					]
 				}
 			},
@@ -255,7 +255,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"class_id\": 1\r\n}",
+					"raw": "{\r\n    \"om_azon\": 12345678913\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -263,14 +263,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/students/studentList",
+					"raw": "localhost:8080/students/deleteStudent",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"students",
-						"studentList"
+						"deleteStudent"
 					]
 				}
 			},
@@ -283,7 +283,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \r\n}",
+					"raw": "{\r\n    \"id\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -40,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 33333333333,\r\n    \"jelszo\": \"Admin_123\",\r\n    \"admin\": 1\r\n}",
+					"raw": "{\r\n    \"om_azon\": 33333333333,\r\n    \"jelszo\": \"Admin_123\",\r\n    \"admin\": \"1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -68,7 +68,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"om_azon\": 11111111111,\r\n    \"jelszo\": \"Admin_123\"\r\n}",
+					"raw": "{\r\n    \"om_azon\": 44444444444,\r\n    \"jelszo\": \"Felhasznalo_123\",\r\n    \"admin\": \"0\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,14 +76,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/auth/login",
+					"raw": "localhost:8080/auth/register",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"auth",
-						"login"
+						"register"
 					]
 				}
 			},
@@ -96,12 +96,23 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"regiJelszo\": \"Admin_123\",\r\n    \"ujJelszo\": \"Adminisztrator_123\"\r\n}",
+					"raw": "{\r\n    \"om_azon\": 33333333333\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/deleteUser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"deleteUser"
+					]
 				}
 			},
 			"response": []
