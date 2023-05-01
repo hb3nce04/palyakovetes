@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2023 at 03:32 PM
+-- Generation Time: May 01, 2023 at 04:02 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -120,7 +120,7 @@ CREATE TABLE `felhasznalo` (
 --
 
 INSERT INTO `felhasznalo` (`om_azon`, `jelszo`, `admin`) VALUES
-(11111111111, '$2a$12$gtqDyS1FrNWAzDIp4QpQkOpj/Kqggu27BUi5.XqAkVhbTkmBL6xuu', 1),
+(11111111111, '$2a$12$cLQBwFxorrtr16PWatQBo.NROOZKJ1vDiD9Hk0ex58tPxGwaFo51q', 1),
 (22222222222, '$2a$12$qdySoYVuqA8S4u8dpLjY0evcrLTpN6QfaVZcfEm4V0zvAfOYqqa5m', 0);
 
 -- --------------------------------------------------------
@@ -220,9 +220,9 @@ CREATE TABLE `palya` (
 --
 
 INSERT INTO `palya` (`id`, `diak_om_azon`, `kategoriaid`, `leiras`) VALUES
-(24, 12345678912, 5, 'Példa szöveg.'),
 (25, 12345678910, 5, 'Ide jön például, hogy melyik intézményben tanul.'),
-(26, 12345678911, 3, ' abcdefghijkl');
+(26, 12345678911, 3, ' abcdefghijkl'),
+(27, 12345678912, 13, ' Nincs info.');
 
 -- --------------------------------------------------------
 
@@ -310,7 +310,7 @@ CREATE TABLE `tanulo` (
 INSERT INTO `tanulo` (`om_azon`, `nev`, `osztalyid`, `nappali_munkarend`, `agazatid`, `szakid`) VALUES
 (12345678910, 'Kovács József', 15, 1, NULL, 12),
 (12345678911, 'Soós Gizella', 15, 0, NULL, 13),
-(12345678912, 'Kovács Anita', 15, 0, 6, NULL);
+(12345678912, 'Lukács Donát', 15, 1, NULL, 20);
 
 --
 -- Indexes for dumped tables
@@ -407,7 +407,7 @@ ALTER TABLE `osztaly`
 -- AUTO_INCREMENT for table `palya`
 --
 ALTER TABLE `palya`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `szakma`
