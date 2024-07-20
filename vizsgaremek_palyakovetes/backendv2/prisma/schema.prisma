@@ -1,0 +1,96 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Sector {
+    id      Int       @id @default(autoincrement())
+    name    String    @db.VarChar(255)
+    number  String    @unique @db.VarChar(255)
+    Student Student[]
+
+    @@map("sectors")
+}
+
+model User {
+    id       String  @unique @db.VarChar(11)
+    password String  @unique @db.VarChar(60)
+    is_admin Boolean @default(false)
+    Class    Class[]
+
+    @@map("users")
+}
+
+model School {
+    id    Int     @id @default(autoincrement())
+    name  String  @db.VarChar(255)
+    Class Class[]
+
+    @@map("schools")
+}
+
+model Category {
+    id    Int     @id @default(autoincrement())
+    name  String  @unique @db.VarChar(255)
+    Field Field[]
+
+    @@map("categories")
+}
+
+model Class {
+    id             Int       @id @default(autoincrement())
+    name           String    @db.VarChar(255)
+    finishing_year Int
+    school_id      Int
+    user_id        String    @db.VarChar(11)
+    School         School    @relation(fields: [school_id], references: [id], onDelete: Cascade)
+    User           User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    Student        Student[]
+
+    @@index([school_id])
+    @@index([user_id])
+    @@map("classes")
+}
+
+model Field {
+    id          Int      @id @default(autoincrement())
+    description String   @db.VarChar(255)
+    student_id  BigInt   @unique
+    category_id Int
+    Student     Student  @relation(fields: [student_id], references: [id], onDelete: Cascade)
+    Category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+    @@index([category_id])
+    @@map("fields")
+}
+
+model Profession {
+    id      Int       @id @default(autoincrement())
+    name    String    @db.VarChar(255)
+    number  String    @unique @db.VarChar(255)
+    Student Student[]
+
+    @@map("professions")
+}
+
+model Student {
+    id            BigInt      @id
+    name          String      @db.VarChar(255)
+    day_shift     Boolean     @default(true)
+    class_id      Int
+    sector_id     Int?
+    profession_id Int?
+    Field         Field?
+    Class         Class       @relation(fields: [class_id], references: [id], onDelete: Cascade)
+    Sector        Sector?     @relation(fields: [sector_id], references: [id], onDelete: Cascade)
+    Profession    Profession? @relation(fields: [profession_id], references: [id], onDelete: Cascade)
+
+    @@index([class_id])
+    @@index([sector_id])
+    @@index([profession_id])
+    @@map("students")
+}

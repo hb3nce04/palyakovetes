@@ -11,7 +11,11 @@ Kiss Szabolcs,
 Labbancz Balázs,
 Menyhárt Martin
 
-Nyíregyháza, 2023
+Utólagos hozzájárulás:
+
+Hagymási Bence ([hb3nce04](https://github.com/hb3nce04/))
+
+Nyíregyháza, 2024
 
 Használat:
 

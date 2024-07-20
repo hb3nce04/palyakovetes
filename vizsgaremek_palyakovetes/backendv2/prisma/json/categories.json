@@ -1,0 +1,17 @@
+[
+	{ "name": "Szakmát tanul az intézményben/\r\ntagintézményben" },
+	{ "name": "Érettségire készül az intézményben/\r\ntagintézményben" },
+	{ "name": "Más középfokú intézményben/\r\ntagintézményben szakmát tanul" },
+	{
+		"name": "Más középfokú intézményben/\r\ntagintézményben érettségire készül"
+	},
+	{ "name": "Szakirányú felsőoktatásban tanul" },
+	{ "name": "Nem szakirányú felsőoktatásban tanul" },
+	{ "name": "Szakmájában dolgozik" },
+	{ "name": "Nem szakmájában dolgozik" },
+	{ "name": "Egészségügyi / családi okok miatt nem dolgozik" },
+	{ "name": "Egyéb okból nem dolgozik" },
+	{ "name": "Szakmájában dolgozik külföldön" },
+	{ "name": "Nem a szakmájában dolgozik külföldön" },
+	{ "name": "Nincs információ" }
+]
