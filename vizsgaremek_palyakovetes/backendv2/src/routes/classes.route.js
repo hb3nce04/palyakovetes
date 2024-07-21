@@ -1,14 +1,17 @@
 import { Router } from "express";
 import {
 	getClasses,
+	getStudentsByClassID,
 	createClass,
-	deleteClass
+	deleteClassByID
 } from "../controllers/classes.controller.js";
 
 const router = Router();
 
 router.get("/", getClasses);
 router.post("/", createClass);
-router.delete("/", deleteClass);
+router.delete("/:id", deleteClassByID);
+
+router.get("/:id/students", getStudentsByClassID);
 
 export default router;

@@ -1,3 +1,7 @@
+BigInt.prototype.toJSON = function () {
+	return this.toString();
+}; // Fixing BigInt serialization to JSON
+
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
@@ -15,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 app.use(
 	process.env.NODE_ENV === "development" ? morgan("dev") : morgan("combined")
 );
-app.use(cors());
+app.use(cors({ credentials: true, origin: ["http://localhost:5173"] }));
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
@@ -29,7 +33,7 @@ if (process.env.NODE_ENV === "production") {
 	);
 }
 
-app.use("/api", routes);
+app.use("/", routes);
 
 app.use((req, res, next) => {
 	return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);

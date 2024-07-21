@@ -7,8 +7,8 @@ import {
 
 const router = Router();
 
-router.post("/register", isNotAuthenticated, register);
-router.post("/login", isNotAuthenticated, login);
-router.post("/logout", isAuthenticated, logout);
+router.post("/register", register); // isNotAuthenticated
+router.post("/login", login); // isNotAuthenticated
+router.post("/logout", logout); // isAuthenticated
 
 export default router;

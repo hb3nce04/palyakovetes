@@ -3,7 +3,6 @@ import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-// ?
 export const register = async (req, res) => {
 	const { id, password, admin } = req.body;
 
@@ -71,12 +70,13 @@ export const login = async (req, res) => {
 	res.cookie("token", token, {
 		secret: process.env.COOKIE_SECRET,
 		httpOnly: true,
+		sameSite: true,
 		maxAge: process.env.COOKIE_MAX_AGE,
 		secure: process.env.NODE_ENV === "production"
 	})
 		.status(StatusCodes.OK)
 		.send({
-			user: token,
+			user: { isAdmin: foundUser.is_admin ? 1 : 0, id: foundUser.id },
 			message: "Sikeresen bejelentkeztél!"
 		});
 };

@@ -61,8 +61,8 @@ model Field {
     description String   @db.VarChar(255)
     student_id  BigInt   @unique
     category_id Int
-    Student     Student  @relation(fields: [student_id], references: [id], onDelete: Cascade)
-    Category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+    Student     Student  @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    Category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([category_id])
     @@map("fields")

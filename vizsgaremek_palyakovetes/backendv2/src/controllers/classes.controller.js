@@ -2,9 +2,27 @@ import { prisma } from "../utils/prisma-client.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getClasses = (req, res) => {
-	prisma.Class.findMany()
+	prisma.Class.findMany({ include: { School: true } })
 		.then((classes) => {
 			return res.status(StatusCodes.OK).json(classes);
+		})
+		.catch((err) => {
+			console.log(err);
+			return res
+				.status(StatusCodes.INTERNAL_SERVER_ERROR)
+				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+		});
+};
+
+export const getStudentsByClassID = (req, res) => {
+	const { id } = req.params;
+
+	prisma.Student.findMany({
+		where: { class_id: parseInt(id) },
+		include: { Sector: true, Profession: true }
+	})
+		.then((students) => {
+			return res.status(StatusCodes.OK).json(students);
 		})
 		.catch((err) => {
 			console.log(err);
@@ -29,19 +47,37 @@ export const createClass = async (req, res) => {
 	}
 
 	const newClass = await prisma.Class.create({
-		include: { School: true },
 		data: {
-			School: { id: schooldId },
-			User: { id: userId },
+			School: { connect: { id: schooldId } },
+			User: { connect: { id: userId } },
 			name,
 			finishing_year: finishingYear
 		}
 	}).then((cls) => {
-		console.log(cls);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ message: "Az osztály sikeresen létrehozva." });
 	});
 };
 
-export const deleteClass = (req, res) => {};
+export const deleteClassByID = (req, res) => {
+	const { id } = req.params;
+
+	const deletedClass = prisma.Class.delete({
+		where: {
+			id: parseInt(id)
+		}
+	})
+		.then(() => {
+			return res
+				.status(StatusCodes.OK)
+				.json({ message: "Az osztály sikeresen törölve." });
+		})
+		.catch((err) => {
+			if (err.code === "P2025") {
+				return res.status(StatusCodes.NOT_FOUND).json({
+					message: "Az adott azonosítójú osztály nem létezik."
+				});
+			}
+		});
+};
