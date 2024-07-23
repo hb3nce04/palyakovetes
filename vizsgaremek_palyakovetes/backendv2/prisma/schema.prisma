@@ -17,7 +17,7 @@ model Sector {
 }
 
 model User {
-    id       String  @unique @db.VarChar(11)
+    id       BigInt  @unique
     password String  @unique @db.VarChar(60)
     is_admin Boolean @default(false)
     Class    Class[]
@@ -46,7 +46,7 @@ model Class {
     name           String    @db.VarChar(255)
     finishing_year Int
     school_id      Int
-    user_id        String    @db.VarChar(11)
+    user_id        BigInt
     School         School    @relation(fields: [school_id], references: [id], onDelete: Cascade)
     User           User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
     Student        Student[]

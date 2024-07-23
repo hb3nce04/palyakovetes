@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.get("/", isAuthenticated, isAdmin, getUsers);
-router.delete("/", isAuthenticated, isAdmin, deleteUser);
-router.patch("/update-password", isAuthenticated, updatePassword);
+router.delete("/:id", isAuthenticated, isAdmin, deleteUser);
+router.patch("/:id", isAuthenticated, updatePassword);
 
 export default router;

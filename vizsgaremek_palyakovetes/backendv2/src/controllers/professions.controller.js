@@ -2,7 +2,7 @@ import { prisma } from "../utils/prisma-client.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getProfessions = (req, res) => {
-	prisma.Profession.findMany({ select: { id: true } })
+	prisma.Profession.findMany()
 		.then((professions) => {
 			return res.status(StatusCodes.OK).json(professions);
 		})

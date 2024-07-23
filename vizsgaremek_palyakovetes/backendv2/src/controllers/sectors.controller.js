@@ -2,7 +2,7 @@ import { prisma } from "../utils/prisma-client.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getSectors = (req, res) => {
-	prisma.Sector.findMany({ select: { id: true } })
+	prisma.Sector.findMany()
 		.then((sectors) => {
 			return res.status(StatusCodes.OK).json(sectors);
 		})

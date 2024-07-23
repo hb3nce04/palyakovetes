@@ -8,7 +8,7 @@ export const register = async (req, res) => {
 
 	if (!id || !password || !(admin === 0 || admin === 1)) {
 		return res
-			.status(StatusCodes.UNAUTHORIZED)
+			.status(StatusCodes.BAD_REQUEST)
 			.json({ message: "Hiányos adatok." });
 	}
 
@@ -27,7 +27,6 @@ export const register = async (req, res) => {
 	const newUser = await prisma.User.create({
 		data: { id, password: hashedPassword, is_admin: admin === 1 }
 	}).then((usr) => {
-		console.log(usr);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ message: "Felhasználó sikeresen létrehozva." });
@@ -56,7 +55,7 @@ export const login = async (req, res) => {
 	const validPassword = await bcrypt.compare(password, foundUser.password);
 
 	if (!validPassword) {
-		res.status(StatusCodes.UNAUTHORIZED).json({
+		return res.status(StatusCodes.UNAUTHORIZED).json({
 			message: "Hibás felhasználónév vagy jelszó!"
 		});
 	}

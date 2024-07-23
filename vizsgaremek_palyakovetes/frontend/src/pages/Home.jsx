@@ -4,13 +4,13 @@ import Footer from "../components/Footer";
 import StudentDataTable from "../components/StudentDataTable";
 
 const Home = () => {
-  return (
-    <>
-      <Nav />
-      <StudentDataTable />
-      <Footer trademark versionNumber />
-    </>
-  );
+	return (
+		<>
+			<Nav />
+			<StudentDataTable />
+			<Footer trademark versionNumber />
+		</>
+	);
 };
 
 export default Home;

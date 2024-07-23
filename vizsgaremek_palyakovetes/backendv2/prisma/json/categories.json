@@ -1,9 +1,9 @@
 [
-	{ "name": "Szakmát tanul az intézményben/\r\ntagintézményben" },
-	{ "name": "Érettségire készül az intézményben/\r\ntagintézményben" },
-	{ "name": "Más középfokú intézményben/\r\ntagintézményben szakmát tanul" },
+	{ "name": "Szakmát tanul az intézményben / tagintézményben" },
+	{ "name": "Érettségire készül az intézményben / tagintézményben" },
+	{ "name": "Más középfokú intézményben / tagintézményben szakmát tanul" },
 	{
-		"name": "Más középfokú intézményben/\r\ntagintézményben érettségire készül"
+		"name": "Más középfokú intézményben / tagintézményben érettségire készül"
 	},
 	{ "name": "Szakirányú felsőoktatásban tanul" },
 	{ "name": "Nem szakirányú felsőoktatásban tanul" },

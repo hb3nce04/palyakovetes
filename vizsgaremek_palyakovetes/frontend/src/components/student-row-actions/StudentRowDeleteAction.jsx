@@ -22,11 +22,11 @@ export const StudentRowDeleteAction = ({ params, clickEvent }) => {
 						</thead>
 						<tbody>
 							<tr>
-								<td>{params.row.om_azon}</td>
-								<td>{params.row.tanulo_nev}</td>
-								<td>{params.row.agazat_nev}</td>
-								<td>{params.row.szakma_nev}</td>
-								<td>{params.row.nappali_munkarend}</td>
+								<td>{params.row.id}</td>
+								<td>{params.row.name}</td>
+								<td>{params.row.sector_id}</td>
+								<td>{params.row.profession_id}</td>
+								<td>{params.row.day_shift}</td>
 							</tr>
 						</tbody>
 					</table>

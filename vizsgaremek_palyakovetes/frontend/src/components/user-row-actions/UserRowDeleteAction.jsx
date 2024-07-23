@@ -18,7 +18,7 @@ export const UserRowDeleteAction = ({ params, clickEvent }) => {
 						</thead>
 						<tbody>
 							<tr>
-								<td>{params.row.om_azon}</td>
+								<td>{params.row.id}</td>
 							</tr>
 						</tbody>
 					</table>

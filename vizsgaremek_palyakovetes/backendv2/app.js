@@ -32,8 +32,7 @@ if (process.env.NODE_ENV === "production") {
 		})
 	);
 }
-
-app.use("/", routes);
+app.use("/api", routes);
 
 app.use((req, res, next) => {
 	return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);

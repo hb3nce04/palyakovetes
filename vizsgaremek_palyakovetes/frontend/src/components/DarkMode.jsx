@@ -9,8 +9,14 @@ export const ColorModeContext = createContext({
 export const DarkMode = ({ children }) => {
 	const [mode, setMode] = useState(
 		localStorage.getItem("mode") ||
-			//Ha még a localstoragenek nincs eleme, alapértelmezetten legyen világos a téma.
-			localStorage.setItem("mode", "light")
+			//Ha még a localstoragenek nincs eleme, alapértelmezetten legyen a rendszerbeállítás a téma.
+			localStorage.setItem(
+				"mode",
+				window.matchMedia &&
+					window.matchMedia("(prefers-color-scheme: dark)")
+					? "dark"
+					: "light"
+			)
 	);
 
 	const colorMode = useMemo(

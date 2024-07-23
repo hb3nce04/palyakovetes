@@ -1,162 +1,164 @@
 import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Typography,
+	Box,
+	Button,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Paper,
+	Select,
+	TextField,
+	Typography
 } from "@mui/material";
-import axios from "axios";
+import axios from "../utils/axios";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { AuthContext } from "../context/auth/AuthContext";
-import { classNameRegexPattern } from "../utils/utils";
+import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+const validationSchema = yup.object({
+	id: yup.string(),
+	finishingYear: yup.number().required("Az év megadása kötelező"),
+	schoolId: yup.number(),
+	name: yup.string()
+});
 
 export const AddClass = () => {
-  const { logout } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { logout } = useContext(AuthContext);
+	const { currentUser } = useContext(AuthContext);
+	const year = new Date().getFullYear();
+	const years = Array.from(new Array(25), (val, index) =>
+		String(year - index)
+	);
+	const { schools, setSchools } = useState([]);
+	const formik = useFormik({
+		initialValues: {
+			id: currentUser.id,
+			name: "",
+			finishingYear: 2024,
+			schoolId: 0
+		},
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			axios
+				.post("/classes", values)
+				.then((res) => {
+					toast.success(res.data.message);
+					navigate("/class/choose");
+				})
+				.catch((err) => {
+					if (err.response.data.message) {
+						toast.error(err.response.data.message);
+					}
+					if (err.code === "ERR_NETWORK") navigate("/login");
+					if (err.response.status === 401) logout();
+				});
+		}
+	});
+	useEffect(() => {
+		axios
+			.get("/schools")
+			.then((e) => {
+				setSchools(e.data);
+				console.log(schools);
+			})
+			.catch((err) => {
+				if (err.code === "ERR_NETWORK") navigate("/login");
+				if (err.response?.status === 401) logout();
+			});
+	}, []);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/schools/getSchools", {
-        withCredentials: true,
-      })
-      .then((e) => {
-        setSchoolsData(e.data);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_NETWORK") navigate("/login");
-        if (err.response.status === 401) logout();
-      });
-  }, []);
+	return (
+		<>
+			<Nav />
+			<Paper elevation={2} className="wrapper">
+				<BackToPageButton
+					style={{ marginBottom: "1rem" }}
+					onClick={() => {
+						navigate("/class/choose");
+					}}
+				/>
+				<Typography
+					variant="h4"
+					color="primary"
+					className="add-new-student-text"
+					style={{ marginBottom: "1rem", fontWeight: "bold" }}
+				>
+					OSZTÁLY FELVÉTELE
+				</Typography>
 
-  const { currentUser } = useContext(AuthContext);
-  const [schoolsData, setSchoolsData] = useState([]);
-  const year = new Date().getFullYear();
-  const years = Array.from(new Array(50), (val, index) => String(year - index));
-  const [valid, setValid] = useState(false);
-
-  const [formData, setFormData] = useState({
-    om_azon: currentUser.om_azon,
-    vegzesi_ev: null,
-    iskolaid: null,
-    nev: "",
-  });
-  const navigate = useNavigate();
-
-  const handleAddClass = () => {
-    if (valid)
-      axios
-        .post("http://localhost:8080/classes/create", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        })
-        .then((res) => {
-          navigate("/classchooser");
-        })
-        .catch((err) => {
-          if (err.code === "ERR_NETWORK") navigate("/login");
-          if (err.response.status === 401) logout();
-        });
-  };
-
-  return (
-    <>
-      <Nav />
-      <Paper elevation={2} className="wrapper">
-        <BackToPageButton
-          style={{ marginBottom: "1rem" }}
-          onClick={() => {
-            navigate("/classchooser");
-          }}
-        />
-        <Typography
-          variant="h4"
-          color="primary"
-          className="add-new-student-text"
-          style={{ marginBottom: "1rem" }}
-        >
-          OSZTÁLY FELVÉTELE
-        </Typography>
-
-        <div className="add-user-form">
-          <div className="form1">
-            <TextField
-              error={!valid}
-              helperText={
-                formData.nev === ""
-                  ? "Kérjük, írjon be egy osztály nevet!"
-                  : " " && classNameRegexPattern.test(formData.nev) === false
-                  ? "A megadott osztály nem felel meg a formátumnak."
-                  : " "
-              }
-              value={formData?.nev}
-              onChange={({ target: { name, value } }) => {
-                setFormData({ ...formData, [name]: value });
-                setValid(classNameRegexPattern.test(value));
-              }}
-              inputProps={{ pattern: classNameRegexPattern }}
-              required
-              fullWidth
-              label="Osztály neve"
-              name="nev"
-              autoFocus
-            />
-            <FormControl>
-              <InputLabel id="demo-simple-select-label">Végzési év</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Végzési év"
-                value={formData?.vegzesi_ev}
-                name="vegzesi_ev"
-                onChange={({ target: { name, value } }) => {
-                  setFormData({ ...formData, [name]: value });
-                }}
-              >
-                {years.map((e) => {
-                  return <MenuItem value={e}>{e}</MenuItem>;
-                })}
-              </Select>
-            </FormControl>
-            <FormControl>
-              <InputLabel id="demo-simple-select-label2">Iskola</InputLabel>
-              <Select
-                labelId="demo-simple-select-label2"
-                id="demo-simple-select2"
-                label="Iskola"
-                name="iskolaid"
-                value={formData?.iskolaid}
-                onChange={({ target: { name, value } }) => {
-                  setFormData({ ...formData, [name]: value });
-                }}
-              >
-                {schoolsData.map((e) => {
-                  return <MenuItem value={e.id}>{e.nev}</MenuItem>;
-                })}
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        <Button
-          onClick={() => {
-            if (valid) {
-              handleAddClass();
-            }
-          }}
-          variant="contained"
-        >
-          OSZTÁLY FELVÉTELE
-        </Button>
-      </Paper>
-      <Footer trademark versionNumber />
-    </>
-  );
+				<Box
+					component="form"
+					onSubmit={formik.handleSubmit}
+					className="form1"
+				>
+					<TextField
+						value={formik.values.name}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={
+							formik.touched.name && Boolean(formik.errors.name)
+						}
+						helperText={formik.touched.name && formik.errors.name}
+						fullWidth
+						label="Osztály neve"
+						name="name"
+						autoFocus
+					/>
+					<FormControl>
+						<InputLabel id="demo-simple-select-label">
+							Végzési év
+						</InputLabel>
+						<Select
+							labelId="demo-simple-select-label"
+							id="demo-simple-select"
+							label="Végzési év"
+							value={formik.values.finishingYear}
+							onChange={formik.handleChange}
+							name="finishingYear"
+						>
+							{years.map((s, index) => {
+								return (
+									<MenuItem key={index} value={s}>
+										{s}
+									</MenuItem>
+								);
+							})}
+						</Select>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="demo-simple-select-label2">
+							Iskola
+						</InputLabel>
+						<Select
+							labelId="demo-simple-select-label2"
+							id="demo-simple-select2"
+							label="Iskola"
+							name="schoolId"
+							value={formik.values.schoolId}
+							onChange={formik.handleChange}
+						>
+							{schools?.map((e, index) => {
+								return (
+									<MenuItem key={index} value={e.id}>
+										{e.name}
+									</MenuItem>
+								);
+							}) && "Loading..."}
+						</Select>
+					</FormControl>
+					<Button type="submit" variant="contained">
+						OSZTÁLY FELVÉTELE
+					</Button>
+				</Box>
+			</Paper>
+			<Footer trademark versionNumber />
+		</>
+	);
 };

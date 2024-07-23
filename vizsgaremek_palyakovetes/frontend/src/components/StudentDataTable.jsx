@@ -1,20 +1,21 @@
 import { DataGrid } from "@mui/x-data-grid";
 import "../css/App.css";
 import { useNavigate } from "react-router-dom";
-import { ClassContext } from "../context/auth/ClassContext";
+import { ClassContext } from "../context/ClassContext";
 import { useEffect, useContext, useState } from "react";
-import axios from "axios";
-import { StudentRowContext } from "../context/auth/StudentsRowContext";
-import { AuthContext } from "../context/auth/AuthContext";
+import axios from "../utils/axios";
+import { StudentRowContext } from "../context/StudentsRowContext";
+import { AuthContext } from "../context/AuthContext";
 import { StudentToolBar } from "./custom-gridtoolbars/StudentToolBar";
 import { workScheduleFromDatabaseLogicConverter } from "../utils/utils";
 import { StudentRowViewAction } from "./student-row-actions/StudentRowViewAction";
 import { StudentRowEditAction } from "./student-row-actions/StudentRowEditAction";
 import { StudentRowDeleteAction } from "./student-row-actions/StudentRowDeleteAction";
+import { toast } from "react-toastify";
 
 export default function StudentData(props) {
 	const { classData } = useContext(ClassContext);
-	const class_id = localStorage.getItem("currentclassid");
+	const class_id = localStorage.getItem("selected_class");
 	const { studentRow, handleSet: handleStudentRow } =
 		useContext(StudentRowContext);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -29,38 +30,38 @@ export default function StudentData(props) {
 
 	const columns = [
 		{
-			field: "om_azon",
+			field: "id",
 			headerName: "OM azonosító",
 			width: 150,
 			headerClassName: "columnsData"
 		},
 		{
-			field: "tanulo_nev",
+			field: "name",
 			headerName: "Tanuló neve",
 			width: 150,
 			headerClassName: "columnsData"
 		},
 		{
-			field: "agazat_nev",
+			field: "sector_name",
 			headerName: "Ágazat",
 			width: 150,
 			headerClassName: "columnsData"
 		},
 		{
-			field: "szakma_nev",
+			field: "profession_name",
 			headerName: "Szakma",
 			width: 150,
 			headerClassName: "columnsData"
 		},
 		{
-			field: "nappali_munkarend",
+			field: "day_shift",
 			headerName: "Munkarend",
 			width: 150,
 			headerClassName: "columnsData"
 		},
 		{
-			field: "leiras",
-			headerName: "Pálya leírása",
+			field: "description",
+			headerName: "Pálya megtekintése",
 			sortable: false,
 			disableColumnMenu: true,
 			width: 140,
@@ -80,8 +81,8 @@ export default function StudentData(props) {
 			}
 		},
 		{
-			field: "megnevezes",
-			headerName: "Pálya megnevezése",
+			field: "field_description",
+			headerName: "Pálya leírása",
 			disableColumnMenu: true,
 			width: 140,
 			disableClickEventBubbling: true
@@ -133,38 +134,16 @@ export default function StudentData(props) {
 	];
 
 	const fetchStudents = () => {
-		return axios
-			.post(
-				"http://localhost:8080/students/studentList",
-				{ class_id },
-				{ withCredentials: true },
-				{
-					headers: {
-						"Content-Type": "application/json"
-					}
-				}
-			)
-			.catch((err) => {
-				if (err.code === "ERR_NETWORK") navigate("/login");
-				if (err.response.status === 401) logout();
-			});
+		return axios.get(`/classes/${class_id}/students`).catch((err) => {
+			if (err.code === "ERR_NETWORK") navigate("/login");
+			if (err.response.status === 401) logout();
+		});
 	};
-	const fetchPalya = (studentOM) => {
-		return axios
-			.post(
-				"http://localhost:8080/students/getPalya",
-				{ om_azon: studentOM },
-				{ withCredentials: true },
-				{
-					headers: {
-						"Content-Type": "application/json"
-					}
-				}
-			)
-			.catch((err) => {
-				if (err.code === "ERR_NETWORK") navigate("/login");
-				if (err.response.status === 401) logout();
-			});
+	const fetchPalya = (id) => {
+		return axios.get(`/students/${id}/field`).catch((err) => {
+			if (err.code === "ERR_NETWORK") navigate("/login");
+			if (err.response.status === 401) logout();
+		});
 	};
 
 	const fetchPalyaWithStudents = () => {
@@ -175,7 +154,7 @@ export default function StudentData(props) {
 			})
 			.then((students) => {
 				return students.map((item) => {
-					return fetchPalya(item.om_azon)
+					return fetchPalya(item.id)
 						.then((e) => {
 							arr.push(e.data);
 							return [arr, students];
@@ -185,14 +164,12 @@ export default function StudentData(props) {
 								return {
 									...data,
 									...e[0].find(
-										(newData) =>
-											newData.diak_om_azon ===
-											data.om_azon
+										(newData) => newData.id === data.id
 									)
 								};
 							});
 							const omitDuplicateOmIdentifier = mergedData.map(
-								({ diak_om_azon, ...data }) => {
+								({ ...data }) => {
 									return data;
 								}
 							);
@@ -205,16 +182,20 @@ export default function StudentData(props) {
 	const currentStudentData = () => {
 		let currStudentsData = data.filter(
 			(students) =>
-				students.osztalyid == localStorage.getItem("currentclassid")
+				students.class_id == localStorage.getItem("selected_class")
 		);
 		let boolConvertedClassData = currStudentsData.map((o) => ({
 			...o,
-			nappali_munkarend: workScheduleFromDatabaseLogicConverter(
-				o.nappali_munkarend
-			)
+			day_shift: workScheduleFromDatabaseLogicConverter(o.day_shift)
 		}));
-		const omitOsztalyId = boolConvertedClassData.map((e) => {
-			const { osztalyid, ...arr } = e;
+		let convertNames = boolConvertedClassData.map((o) => ({
+			...o,
+			sector_name: o.Sector?.name,
+			profession_name: o.Profession.name,
+			field_description: o.Field?.description
+		}));
+		const omitOsztalyId = convertNames.map((e) => {
+			const { ...arr } = e;
 			return arr;
 		});
 		return omitOsztalyId;
@@ -225,13 +206,13 @@ export default function StudentData(props) {
 			return [];
 		}
 		return classData.find(
-			(classes) => classes.id == localStorage.getItem("currentclassid")
+			(classes) => classes.id == localStorage.getItem("selected_class")
 		);
 	};
 
 	const onButtonClickEdit = (e, row) => {
 		e.stopPropagation();
-		handleStudentRow(row.om_azon);
+		handleStudentRow(row.id);
 		navigate("/student/update");
 	};
 
@@ -242,14 +223,9 @@ export default function StudentData(props) {
 	const onButtonClickDelete = (e, row) => {
 		e.stopPropagation();
 		axios
-			.post(
-				"http://localhost:8080/students/deleteStudent",
-				{
-					om_azon: row.om_azon
-				},
-				{ withCredentials: true }
-			)
+			.delete(`/students/${row.id}`)
 			.then((e) => {
+				toast.success(e.data.message);
 				fetchPalyaWithStudents();
 				if (data.length <= 1) window.location.reload();
 			})
@@ -269,10 +245,8 @@ export default function StudentData(props) {
 			}}
 		>
 			<h1>
-				{currentClassData()
-					? currentClassData().iskola_nev
-					: navigate("/classchooser")}{" "}
-				{currentClassData() ? currentClassData().osztaly_nev : ""}
+				{currentClassData()?.School?.name || ""}:{" "}
+				{currentClassData()?.name || ""}
 			</h1>
 
 			<DataGrid
@@ -284,7 +258,7 @@ export default function StudentData(props) {
 				pageSize={pageSize}
 				onPageSizeChange={(newPage) => setPageSize(newPage)}
 				pagination
-				getRowId={(row) => row.om_azon}
+				getRowId={(row) => row.id}
 				rowHeight={35}
 				sx={{
 					border: 2,

@@ -7,7 +7,6 @@ export const getClasses = (req, res) => {
 			return res.status(StatusCodes.OK).json(classes);
 		})
 		.catch((err) => {
-			console.log(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
@@ -19,13 +18,12 @@ export const getStudentsByClassID = (req, res) => {
 
 	prisma.Student.findMany({
 		where: { class_id: parseInt(id) },
-		include: { Sector: true, Profession: true }
+		include: { Sector: true, Profession: true, Field: true }
 	})
 		.then((students) => {
 			return res.status(StatusCodes.OK).json(students);
 		})
 		.catch((err) => {
-			console.log(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
@@ -33,11 +31,15 @@ export const getStudentsByClassID = (req, res) => {
 };
 
 export const createClass = async (req, res) => {
-	const { schooldId, name, finishingYear } = req.body;
+	const { schoolId, name, finishingYear } = req.body;
 	const userId = req.user.id;
 
 	const foundClass = await prisma.Class.findFirst({
-		where: { school_id: schooldId, name, finishing_year: finishingYear }
+		where: {
+			school_id: schoolId,
+			name,
+			finishing_year: parseInt(finishingYear)
+		}
 	});
 
 	if (foundClass) {
@@ -48,10 +50,10 @@ export const createClass = async (req, res) => {
 
 	const newClass = await prisma.Class.create({
 		data: {
-			School: { connect: { id: schooldId } },
+			School: { connect: { id: schoolId } },
 			User: { connect: { id: userId } },
 			name,
-			finishing_year: finishingYear
+			finishing_year: parseInt(finishingYear)
 		}
 	}).then((cls) => {
 		return res

@@ -2,7 +2,7 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import { useContext } from "react";
 import Papa from "papaparse";
 import axios from "axios";
-import { AuthContext } from "../../../context/auth/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const GridToolbarImportButton = () => {
@@ -121,7 +121,7 @@ export const GridToolbarImportButton = () => {
 									tanuloNev: e.tanulo_nev,
 									kategoriaid: e.id,
 									osztalyid: Number(
-										localStorage.getItem("currentclassid")
+										localStorage.getItem("selected_class")
 									),
 									nappali_munkarend:
 										e.nappali_munkarend === "Nappali"

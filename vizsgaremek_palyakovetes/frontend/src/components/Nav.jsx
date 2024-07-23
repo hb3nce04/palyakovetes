@@ -15,7 +15,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/auth/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 const userPages = ["Osztály kiválasztása", "Profil"];
 const adminPages = ["Főoldal", "Profil"];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
@@ -54,26 +54,31 @@ function Nav() {
 	};
 
 	const handleProfileNavigation = () => {
-		navigate("/user");
+		navigate("/profile");
 	};
 
 	const handleClassChooserNavigation = () => {
-		navigate("/classchooser");
+		navigate("/class/choose");
 	};
 
 	const handleAdminDataTableNavigation = () => {
-		navigate("/admin/users/edit");
+		navigate("/admin/users/list");
 	};
 
 	return (
 		<AppBar position="static">
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					<Avatar src={lightfingerprint} sx={{ mr: 2 }} />
+					<Avatar
+						src={lightfingerprint}
+						sx={{ mr: 2, cursor: "pointer" }}
+						onClick={() => navigate("/")}
+					/>
 					<Typography
 						variant="h6"
 						noWrap
 						component="a"
+						onClick={() => navigate("/")}
 						sx={{
 							mr: 2,
 							display: { xs: "none", md: "flex" },
@@ -81,7 +86,8 @@ function Nav() {
 							fontWeight: 700,
 							letterSpacing: ".15rem",
 							color: "inherit",
-							textDecoration: "none"
+							textDecoration: "none",
+							cursor: "pointer"
 						}}
 					>
 						Pályakövetés

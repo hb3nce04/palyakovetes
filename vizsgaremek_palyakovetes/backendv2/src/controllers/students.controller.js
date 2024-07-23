@@ -4,12 +4,11 @@ import { StatusCodes, ReasonPhrases } from "http-status-codes";
 export const getStudentByID = (req, res) => {
 	const { id } = req.params;
 
-	prisma.Student.findMany({ where: { id } })
-		.then((students) => {
-			return res.status(StatusCodes.OK).json(students);
+	prisma.Student.findUnique({ where: { id }, include: { Field: true } })
+		.then((student) => {
+			return res.status(StatusCodes.OK).json(student);
 		})
 		.catch((err) => {
-			console.log(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
@@ -18,7 +17,6 @@ export const getStudentByID = (req, res) => {
 
 export const getFieldByStudentID = (req, res) => {
 	const { id } = req.params;
-
 	prisma.Field.findMany({
 		where: { student_id: parseInt(id) },
 		include: { Category: true }
@@ -27,7 +25,6 @@ export const getFieldByStudentID = (req, res) => {
 			return res.status(StatusCodes.OK).json(fields);
 		})
 		.catch((err) => {
-			console.log(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
@@ -46,8 +43,6 @@ export const createStudent = async (req, res) => {
 		description
 	} = req.body;
 
-	console.log(req.body);
-
 	if (
 		!id ||
 		!name ||
@@ -59,7 +54,7 @@ export const createStudent = async (req, res) => {
 		!description
 	) {
 		return res
-			.status(StatusCodes.UNAUTHORIZED)
+			.status(StatusCodes.BAD_REQUEST)
 			.json({ message: "Hiányos adatok." });
 	}
 
@@ -91,7 +86,6 @@ export const createStudent = async (req, res) => {
 		}
 	})
 		.then((std) => {
-			console.log(std);
 			return res.status(StatusCodes.CREATED).json({
 				message:
 					"Az osztály és a hozzátartozó pálya sikeresen létrehozva."
@@ -141,7 +135,7 @@ export const updateStudentByID = async (req, res) => {
 		!(professionId || sectorId)
 	) {
 		return res
-			.status(StatusCodes.UNAUTHORIZED)
+			.status(StatusCodes.BAD_REQUEST)
 			.json({ message: "Hiányos adatok." });
 	}
 

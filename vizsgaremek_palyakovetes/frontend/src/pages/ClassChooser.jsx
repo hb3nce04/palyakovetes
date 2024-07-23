@@ -8,15 +8,16 @@ import {
 	Paper,
 	Typography
 } from "@mui/material";
-import axios from "axios";
+import axios from "../utils/axios";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { ClassContext } from "../context/auth/ClassContext";
+import { ClassContext } from "../context/ClassContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AlertDialog from "../components/AlertDialog";
-import { AuthContext } from "../context/auth/AuthContext";
+import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 export const ClassChooser = () => {
 	const { classData, handleSet: handleClasses } = useContext(ClassContext);
@@ -25,9 +26,7 @@ export const ClassChooser = () => {
 
 	useEffect(() => {
 		axios
-			.get("http://localhost:8080/classes/class_chooser", {
-				withCredentials: true
-			})
+			.get("/classes")
 			.then((res) => {
 				handleClasses(res.data);
 			})
@@ -42,11 +41,11 @@ export const ClassChooser = () => {
 			<Nav />
 			<Paper style={{ padding: "3rem 6rem" }} elevation={2}>
 				<Typography
-					style={{ marginBottom: "1rem" }}
+					style={{ marginBottom: "1rem", fontWeight: "bold" }}
 					variant="h3"
 					color="primary"
 				>
-					Válasszon osztályt!
+					Válassz osztályt!
 				</Typography>
 
 				<Grid container spacing={2}>
@@ -64,7 +63,7 @@ export const ClassChooser = () => {
 												fontSize: "1.5rem"
 											}}
 											onClick={() => {
-												navigate("/addclass");
+												navigate("/class/add");
 											}}
 										>
 											+ OSZTÁLY HOZZÁADÁSA
@@ -87,13 +86,13 @@ export const ClassChooser = () => {
 												variant="h5"
 												gutterBottom
 											>
-												Osztály: {el.osztaly_nev}
+												Osztály: {el.name}
 											</Typography>
 											<Typography variant="h5">
-												Végzési év: {el.vegzesi_ev}
+												Végzési év: {el.finishing_year}
 											</Typography>
 											<Typography color="text.secondary">
-												{el.iskola_nev}
+												{el.School.name}
 											</Typography>
 										</CardContent>
 										<CardActions
@@ -105,7 +104,7 @@ export const ClassChooser = () => {
 											<Button
 												onClick={() => {
 													localStorage.setItem(
-														"currentclassid",
+														"selected_class",
 														el.id
 													);
 													navigate("/");
@@ -139,18 +138,18 @@ export const ClassChooser = () => {
 														<tbody>
 															<tr>
 																<td>
+																	{el.name}
+																</td>
+																<td>
 																	{
-																		el.osztaly_nev
+																		el.finishing_year
 																	}
 																</td>
 																<td>
 																	{
-																		el.vegzesi_ev
-																	}
-																</td>
-																<td>
-																	{
-																		el.iskola_nev
+																		el
+																			.School
+																			.name
 																	}
 																</td>
 															</tr>
@@ -167,21 +166,15 @@ export const ClassChooser = () => {
 													e.stopPropagation();
 
 													axios
-														.post(
-															"http://localhost:8080/classes/delete",
-															{ id: el.id },
-															{
-																withCredentials: true
-															}
+														.delete(
+															`/classes/${el.id}`
 														)
-														.then(() => {
+														.then((r) => {
+															toast.success(
+																r.data.message
+															);
 															axios
-																.get(
-																	"http://localhost:8080/classes/class_chooser",
-																	{
-																		withCredentials: true
-																	}
-																)
+																.get("/classes")
 																.then((res) => {
 																	handleClasses(
 																		res.data

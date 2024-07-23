@@ -1,42 +1,65 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import {
+	Avatar,
+	Button,
+	CssBaseline,
+	TextField,
+	Box,
+	Typography,
+	Container
+} from "@mui/material";
 import Footer from "../components/Footer";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/auth/AuthContext";
 import fingerprint from "../images/fingerprint.svg";
-import { omIdentifierPattern } from "../utils/utils";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+
+const validationSchema = yup.object({
+	id: yup
+		.string()
+		.required("OM azonosító megadása kötelező")
+		.min(
+			11,
+			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
+		)
+		.max(
+			11,
+			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
+		),
+	password: yup
+		.string()
+		.min(8, "A jelszónak legalább 8 karakter hosszúnak kell lennie")
+		.max(24, "A jelszónak legfeljebb 24 karakter hosszúnak kell lennie")
+		.required("Jelszó megadása kötelező")
+});
 
 export default function SignIn() {
 	localStorage.setItem("user", null);
-	const [formData, setFormData] = useState({
-		om_azon: "",
-		jelszo: ""
-	});
 	const navigate = useNavigate();
-	const { login, currentUser } = useContext(AuthContext);
-	const [validOM, setValidOM] = useState(false);
-
-	const handleClick = async (event) => {
-		if (formData?.om_azon.trim() !== "" || formData?.jelszo.trim() !== "") {
-			login(formData)
+	const { login } = useContext(AuthContext);
+	const formik = useFormik({
+		initialValues: {
+			id: "",
+			password: ""
+		},
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			login(values)
 				.then((e) => {
 					if (e.isAdmin === 1) {
-						navigate("/admin/users/edit");
+						navigate("/admin/users/list");
 					} else if (e.isAdmin === 0) {
-						navigate("/classchooser");
+						navigate("/class/choose");
 					}
+					toast.success(e.message);
 				})
-				.catch((error) => {
-					alert("Nem megfelelő OM azonosító/jelszó páros.");
+				.catch(() => {
+					toast.error("Hibás felhasználónév vagy jelszó!");
 				});
 		}
-	};
+	});
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -56,54 +79,43 @@ export default function SignIn() {
 				<Typography component="h1" variant="h5" sx={{ mt: 2 }}>
 					Bejelentkezés
 				</Typography>
-				<Box component="form" onSubmit={handleClick} sx={{ mt: 2 }}>
+				<Box
+					component="form"
+					onSubmit={formik.handleSubmit}
+					sx={{ mt: 2 }}
+				>
 					<TextField
-						error={!validOM}
-						helperText={
-							formData.om_azon === ""
-								? "Kérjük, írja be az OM azonosítóját!"
-								: " " &&
-								  omIdentifierPattern.test(formData.om_azon) ===
-										false
-								? "A megadott OM azonosító nem felel meg a formátumnak. [11 hosszú, csak számok]"
-								: " "
-						}
-						value={formData?.om_azon || ""}
-						onChange={({ target: { name, value } }) => {
-							setFormData({ ...formData, [name]: value });
-							setValidOM(omIdentifierPattern.test(value));
-						}}
-						margin="normal"
-						required
-						fullWidth
+						id="id"
+						name="id"
 						label="OM azonosító"
-						name="om_azon"
-						autoComplete="om_azon"
+						value={formik.values.id}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={formik.touched.id && Boolean(formik.errors.id)}
+						helperText={formik.touched.id && formik.errors.id}
+						margin="normal"
 						autoFocus
-						inputProps={{
-							inputMode: "numeric",
-							pattern: omIdentifierPattern
-						}}
+						fullWidth
 					/>
 					<TextField
-						error={formData.jelszo.trim().length === 0}
-						helperText={
-							formData.jelszo.length === 0
-								? "Kérjük, írja be a jelszavát!"
-								: " "
-						}
-						value={formData?.jelszo || ""}
-						onChange={({ target: { name, value } }) =>
-							setFormData({ ...formData, [name]: value })
-						}
-						margin="normal"
-						required
-						fullWidth
-						name="jelszo"
+						id="password"
+						name="password"
 						label="Jelszó"
 						type="password"
+						value={formik.values.password}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={
+							formik.touched.password &&
+							Boolean(formik.errors.password)
+						}
+						helperText={
+							formik.touched.password && formik.errors.password
+						}
+						margin="normal"
+						fullWidth
 					/>
-					<Button fullWidth onClick={handleClick} variant="contained">
+					<Button fullWidth type="submit" variant="contained">
 						Bejelentkezés
 					</Button>
 				</Box>

@@ -1,4 +1,5 @@
 import { prisma } from "../utils/prisma-client.js";
+import bcrypt from "bcrypt";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getUsers = (req, res) => {
@@ -7,7 +8,6 @@ export const getUsers = (req, res) => {
 			return res.status(StatusCodes.OK).json(users);
 		})
 		.catch((err) => {
-			console.log(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);
@@ -37,16 +37,16 @@ export const deleteUser = (req, res) => {
 };
 
 export const updatePassword = async (req, res) => {
-	const { regiJelszo, ujJelszo } = req.body;
+	const { oldPassword, newPassword } = req.body;
 	const userId = req.user.id;
 
-	if (!ujJelszo || !regiJelszo) {
+	if (!newPassword || !oldPassword) {
 		return res
 			.status(StatusCodes.BAD_REQUEST)
 			.json({ message: "Hiányos adatok." });
 	}
 
-	if (ujJelszo.length < 8) {
+	if (newPassword.length < 8) {
 		return res.status(StatusCodes.BAD_REQUEST).json({
 			message:
 				"Az új jelszónak legalább 8 karakter hosszúnak kell lennie."
@@ -63,15 +63,15 @@ export const updatePassword = async (req, res) => {
 			.json({ message: "Hiba! A token hibás!" });
 	}
 
-	const validPassword = await bcrypt.compare(regiJelszo, foundUser.password);
+	const validPassword = await bcrypt.compare(oldPassword, foundUser.password);
 
 	if (!validPassword) {
-		return res.status(StatusCodes.UNAUTHORIZED).json({
+		return res.status(StatusCodes.BAD_REQUEST).json({
 			message: "Hibás jelszó!"
 		});
 	}
 
-	const hashedPassword = await bcrypt.hash(ujJelszo, 12);
+	const hashedPassword = await bcrypt.hash(newPassword, 12);
 
 	prisma.User.update({
 		where: {
@@ -87,7 +87,6 @@ export const updatePassword = async (req, res) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
 			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
 		});
 };

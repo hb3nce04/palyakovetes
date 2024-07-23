@@ -1,11 +1,12 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { AuthContext } from "../context/auth/AuthContext";
+import axios from "../utils/axios";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { UserToolBar } from "./custom-gridtoolbars/UserToolBar";
 import { isAdminFromDatabaseLogicConverter } from "../utils/utils";
 import { UserRowDeleteAction } from "./user-row-actions/UserRowDeleteAction";
+import { toast } from "react-toastify";
 
 export const UserDataTable = () => {
 	const [userData, setUserData] = useState([]);
@@ -15,16 +16,14 @@ export const UserDataTable = () => {
 	const currentUserData = () => {
 		let boolConvertedClassData = userData.map((o) => ({
 			...o,
-			admin: isAdminFromDatabaseLogicConverter(o.admin)
+			admin: isAdminFromDatabaseLogicConverter(o.is_admin)
 		}));
 		return boolConvertedClassData;
 	};
 
 	useEffect(() => {
 		axios
-			.get("http://localhost:8080/users/userList", {
-				withCredentials: true
-			})
+			.get("/users")
 			.then((e) => setUserData(e.data))
 			.catch((err) => {
 				if (err.code === "ERR_NETWORK") navigate("/login");
@@ -33,7 +32,7 @@ export const UserDataTable = () => {
 	}, []);
 
 	const columns = [
-		{ field: "om_azon", headerName: "OM azonosító", width: 130 },
+		{ field: "id", headerName: "OM azonosító", width: 130 },
 		{ field: "admin", headerName: "Jogosultság", width: 130 },
 		{
 			field: "delete",
@@ -61,19 +60,10 @@ export const UserDataTable = () => {
 	const onButtonClickDelete = (e, row) => {
 		e.stopPropagation();
 		axios
-			.post(
-				"http://localhost:8080/users/deleteUser",
-				{
-					om_azon: row.om_azon
-				},
-				{ withCredentials: true }
-			)
+			.delete(`/users/${row.id}`)
 			.then((e) => {
-				axios
-					.get("http://localhost:8080/users/userList", {
-						withCredentials: true
-					})
-					.then((e) => setUserData(e.data));
+				toast.success(e.data.message);
+				axios.get("/users").then((e) => setUserData(e.data));
 			})
 			.catch((err) => {
 				if (err.code === "ERR_NETWORK") navigate("/login");
@@ -96,7 +86,7 @@ export const UserDataTable = () => {
 				columns={columns}
 				disableRowSelectionOnClick={true}
 				pagination
-				getRowId={(row) => row.om_azon}
+				getRowId={(row) => row.id}
 				rowHeight={35}
 				sx={{
 					border: 2,
