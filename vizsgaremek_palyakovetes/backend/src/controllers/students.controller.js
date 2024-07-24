@@ -1,4 +1,5 @@
 import { prisma } from "../utils/prisma-client.js";
+import { validationMessage } from "../middlewares/validation.middleware.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getStudentByID = (req, res) => {
@@ -43,19 +44,9 @@ export const createStudent = async (req, res) => {
 		description
 	} = req.body;
 
-	if (
-		!id ||
-		!name ||
-		!classId ||
-		!(dayShift === 0 || dayShift === 1) ||
-		!sectorId ||
-		!professionId ||
-		!categoryId ||
-		!description
-	) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ message: "Hiányos adatok." });
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
 	}
 
 	const foundStudent = await prisma.Student.findFirst({
@@ -73,13 +64,13 @@ export const createStudent = async (req, res) => {
 		data: {
 			id,
 			name,
-			class_id: classId,
-			day_shift: dayShift === 1,
-			sector_id: sectorId,
-			profession_id: professionId,
+			class_id: parseInt(classId),
+			day_shift: dayShift,
+			sector_id: parseInt(sectorId),
+			profession_id: parseInt(professionId),
 			Field: {
 				create: {
-					category_id: categoryId,
+					category_id: parseInt(categoryId),
 					description
 				}
 			}
@@ -126,17 +117,9 @@ export const updateStudentByID = async (req, res) => {
 		description
 	} = req.body;
 
-	if (
-		!id ||
-		!name ||
-		!(dayShift === 0 || dayShift === 1) ||
-		!categoryId ||
-		!description ||
-		!(professionId || sectorId)
-	) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ message: "Hiányos adatok." });
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
 	}
 
 	const foundStudent = await prisma.Student.findFirst({
@@ -156,8 +139,8 @@ export const updateStudentByID = async (req, res) => {
 			},
 			data: {
 				name,
-				day_shift: dayShift === 1,
-				Profession: { connect: { id: professionId } } // null??
+				day_shift: dayShift,
+				Profession: { connect: { id: parseInt(professionId) } } // ??
 			}
 		});
 	}
@@ -169,8 +152,8 @@ export const updateStudentByID = async (req, res) => {
 			},
 			data: {
 				name,
-				day_shift: dayShift === 1,
-				Sector: { connect: { id: sectorId } } // null??
+				day_shift: dayShift,
+				Sector: { connect: { id: parseInt(sectorId) } } // null??
 			}
 		});
 	}
@@ -180,7 +163,7 @@ export const updateStudentByID = async (req, res) => {
 			student_id: id
 		},
 		data: {
-			category_id: categoryId,
+			category_id: parseInt(categoryId),
 			description
 		}
 	});

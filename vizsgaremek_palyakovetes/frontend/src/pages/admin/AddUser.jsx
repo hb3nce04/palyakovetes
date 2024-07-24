@@ -77,9 +77,13 @@ export const AddUser = () => {
 					variant="h4"
 					color="primary"
 					className="add-new-student-text"
-					style={{ marginBottom: "1rem", fontWeight: "bold" }}
+					style={{
+						marginBottom: "1rem",
+						fontWeight: "bold",
+						textTransform: "uppercase"
+					}}
 				>
-					ÚJ FELHASZNÁLÓ LÉTREHOZÁSA
+					új felhasználó létrehozása
 				</Typography>
 
 				<Box
@@ -122,8 +126,12 @@ export const AddUser = () => {
 							{formik.values.admin ? "Admin" : "Felhasználó"}
 						</Typography>
 					</div>
-					<Button type="submit" variant="contained">
-						LÉTREHOZÁS
+					<Button
+						type="submit"
+						variant="contained"
+						sx={{ textTransform: "uppercase" }}
+					>
+						létrehozás
 					</Button>
 				</Box>
 			</Paper>

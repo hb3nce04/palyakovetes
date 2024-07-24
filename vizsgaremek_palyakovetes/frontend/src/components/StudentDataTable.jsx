@@ -11,6 +11,7 @@ import { workScheduleFromDatabaseLogicConverter } from "../utils/utils";
 import { StudentRowViewAction } from "./student-row-actions/StudentRowViewAction";
 import { StudentRowEditAction } from "./student-row-actions/StudentRowEditAction";
 import { StudentRowDeleteAction } from "./student-row-actions/StudentRowDeleteAction";
+import { huHU } from "@mui/x-data-grid/locales";
 import { toast } from "react-toastify";
 
 export default function StudentData(props) {
@@ -136,7 +137,7 @@ export default function StudentData(props) {
 	const fetchStudents = () => {
 		return axios.get(`/classes/${class_id}/students`).catch((err) => {
 			if (err.code === "ERR_NETWORK") navigate("/login");
-			if (err.response.status === 401) logout();
+			if (err.response?.status === 401) logout();
 		});
 	};
 	const fetchPalya = (id) => {
@@ -250,7 +251,7 @@ export default function StudentData(props) {
 			</h1>
 
 			<DataGrid
-				/*MUI-hoz tartozó magyar fordítás hiányos*/
+				localeText={huHU.components.MuiDataGrid.defaultProps.localeText}
 				rows={currentStudentData()}
 				columns={columns}
 				checkboxSelection
@@ -268,14 +269,14 @@ export default function StudentData(props) {
 					const selectedIDs = new Set(ids);
 					const selectedRowData = currentStudentData().filter(
 						(row) => {
-							return selectedIDs.has(row.om_azon);
+							return selectedIDs.has(row.id);
 						}
 					);
 
 					setSelectedRows(selectedRowData);
 				}}
-				components={{
-					Toolbar: StudentToolBar
+				slots={{
+					toolbar: StudentToolBar
 				}}
 				componentsProps={{
 					toolbar: { selectedRows }

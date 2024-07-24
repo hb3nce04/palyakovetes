@@ -78,7 +78,11 @@ export const Profile = () => {
 								: navigate("/");
 						}}
 					/>
-					<Typography variant="h3" color="primary">
+					<Typography
+						variant="h3"
+						color="primary"
+						sx={{ textTransform: "uppercase" }}
+					>
 						Profil
 					</Typography>
 

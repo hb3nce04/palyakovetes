@@ -1,160 +1,160 @@
 .genericNotFound {
-  font-size: 1.5rem;
-  text-align: center;
-  margin-top: 10vh;
+	font-size: 1.5rem;
+	text-align: center;
+	margin-top: 10vh;
 }
 
 .columnsData {
-  /*background-color: rgba(0, 162, 255, 0.144);*/
+	/*background-color: rgba(0, 162, 255, 0.144);*/
 }
 
 input[type="file"] {
-  display: none;
+	display: none;
 }
 
 .importAsCSVLabel {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 ::-webkit-scrollbar {
-  width: 16px;
+	width: 16px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+	background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+	background: #888;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+	background: #555;
 }
 
 .backToHomePageButton {
-  display: inline-block;
-  border-radius: 4px;
-  background-color: rgb(86, 167, 86);
-  border: none;
-  color: #ffffff;
-  text-align: center;
-  font-size: 2rem;
-  padding: 1rem;
-  width: 20rem;
-  transition: all 0.5s;
-  cursor: pointer;
-  margin: 0.5rem;
+	display: inline-block;
+	border-radius: 4px;
+	background-color: rgb(86, 167, 86);
+	border: none;
+	color: #ffffff;
+	text-align: center;
+	font-size: 2rem;
+	padding: 1rem;
+	width: 20rem;
+	transition: all 0.5s;
+	cursor: pointer;
+	margin: 0.5rem;
 }
 
 .backToHomePageButton span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.5s;
 }
 
 .backToHomePageButton span:after {
-  content: "\00bb";
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.5s;
+	content: "\00bb";
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	right: -20px;
+	transition: 0.5s;
 }
 
 .backToHomePageButton:hover span {
-  padding-right: 2rem;
+	padding-right: 2rem;
 }
 
 .backToHomePageButton:hover span:after {
-  opacity: 1;
-  right: 0;
+	opacity: 1;
+	right: 0;
 }
 
 @media only screen and (max-width: 600px) {
-  .wrapper {
-    padding: 1rem 2rem;
-  }
-  .school-class-text {
-    text-align: center;
-  }
-  .add-new-student-text {
-    text-align: center;
-  }
+	.wrapper {
+		padding: 1rem 2rem;
+	}
+	.school-class-text {
+		text-align: center;
+	}
+	.add-new-student-text {
+		text-align: center;
+	}
 
-  div.user-form {
-    margin: 1rem auto;
-    padding: 1rem;
-  }
-  div.user-form * {
-    text-align: center;
-    width: 100%;
-  }
+	div.user-form {
+		margin: 1rem auto;
+		padding: 1rem;
+	}
+	div.user-form * {
+		text-align: center;
+		width: 100%;
+	}
 
-  .formMain {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    margin: 0 auto;
-  }
-  .form2 {
-    display: grid;
-    order: 0;
-    width: 80%;
-  }
-  .form1 {
-    order: 1;
-    margin-right: 0rem;
-    display: grid;
-    width: 80%;
-  }
-  .form1 * {
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  .form2 * {
-    margin-bottom: 1rem;
-  }
+	.formMain {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		width: 100%;
+		margin: 0 auto;
+	}
+	.form2 {
+		display: grid;
+		order: 0;
+		width: 80%;
+	}
+	.form1 {
+		order: 1;
+		margin-right: 0rem;
+		display: grid;
+		width: 80%;
+	}
+	.form1 * {
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+	.form2 * {
+		margin-bottom: 1rem;
+	}
 }
 
 @media only screen and (min-width: 600px) {
-  .wrapper {
-    padding: 3rem 6rem;
-  }
-  .formMain {
-    display: flex;
-  }
-  .form1 {
-    margin-right: 1rem;
-    display: grid;
-    width: 35%;
-  }
-  .form2 {
-    display: grid;
-    width: 35%;
-  }
+	.wrapper {
+		padding: 3rem 6rem;
+	}
+	.formMain {
+		display: flex;
+	}
+	.form1 {
+		margin-right: 1rem;
+		display: grid;
+		width: 35%;
+	}
+	.form2 {
+		display: grid;
+		width: 35%;
+	}
 
-  .user-form {
-    margin-left: 4rem;
-    padding: 3rem;
-    width: 30rem;
-    display: "flex";
-    flex-direction: "column";
-  }
+	.user-form {
+		margin-left: 4rem;
+		padding: 3rem;
+		width: 30rem;
+		display: "flex";
+		flex-direction: "column";
+	}
 }
 
 table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 80%;
-  margin: 0 auto;
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 80%;
+	margin: 0 auto;
 }
 
 td,
 th {
-  border: 3px solid grey;
-  text-align: left;
-  padding: 1px;
+	border: 3px solid grey;
+	text-align: left;
+	padding: 1px;
 }

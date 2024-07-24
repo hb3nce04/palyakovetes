@@ -6,10 +6,12 @@ import {
 	deleteClassByID
 } from "../controllers/classes.controller.js";
 
+import { classValidation } from "../middlewares/validation.middleware.js";
+
 const router = Router();
 
 router.get("/", getClasses);
-router.post("/", createClass);
+router.post("/", classValidation, createClass);
 router.delete("/:id", deleteClassByID);
 
 router.get("/:id/students", getStudentsByClassID);

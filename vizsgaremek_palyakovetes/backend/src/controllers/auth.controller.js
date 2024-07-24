@@ -1,15 +1,16 @@
+import { validationMessage } from "../middlewares/validation.middleware.js";
 import { prisma } from "../utils/prisma-client.js";
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const register = async (req, res) => {
-	const { id, password, admin } = req.body;
+export const create = async (req, res) => {
+	// frontend átír: admin -> isAdmin
+	const { id, password, isAdmin } = req.body;
 
-	if (!id || !password || !(admin === 0 || admin === 1)) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ message: "Hiányos adatok." });
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
 	}
 
 	const foundUser = await prisma.User.findUnique({
@@ -25,7 +26,7 @@ export const register = async (req, res) => {
 	const hashedPassword = await bcrypt.hash(password, 12);
 
 	const newUser = await prisma.User.create({
-		data: { id, password: hashedPassword, is_admin: admin === 1 }
+		data: { id, password: hashedPassword, is_admin: isAdmin }
 	}).then((usr) => {
 		return res
 			.status(StatusCodes.CREATED)
@@ -36,10 +37,9 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
 	const { id, password } = req.body;
 
-	if (!id || !password) {
-		return res
-			.status(StatusCodes.UNAUTHORIZED)
-			.json({ message: "Hibás felhasználónév vagy jelszó!" });
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
 	}
 
 	const foundUser = await prisma.User.findUnique({

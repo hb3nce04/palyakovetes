@@ -24,8 +24,8 @@ export const StudentRowDeleteAction = ({ params, clickEvent }) => {
 							<tr>
 								<td>{params.row.id}</td>
 								<td>{params.row.name}</td>
-								<td>{params.row.sector_id}</td>
-								<td>{params.row.profession_id}</td>
+								<td>{params.row.sector_name}</td>
+								<td>{params.row.profession_name}</td>
 								<td>{params.row.day_shift}</td>
 							</tr>
 						</tbody>

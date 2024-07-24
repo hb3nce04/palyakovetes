@@ -6,11 +6,12 @@ import {
 	deleteUser,
 	updatePassword
 } from "../controllers/users.controller.js";
+import { updatePasswordValidation } from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
 router.get("/", isAuthenticated, isAdmin, getUsers);
 router.delete("/:id", isAuthenticated, isAdmin, deleteUser);
-router.patch("/:id", isAuthenticated, updatePassword);
+router.patch("/:id", isAuthenticated, updatePasswordValidation, updatePassword);
 
 export default router;

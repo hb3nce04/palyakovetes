@@ -42,3 +42,5 @@ app.listen(PORT, () => {
 	console.log(`server: http://localhost:${PORT}/api`);
 	console.log(`environment: ${process.env.NODE_ENV}`);
 });
+
+export default app;

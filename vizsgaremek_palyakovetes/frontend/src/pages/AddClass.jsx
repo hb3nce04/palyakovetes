@@ -36,13 +36,13 @@ export const AddClass = () => {
 	const years = Array.from(new Array(25), (val, index) =>
 		String(year - index)
 	);
-	const { schools, setSchools } = useState([]);
+	const [schools, setSchools] = useState();
 	const formik = useFormik({
 		initialValues: {
 			id: currentUser.id,
 			name: "",
 			finishingYear: 2024,
-			schoolId: 0
+			schoolId: ""
 		},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
@@ -66,7 +66,6 @@ export const AddClass = () => {
 			.get("/schools")
 			.then((e) => {
 				setSchools(e.data);
-				console.log(schools);
 			})
 			.catch((err) => {
 				if (err.code === "ERR_NETWORK") navigate("/login");
@@ -88,9 +87,13 @@ export const AddClass = () => {
 					variant="h4"
 					color="primary"
 					className="add-new-student-text"
-					style={{ marginBottom: "1rem", fontWeight: "bold" }}
+					style={{
+						marginBottom: "1rem",
+						fontWeight: "bold",
+						textTransform: "uppercase"
+					}}
 				>
-					OSZTÁLY FELVÉTELE
+					osztály felvétele
 				</Typography>
 
 				<Box
@@ -109,6 +112,7 @@ export const AddClass = () => {
 						fullWidth
 						label="Osztály neve"
 						name="name"
+						sx={{ mb: 3 }}
 						autoFocus
 					/>
 					<FormControl>
@@ -121,6 +125,7 @@ export const AddClass = () => {
 							label="Végzési év"
 							value={formik.values.finishingYear}
 							onChange={formik.handleChange}
+							sx={{ mb: 3 }}
 							name="finishingYear"
 						>
 							{years.map((s, index) => {
@@ -143,6 +148,7 @@ export const AddClass = () => {
 							name="schoolId"
 							value={formik.values.schoolId}
 							onChange={formik.handleChange}
+							sx={{ mb: 3 }}
 						>
 							{schools?.map((e, index) => {
 								return (
@@ -150,11 +156,15 @@ export const AddClass = () => {
 										{e.name}
 									</MenuItem>
 								);
-							}) && "Loading..."}
+							})}
 						</Select>
 					</FormControl>
-					<Button type="submit" variant="contained">
-						OSZTÁLY FELVÉTELE
+					<Button
+						type="submit"
+						variant="contained"
+						sx={{ textTransform: "uppercase" }}
+					>
+						osztály felvétele
 					</Button>
 				</Box>
 			</Paper>

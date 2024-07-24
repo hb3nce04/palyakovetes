@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserToolBar } from "./custom-gridtoolbars/UserToolBar";
 import { isAdminFromDatabaseLogicConverter } from "../utils/utils";
 import { UserRowDeleteAction } from "./user-row-actions/UserRowDeleteAction";
+import { huHU } from "@mui/x-data-grid/locales";
 import { toast } from "react-toastify";
 
 export const UserDataTable = () => {
@@ -81,7 +82,7 @@ export const UserDataTable = () => {
 			}}
 		>
 			<DataGrid
-				/*MUI-hoz tartozó magyar fordítás hiányos*/
+				localeText={huHU.components.MuiDataGrid.defaultProps.localeText}
 				rows={currentUserData()}
 				columns={columns}
 				disableRowSelectionOnClick={true}
@@ -92,8 +93,8 @@ export const UserDataTable = () => {
 					border: 2,
 					borderColor: "#E0E0E0"
 				}}
-				components={{
-					Toolbar: UserToolBar
+				slots={{
+					toolbar: UserToolBar
 				}}
 			/>
 		</div>

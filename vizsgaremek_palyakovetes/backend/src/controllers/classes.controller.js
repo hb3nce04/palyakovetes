@@ -1,4 +1,5 @@
 import { prisma } from "../utils/prisma-client.js";
+import { validationMessage } from "../middlewares/validation.middleware.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 
 export const getClasses = (req, res) => {
@@ -34,9 +35,14 @@ export const createClass = async (req, res) => {
 	const { schoolId, name, finishingYear } = req.body;
 	const userId = req.user.id;
 
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
+	}
+
 	const foundClass = await prisma.Class.findFirst({
 		where: {
-			school_id: schoolId,
+			school_id: parseInt(schoolId),
 			name,
 			finishing_year: parseInt(finishingYear)
 		}
@@ -50,7 +56,7 @@ export const createClass = async (req, res) => {
 
 	const newClass = await prisma.Class.create({
 		data: {
-			School: { connect: { id: schoolId } },
+			School: { connect: { id: parseInt(schoolId) } },
 			User: { connect: { id: userId } },
 			name,
 			finishing_year: parseInt(finishingYear)

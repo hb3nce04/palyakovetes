@@ -1,6 +1,7 @@
 import { prisma } from "../utils/prisma-client.js";
 import bcrypt from "bcrypt";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import { validationMessage } from "../middlewares/validation.middleware.js";
 
 export const getUsers = (req, res) => {
 	prisma.User.findMany({ select: { id: true, is_admin: true } })
@@ -40,17 +41,9 @@ export const updatePassword = async (req, res) => {
 	const { oldPassword, newPassword } = req.body;
 	const userId = req.user.id;
 
-	if (!newPassword || !oldPassword) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ message: "Hiányos adatok." });
-	}
-
-	if (newPassword.length < 8) {
-		return res.status(StatusCodes.BAD_REQUEST).json({
-			message:
-				"Az új jelszónak legalább 8 karakter hosszúnak kell lennie."
-		});
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
 	}
 
 	const foundUser = await prisma.User.findUnique({

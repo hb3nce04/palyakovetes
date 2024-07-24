@@ -29,21 +29,23 @@ function App() {
 	const { classData, handleSet: handleClasses } = useContext(ClassContext);
 
 	useEffect(() => {
-		axios
-			.get("/classes")
-			.then((res) => {
-				handleClasses(res.data);
-			})
-			.catch((err) => {
-				if (
-					err.code === "ERR_NETWORK" &&
-					window.location.href.split("/")[
-						window.location.href.split("/").length - 1
-					] !== "login"
-				) {
-					window.location.href = "/login";
-				}
-			});
+		if (currentUser) {
+			axios
+				.get("/classes")
+				.then((res) => {
+					handleClasses(res.data);
+				})
+				.catch((err) => {
+					if (
+						err.code === "ERR_NETWORK" &&
+						window.location.href.split("/")[
+							window.location.href.split("/").length - 1
+						] !== "login"
+					) {
+						window.location.href = "/login";
+					}
+				});
+		}
 	}, [currentUser]);
 
 	return (

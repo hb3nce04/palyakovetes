@@ -25,15 +25,17 @@ export const ClassChooser = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		axios
-			.get("/classes")
-			.then((res) => {
-				handleClasses(res.data);
-			})
-			.catch((err) => {
-				if (err.code === "ERR_NETWORK") navigate("/login");
-				if (err.response.status === 401) logout();
-			});
+		if (currentUser) {
+			axios
+				.get("/classes")
+				.then((res) => {
+					handleClasses(res.data);
+				})
+				.catch((err) => {
+					if (err.code === "ERR_NETWORK") navigate("/login");
+					if (err.response.status === 401) logout();
+				});
+		}
 	}, [currentUser]);
 
 	return (
@@ -51,7 +53,7 @@ export const ClassChooser = () => {
 				<Grid container spacing={2}>
 					{[0, ...classData].map((el, i) => {
 						return el === 0 ? (
-							<Grid item xs={12} sm={6} md={3} key={el.id}>
+							<Grid item xs={12} sm={6} md={3} key={i}>
 								<Card sx={{ minWidth: 150, height: "100%" }}>
 									<CardActions sx={{ height: "100%" }}>
 										<Button
@@ -60,19 +62,20 @@ export const ClassChooser = () => {
 												width: "100%",
 												height: "100%",
 												fontWeight: "bold",
-												fontSize: "1.5rem"
+												fontSize: "1.5rem",
+												textTransform: "uppercase"
 											}}
 											onClick={() => {
 												navigate("/class/add");
 											}}
 										>
-											+ OSZTÁLY HOZZÁADÁSA
+											+ osztály hozzáadása
 										</Button>
 									</CardActions>
 								</Card>
 							</Grid>
 						) : (
-							<Grid item xs={12} sm={6} md={3} key={el.id}>
+							<Grid item xs={12} sm={6} md={3} key={i}>
 								<Grow
 									in={true}
 									style={{ transformOrigin: "0 0 0" }}

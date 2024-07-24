@@ -1,4 +1,5 @@
 import {
+	Box,
 	Button,
 	Checkbox,
 	FormControl,
@@ -20,8 +21,20 @@ import { useNavigate } from "react-router-dom";
 import { StudentRowContext } from "../context/StudentsRowContext";
 import { BackToPageButton } from "../components/BackToPageButton";
 import { AuthContext } from "../context/AuthContext";
-import { studentNameRegexPattern } from "../utils/utils";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+const validationSchema = yup.object({
+	id: yup.string(),
+	name: yup.string(),
+	dayShift: yup.boolean(),
+	classId: yup.number(),
+	professionId: yup.number(),
+	sectorId: yup.number(),
+	categoryId: yup.number(),
+	field_description: yup.string()
+});
 
 export const UpdateStudent = () => {
 	const { classData } = useContext(ClassContext);
@@ -30,36 +43,39 @@ export const UpdateStudent = () => {
 	const [categories, setCategories] = useState([]);
 	const [professions, setProfessions] = useState([]);
 	const [sectors, setSectors] = useState([]);
-	const [valid, setValid] = useState(true);
 	const { studentRow, handleSet: handleStudentRow } =
 		useContext(StudentRowContext);
 
-	const [formData, setFormData] = useState({
-		id: "",
-		name: "",
-		dayShift: null,
-		classId: Number(localStorage.getItem("selected_class")),
-		professionId: null,
-		sectorId: null,
-		categoryId: null,
-		field_description: ""
+	const formik = useFormik({
+		initialValues: {
+			id: "",
+			name: "",
+			dayShift: null,
+			classId: Number(localStorage.getItem("selected_class")),
+			professionId: null,
+			sectorId: null,
+			categoryId: null,
+			description: ""
+		},
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			console.log(values);
+			axios
+				.put(`/students/${values.id}`, values)
+				.then((res) => {
+					console.log(values);
+					toast.success(res.data.message);
+					navigate("/");
+				})
+				.catch((err) => {
+					if (err.response.data.message) {
+						toast.error(err.response.data.message);
+					}
+					if (err.code === "ERR_NETWORK") navigate("/login");
+					if (err.response.status === 401) logout();
+				});
+		}
 	});
-
-	const handleUpdateStudent = () => {
-		axios
-			.put(`/students/${formData.id}`, formData)
-			.then((res) => {
-				toast.success(res.data.message);
-				navigate("/");
-			})
-			.catch((err) => {
-				if (err.response.data.message) {
-					toast.error(err.response.data.message);
-				}
-				if (err.code === "ERR_NETWORK") navigate("/login");
-				if (err.response.status === 401) logout();
-			});
-	};
 
 	const currentClassData = () => {
 		if (!classData) {
@@ -74,26 +90,25 @@ export const UpdateStudent = () => {
 	};
 
 	useEffect(() => {
-		new Promise((res, rej) => {
+		new Promise((res) => {
 			res(studentRow);
 		}).then((id) => {
 			axios
 				.get(`/students/${id}`)
 				.then((e) => {
-					console.log(e.data);
-					setFormData({
+					formik.setValues({
 						id: e.data.id,
-						name: e.data.name || "",
+						name: e.data.name,
 						dayShift: e.data.day_shift,
-						professionId: e.data.profession_id || null,
-						sectorId: e.data.sector_id || null,
-						description: e.data.Field.description || "",
-						categoryId: e.data.Field.category_id || null
+						professionId: e.data.profession_id,
+						sectorId: e.data.sector_id,
+						categoryId: e.data.Field?.category_id,
+						description: e.data.Field?.description
 					});
 				})
 				.catch((err) => {
 					if (err.code === "ERR_NETWORK") navigate("/login");
-					if (err.response.status === 401) logout();
+					if (err.response?.status === 401) logout();
 				});
 		});
 
@@ -154,55 +169,49 @@ export const UpdateStudent = () => {
 					variant="h4"
 					color="primary"
 					className="add-new-student-text"
-					style={{ fontWeight: "bold" }}
+					style={{ fontWeight: "bold", textTransform: "uppercase" }}
 				>
-					TANULÓ MÓDOSÍTÁSA
+					tanuló módosítása
 				</Typography>
 				<h2 className="school-class-text">
-					{currentClassData()?.School?.name || ""} :{" "}
+					{currentClassData()?.School?.name || ""}:{" "}
 					{currentClassData().name || ""}
 				</h2>
 
-				<div className="formMain">
+				<Box
+					component="form"
+					onSubmit={formik.handleSubmit}
+					className="formMain"
+				>
 					<div className="form1">
 						<TextField
-							value={formData?.id || ""}
+							value={formik.values.id}
 							disabled
-							required
 							fullWidth
 							label="OM azonosító"
 							name="id"
 							autoComplete="id"
 							autoFocus
-							inputProps={{ inputMode: "", pattern: "" }}
 						/>
 						<TextField
-							helperText={
-								formData.name.trim() === ""
-									? "Kérjük, írja be egy tanuló nevét!"
-									: " " &&
-									  studentNameRegexPattern.test(
-											formData.name
-									  ) === false
-									? "A megadott név nem felel meg a formátumnak."
-									: " " || setValid(true)
+							value={formik.values.name}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={
+								formik.touched.name &&
+								Boolean(formik.errors.name)
 							}
-							error={!valid}
-							value={formData?.name || ""}
-							onChange={({ target: { name, value } }) => {
-								setFormData({ ...formData, [name]: value });
-								setValid(studentNameRegexPattern.test(value));
-							}}
-							required
+							helperText={
+								formik.touched.name && formik.errors.name
+							}
 							fullWidth
 							label="Tanuló neve"
 							name="name"
 							autoComplete="name"
 							autoFocus
-							inputProps={{ pattern: studentNameRegexPattern }}
 						/>
 
-						<FormControl required>
+						<FormControl>
 							<InputLabel htmlFor="grouped-select">
 								Szakma / Ágazat
 							</InputLabel>
@@ -213,17 +222,17 @@ export const UpdateStudent = () => {
 								id="grouped-select"
 								label="Szakma / Ágazat"
 								value={
-									(formData.sectorId
-										? formData.sectorId + "s"
+									(formik.values.sectorId
+										? formik.values.sectorId + "s"
 										: "") ||
-									(formData.professionId
-										? formData.professionId + "p"
+									(formik.values.professionId
+										? formik.values.professionId + "p"
 										: "")
 								}
 								onChange={(event) => {
 									if (event.target.value.includes("p")) {
-										setFormData({
-											...formData,
+										formik.setValues({
+											...formik.values,
 											professionId: Number(
 												event.target.value.replace(
 													"p",
@@ -235,8 +244,8 @@ export const UpdateStudent = () => {
 										event.target.name = "professionId";
 									}
 									if (event.target.value.includes("s")) {
-										setFormData({
-											...formData,
+										formik.setValues({
+											...formik.values,
 											sectorId: Number(
 												event.target.value.replace(
 													"s",
@@ -271,18 +280,11 @@ export const UpdateStudent = () => {
 						<FormControlLabel
 							control={
 								<Checkbox
-									value={formData?.dayShift}
-									checked={
-										formData.dayShift === 1 ? true : false
-									}
-									onChange={(event) => {
-										setFormData({
-											...formData,
-											dayShift: event.target.checked
-												? 1
-												: 0
-										});
-									}}
+									id="dayShift"
+									name="dayShift"
+									value={formik.values.dayShift}
+									checked={formik.values.dayShift}
+									onChange={formik.handleChange}
 								/>
 							}
 							label="Nappali munkarend"
@@ -291,18 +293,17 @@ export const UpdateStudent = () => {
 							style={{
 								width: "50%",
 								margin: "0 auto",
-								height: "80%"
+								height: "80%",
+								textTransform: "uppercase"
 							}}
-							onClick={(event) => {
-								if (valid) handleUpdateStudent();
-							}}
+							type="submit"
 							variant="contained"
 						>
-							TANULÓ MÓDOSÍTÁSA
+							tanuló módosítása
 						</Button>
 					</div>
 					<div className="form2">
-						<FormControl required>
+						<FormControl>
 							<InputLabel id="demo-simple-select-label">
 								Pálya kategóriája
 							</InputLabel>
@@ -310,18 +311,15 @@ export const UpdateStudent = () => {
 								labelId="demo-simple-select-label"
 								id="demo-simple-select"
 								label="Pálya kategóriája"
-								value={formData?.categoryId || ""}
-								onChange={({ target: { name, value } }) => {
-									setFormData({ ...formData, [name]: value });
-								}}
+								value={formik.values.categoryId || ""}
+								onChange={formik.handleChange}
 								fullWidth
 								name="categoryId"
 								autoFocus
-								inputProps={{ inputMode: "", pattern: "" }}
 							>
-								{categories.map((e) => {
+								{categories.map((e, i) => {
 									return (
-										<MenuItem value={e.id}>
+										<MenuItem key={i} value={e.id}>
 											{e.name}
 										</MenuItem>
 									);
@@ -337,20 +335,16 @@ export const UpdateStudent = () => {
 								multiline
 								rows={10}
 								defaultValue=""
-								value={formData?.description || ""}
-								onChange={({ target: { name, value } }) => {
-									setFormData({ ...formData, [name]: value });
-								}}
+								value={formik.values.description}
+								onChange={formik.handleChange}
 								margin="normal"
-								required
 								fullWidth
 								name="description"
 								autoFocus
-								inputProps={{ inputMode: "", pattern: "" }}
 							/>
 						</FormControl>
 					</div>
-				</div>
+				</Box>
 			</Paper>
 			<Footer trademark versionNumber />
 		</>
