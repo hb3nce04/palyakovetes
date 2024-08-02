@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === "production") {
 		})
 	);
 }
+
 app.use("/api", routes);
 
 app.use((req, res, next) => {

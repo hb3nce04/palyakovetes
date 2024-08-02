@@ -3,6 +3,35 @@ import bcrypt from "bcrypt";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import { validationMessage } from "../middlewares/validation.middleware.js";
 
+export const create = async (req, res) => {
+	const { id, password, isAdmin } = req.body;
+
+	const message = validationMessage(req);
+	if (message) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ message });
+	}
+
+	const foundUser = await prisma.User.findUnique({
+		where: { id }
+	});
+
+	if (foundUser) {
+		return res
+			.status(StatusCodes.CONFLICT)
+			.json({ message: "A felhasználó már létezik!" });
+	}
+
+	const hashedPassword = await bcrypt.hash(password, 12);
+
+	const newUser = await prisma.User.create({
+		data: { id, password: hashedPassword, is_admin: isAdmin }
+	}).then((usr) => {
+		return res
+			.status(StatusCodes.CREATED)
+			.json({ message: "Felhasználó sikeresen létrehozva." });
+	});
+};
+
 export const getUsers = (req, res) => {
 	prisma.User.findMany({ select: { id: true, is_admin: true } })
 		.then((users) => {
@@ -76,7 +105,7 @@ export const updatePassword = async (req, res) => {
 	})
 		.then(() => {
 			return res.status(StatusCodes.OK).json({
-				message: "Jelszó módosítva!" // Kérlek jelentkezz be újra???
+				message: "Jelszó sikeresen módosítva!"
 			});
 		})
 		.catch((err) => {

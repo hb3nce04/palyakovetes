@@ -1,13 +1,13 @@
 import { DataGrid } from "@mui/x-data-grid";
-import "../css/App.css";
+import "../styles/App.css";
 import { useNavigate } from "react-router-dom";
-import { ClassContext } from "../context/ClassContext";
+import { ClassContext } from "../contexts/ClassContext";
 import { useEffect, useContext, useState } from "react";
 import axios from "../utils/axios";
-import { StudentRowContext } from "../context/StudentsRowContext";
-import { AuthContext } from "../context/AuthContext";
+import { StudentRowContext } from "../contexts/StudentsRowContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { StudentToolBar } from "./custom-gridtoolbars/StudentToolBar";
-import { workScheduleFromDatabaseLogicConverter } from "../utils/utils";
+import { isDayShift } from "../utils/utils";
 import { StudentRowViewAction } from "./student-row-actions/StudentRowViewAction";
 import { StudentRowEditAction } from "./student-row-actions/StudentRowEditAction";
 import { StudentRowDeleteAction } from "./student-row-actions/StudentRowDeleteAction";
@@ -24,6 +24,7 @@ export default function StudentData(props) {
 	const navigate = useNavigate();
 	const { currentUser, logout } = useContext(AuthContext);
 	const [data, setData] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		fetchPalyaWithStudents();
@@ -175,6 +176,7 @@ export default function StudentData(props) {
 								}
 							);
 							setData(omitDuplicateOmIdentifier);
+							setLoading(false);
 						});
 				});
 			});
@@ -187,7 +189,7 @@ export default function StudentData(props) {
 		);
 		let boolConvertedClassData = currStudentsData.map((o) => ({
 			...o,
-			day_shift: workScheduleFromDatabaseLogicConverter(o.day_shift)
+			day_shift: isDayShift(o.day_shift)
 		}));
 		let convertNames = boolConvertedClassData.map((o) => ({
 			...o,
@@ -214,7 +216,7 @@ export default function StudentData(props) {
 	const onButtonClickEdit = (e, row) => {
 		e.stopPropagation();
 		handleStudentRow(row.id);
-		navigate("/student/update");
+		navigate("/student/edit");
 	};
 
 	const onButtonClickView = (e, row) => {
@@ -280,6 +282,13 @@ export default function StudentData(props) {
 				}}
 				componentsProps={{
 					toolbar: { selectedRows }
+				}}
+				loading={loading}
+				slotProps={{
+					loadingOverlay: {
+						variant: "circular-progress",
+						noRowsVariant: "skeleton"
+					}
 				}}
 			/>
 		</div>

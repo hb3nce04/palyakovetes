@@ -13,13 +13,13 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { ClassContext } from "../context/ClassContext";
+import { ClassContext } from "../contexts/ClassContext";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AlertDialog from "../components/AlertDialog";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 
-export const ClassChooser = () => {
+export const ClassSelector = () => {
 	const { classData, handleSet: handleClasses } = useContext(ClassContext);
 	const { currentUser, logout } = useContext(AuthContext);
 	const navigate = useNavigate();
@@ -110,7 +110,7 @@ export const ClassChooser = () => {
 														"selected_class",
 														el.id
 													);
-													navigate("/");
+													navigate("/students");
 												}}
 												sx={{ fontWeight: "bold" }}
 											>
@@ -210,7 +210,7 @@ export const ClassChooser = () => {
 					}) || []}
 				</Grid>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

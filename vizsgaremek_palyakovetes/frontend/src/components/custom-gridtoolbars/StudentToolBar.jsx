@@ -24,7 +24,13 @@ export const StudentToolBar = ({ selectedRows }) => {
             date.getMonth() + 1
           }.${date.getDate()}. ${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`}
         /> */}
-				<GridCsvExportMenuItem />
+				<GridCsvExportMenuItem
+					options={{
+						delimiter: ";",
+						fileName: "students",
+						utf8WithBom: true
+					}}
+				/>
 			</GridToolbarExportContainer>
 			<GridToolbarColumnsButton />
 			<GridToolbarFilterButton />

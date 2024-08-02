@@ -1,27 +1,27 @@
-import "./css/App.css";
-import "./css/Footer.css";
+import "./styles/App.css";
+import "./styles/Footer.css";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-
-import { DarkMode } from "./components/DarkMode";
 import { AddNewStudent } from "./pages/AddNewStudent";
-import { UpdateStudent } from "./pages/UpdateStudent";
-import { ClassChooser } from "./pages/ClassChooser";
+import { EditStudent } from "./pages/EditStudent";
+import { ClassSelector } from "./pages/ClassSelector";
 
-import { AuthContext } from "./context/AuthContext";
+import { AuthContext } from "./contexts/AuthContext";
 import { EditUsers } from "./pages/admin/EditUsers";
 import { useContext, useEffect } from "react";
-import { ClassContext } from "./context/ClassContext";
+import { ClassContext } from "./contexts/ClassContext";
 import axios from "./utils/axios";
-import { UserRoute } from "./route/UserRoute";
-import { AdminRoute } from "./route/AdminRoute";
+import { UserRoute } from "./routes/UserRoute";
+import { AdminRoute } from "./routes/AdminRoute";
 import { Error } from "./pages/Error";
 import { Profile } from "./pages/Profile";
 import { AddUser } from "./pages/admin/AddUser";
-import { UserAdminCommonRoute } from "./route/UserAdminCommonRoute";
+import { AuthRoute } from "./routes/AuthRoute";
 import { AddClass } from "./pages/AddClass";
+import { IndexRoute } from "./routes/IndexRoute";
+import { NotAuthRoute } from "./routes/NotAuthRoute";
 
 function App() {
 	const { logout } = useContext(AuthContext);
@@ -51,58 +51,57 @@ function App() {
 	return (
 		<div className="App">
 			<BrowserRouter>
-				<DarkMode>
-					<Routes>
-						<Route
-							path="*"
-							element={<Error message="Valami hiba történt..." />}
-						/>
-						<Route path="/login" index element={<Login />} />
-						<Route
-							path="/"
-							element={<UserRoute user={currentUser} />}
-						>
-							<Route path="/" element={<Home />} />
-
+				<Routes>
+					<Route
+						path="*"
+						element={
+							<Error message="A keresett oldal nem található" />
+						}
+					/>
+					<Route index element={<IndexRoute user={currentUser} />} />
+					<Route element={<NotAuthRoute user={currentUser} />}>
+						<Route path="login" element={<Login />} />
+					</Route>
+					<Route element={<AuthRoute user={currentUser} />}>
+						<Route element={<UserRoute user={currentUser} />}>
+							<Route
+								path="classes"
+								index
+								element={<ClassSelector />}
+							/>
+							<Route path="students" element={<Home />} />
+							<Route path="class">
+								<Route path="add" element={<AddClass />} />
+							</Route>
 							<Route path="student">
 								<Route
 									path="add"
 									element={<AddNewStudent />}
 								></Route>
 								<Route
-									path="update"
-									element={<UpdateStudent />}
+									path="edit"
+									element={<EditStudent />}
 								></Route>
 							</Route>
 						</Route>
-						<Route path="class">
-							<Route path="add" element={<AddClass />} />
-							<Route path="choose" element={<ClassChooser />} />
-						</Route>
 						<Route
-							path="/"
+							path="admin"
 							element={<AdminRoute user={currentUser} />}
 						>
-							<Route path="admin">
-								<Route path="users">
-									<Route
-										path="list"
-										element={<EditUsers />}
-									/>
-									<Route path="add" element={<AddUser />} />
-								</Route>
+							<Route
+								index
+								element={
+									<Error message="A keresett oldal nem található" />
+								}
+							/>
+							<Route path="users" index element={<EditUsers />} />
+							<Route path="user">
+								<Route path="add" element={<AddUser />} />
 							</Route>
 						</Route>
-						<Route
-							path="/"
-							element={
-								<UserAdminCommonRoute user={currentUser} />
-							}
-						>
-							<Route path="profile" element={<Profile />} />
-						</Route>
-					</Routes>
-				</DarkMode>
+						<Route path="profile" element={<Profile />} />
+					</Route>
+				</Routes>
 			</BrowserRouter>
 		</div>
 	);

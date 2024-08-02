@@ -1,32 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./css/index.css";
+import "./styles/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Classes } from "./context/ClassContext";
-import { ToastContainer } from "react-toastify";
-import { Auth } from "./context/AuthContext";
-import { StudentsRow } from "./context/StudentsRowContext";
+import { Classes } from "./contexts/ClassContext";
+import Toast from "./components/Toast";
+import { Auth } from "./contexts/AuthContext";
+import { StudentsRow } from "./contexts/StudentsRowContext";
+import { CssBaseline } from "@mui/material";
+import { Theme } from "./contexts/ThemeContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
-		<ToastContainer
-			position="bottom-right"
-			autoClose={5000}
-			closeOnClick
-			rtl={false}
-			draggable
-			pauseOnHover
-			theme="light"
-		/>
-		<Auth>
-			<Classes>
-				<StudentsRow>
-					<App />
-				</StudentsRow>
-			</Classes>
-		</Auth>
+		<Theme>
+			<CssBaseline />
+			<Toast />
+			<Auth>
+				<Classes>
+					<StudentsRow>
+						<App />
+					</StudentsRow>
+				</Classes>
+			</Auth>
+		</Theme>
 	</React.StrictMode>
 );
 

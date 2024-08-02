@@ -4,36 +4,6 @@ import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const create = async (req, res) => {
-	// frontend átír: admin -> isAdmin
-	const { id, password, isAdmin } = req.body;
-
-	const message = validationMessage(req);
-	if (message) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ message });
-	}
-
-	const foundUser = await prisma.User.findUnique({
-		where: { id }
-	});
-
-	if (foundUser) {
-		return res
-			.status(StatusCodes.CONFLICT)
-			.json({ message: "A felhasználó már létezik!" });
-	}
-
-	const hashedPassword = await bcrypt.hash(password, 12);
-
-	const newUser = await prisma.User.create({
-		data: { id, password: hashedPassword, is_admin: isAdmin }
-	}).then((usr) => {
-		return res
-			.status(StatusCodes.CREATED)
-			.json({ message: "Felhasználó sikeresen létrehozva." });
-	});
-};
-
 export const login = async (req, res) => {
 	const { id, password } = req.body;
 

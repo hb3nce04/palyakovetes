@@ -9,13 +9,11 @@ import sectorsRoute from "./sectors.route.js";
 import usersRoute from "./users.route.js";
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
 import { isNotAdmin } from "../middlewares/admin.middleware.js";
-import { StatusCodes } from "http-status-codes";
+import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "../../swagger.json" with {type: 'json'};
 
 const router = Router();
 
-router.get("/whoami", (req, res) => {
-	return res.status(StatusCodes.OK).send("Working!");
-});
 router.use("/auth", authRoute);
 router.use("/schools", isAuthenticated, isNotAdmin, schoolsRoute);
 router.use("/classes", isAuthenticated, isNotAdmin, classesRoute);
@@ -24,5 +22,10 @@ router.use("/categories", isAuthenticated, isNotAdmin, categoriesRoute);
 router.use("/professions", isAuthenticated, isNotAdmin, professionsRoute);
 router.use("/sectors", isAuthenticated, isNotAdmin, sectorsRoute);
 router.use("/users", isAuthenticated, usersRoute);
+
+if (process.env.NODE_ENV === "development") {
+    router.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+}
+
 
 export default router;

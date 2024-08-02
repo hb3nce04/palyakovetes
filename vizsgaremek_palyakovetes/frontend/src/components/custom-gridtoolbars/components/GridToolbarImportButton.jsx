@@ -2,7 +2,7 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import { useContext, useState } from "react";
 import Papa from "papaparse";
 import axios from "axios";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const GridToolbarImportButton = () => {
@@ -57,21 +57,9 @@ export const GridToolbarImportButton = () => {
 				});
 
 				return Promise.all([
-					axios.get(
-						"http://localhost:8080/categories/getProfessions",
-						{
-							withCredentials: true
-						}
-					),
-					axios.get("http://localhost:8080/categories/getSectors", {
-						withCredentials: true
-					}),
-					axios.get(
-						"http://localhost:8080/categories/getCategories",
-						{
-							withCredentials: true
-						}
-					)
+					axios.get("/professions"),
+					axios.get("/sectors"),
+					axios.get("/categories")
 				])
 					.then((e) => {
 						let newUpdatedArr = updatedArr.map((item1) => {
@@ -111,33 +99,25 @@ export const GridToolbarImportButton = () => {
 						});
 
 						mergedArray3.forEach((e) => {
-							axios.post(
-								"http://localhost:8080/students/addStudent",
-								{
-									om_azon: e.diak_om_azon,
-									leiras: e.leiras,
-									szakid: e.szakmaid ? e.szakmaid : null,
-									agazatid: e.agazatid ? e.agazatid : null,
-									tanuloNev: e.tanulo_nev,
-									kategoriaid: e.id,
-									osztalyid: Number(
-										localStorage.getItem("selected_class")
-									),
-									nappali_munkarend:
-										e.nappali_munkarend === "Nappali"
-											? 1
-											: 0
-								},
-								{
-									withCredentials: true
-								}
-							);
+							axios.post("/students", {
+								id: e.diak_om_azon,
+								description: e.leiras,
+								professionId: e.szakmaid ? e.szakmaid : null,
+								sectorId: e.agazatid ? e.agazatid : null,
+								name: e.tanulo_nev,
+								categoryId: e.id,
+								classId: Number(
+									localStorage.getItem("selected_class")
+								),
+								dayShift: e.nappali_munkarend === "Nappali"
+							});
 						});
 					})
 					.then(() => {
 						window.location.reload();
 					})
 					.catch((err) => {
+						console.log(err);
 						if (err.code === "ERR_NETWORK") navigate("/login");
 						if (err.response.status === 401) logout();
 					});

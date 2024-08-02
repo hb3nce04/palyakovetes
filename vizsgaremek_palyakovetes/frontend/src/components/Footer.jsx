@@ -1,15 +1,9 @@
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 
-function Footer(props) {
-	const trademark = "Pályakövető rendszer ™";
-	const versionNumber = "Verziószám: 1.0.0";
-	const privacyPolicy = <Link href="">Adatvédelmi tájékoztató</Link>;
-	const supportedBrowsers = <Link href="">Támogatott böngészők</Link>;
-
+function Footer() {
 	return (
 		<Box
 			sx={{
@@ -17,8 +11,6 @@ function Footer(props) {
 				flexDirection: "column"
 			}}
 		>
-			<CssBaseline />
-
 			<Box
 				className="footer"
 				component="footer"
@@ -31,18 +23,17 @@ function Footer(props) {
 			>
 				<Container maxWidth="sm" className="footerContent">
 					<Typography variant="body1" data-testid="trademark">
-						{props.trademark ? trademark : ""}
+						Pályakövető rendszer ™
 					</Typography>
 					<Typography variant="body1" data-testid="versionNumber">
-						{props.versionNumber ? versionNumber : ""}
+						Verziószám: 1.0.0 -{" "}
+						<Link href="https://github.com/hb3nce04/palyakovetes">
+							projekt
+						</Link>
 					</Typography>
 					<Typography variant="body1">
-						{props.privacyPolicy ? privacyPolicy : ""}
+						© Minden jog fenntartva! {new Date().getFullYear()}
 					</Typography>
-					<Typography variant="body1">
-						{props.supportedBrowsers ? supportedBrowsers : ""}
-					</Typography>
-					{/*<Copyright />*/}
 				</Container>
 			</Box>
 		</Box>

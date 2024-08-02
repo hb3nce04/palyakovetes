@@ -16,27 +16,33 @@ import axios from "../utils/axios";
 import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { ClassContext } from "../context/ClassContext";
+import { ClassContext } from "../contexts/ClassContext";
 import { useNavigate } from "react-router-dom";
-import { StudentRowContext } from "../context/StudentsRowContext";
+import { StudentRowContext } from "../contexts/StudentsRowContext";
 import { BackToPageButton } from "../components/BackToPageButton";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
 	id: yup.string(),
-	name: yup.string(),
+	name: yup
+		.string()
+		.matches(
+			/^[^\d'"`\\]{2,100}$/,
+			"A név legalább 2, legfeljebb 100 karakter lehet, nem tartalmazhat számot és speciális karaktert sem"
+		)
+		.required("Név megadása kötelező"),
 	dayShift: yup.boolean(),
 	classId: yup.number(),
-	professionId: yup.number(),
-	sectorId: yup.number(),
-	categoryId: yup.number(),
-	field_description: yup.string()
+	professionId: yup.number().optional(),
+	sectorId: yup.number().optional(),
+	categoryId: yup.number().optional(),
+	field_description: yup.string().optional()
 });
 
-export const UpdateStudent = () => {
+export const EditStudent = () => {
 	const { classData } = useContext(ClassContext);
 	const { logout } = useContext(AuthContext);
 	const navigate = useNavigate();
@@ -59,13 +65,11 @@ export const UpdateStudent = () => {
 		},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(values);
 			axios
 				.put(`/students/${values.id}`, values)
 				.then((res) => {
-					console.log(values);
 					toast.success(res.data.message);
-					navigate("/");
+					navigate("/students");
 				})
 				.catch((err) => {
 					if (err.response.data.message) {
@@ -159,12 +163,7 @@ export const UpdateStudent = () => {
 		<>
 			<Nav />
 			<Paper elevation={2} className="wrapper">
-				<BackToPageButton
-					style={{ marginBottom: "1rem" }}
-					onClick={() => {
-						navigate("/");
-					}}
-				/>
+				<BackToPageButton style={{ marginBottom: "1rem" }} />
 				<Typography
 					variant="h4"
 					color="primary"
@@ -346,7 +345,7 @@ export const UpdateStudent = () => {
 					</div>
 				</Box>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

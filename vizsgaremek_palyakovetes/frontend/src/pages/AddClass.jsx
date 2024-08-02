@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -25,7 +25,13 @@ const validationSchema = yup.object({
 	id: yup.string(),
 	finishingYear: yup.number().required("Az év megadása kötelező"),
 	schoolId: yup.number(),
-	name: yup.string()
+	name: yup
+		.string()
+		.matches(
+			/^[^'"`\\;=()]{2,50}$/,
+			"Az osztály neve legalább 2, legfeljebb 50 karakter hosszú lehet és csak megfelelő elválasztót tartalmazhat"
+		)
+		.required("Név megadása kötelező")
 });
 
 export const AddClass = () => {
@@ -41,7 +47,7 @@ export const AddClass = () => {
 		initialValues: {
 			id: currentUser.id,
 			name: "",
-			finishingYear: 2024,
+			finishingYear: new Date().getFullYear(),
 			schoolId: ""
 		},
 		validationSchema: validationSchema,
@@ -50,7 +56,7 @@ export const AddClass = () => {
 				.post("/classes", values)
 				.then((res) => {
 					toast.success(res.data.message);
-					navigate("/class/choose");
+					navigate("/classes");
 				})
 				.catch((err) => {
 					if (err.response.data.message) {
@@ -77,12 +83,7 @@ export const AddClass = () => {
 		<>
 			<Nav />
 			<Paper elevation={2} className="wrapper">
-				<BackToPageButton
-					style={{ marginBottom: "1rem" }}
-					onClick={() => {
-						navigate("/class/choose");
-					}}
-				/>
+				<BackToPageButton style={{ marginBottom: "1rem" }} />
 				<Typography
 					variant="h4"
 					color="primary"
@@ -168,7 +169,7 @@ export const AddClass = () => {
 					</Button>
 				</Box>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

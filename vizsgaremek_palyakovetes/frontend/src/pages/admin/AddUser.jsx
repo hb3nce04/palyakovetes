@@ -12,28 +12,27 @@ import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../../components/BackToPageButton";
 import Footer from "../../components/Footer";
 import Nav from "../../components/Nav";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object({
 	id: yup
 		.string()
-		.required("OM azonosító megadása kötelező")
-		.min(
-			11,
-			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
+		.matches(
+			"^[0-9]{11}$",
+			"Az OM azonosító 11 karakter hosszú és csak számot tartalmazhat"
 		)
-		.max(
-			11,
-			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
-		),
+		.required("OM azonosító megadása kötelező"),
 	password: yup
 		.string()
-		.min(8, "A jelszónak legalább 8 karakter hosszúnak kell lennie")
-		.max(24, "A jelszónak legfeljebb 24 karakter hosszúnak kell lennie")
+		.matches(
+			"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*_-]).{8,24}$",
+			"A jelszó legalább 8, legfeljebb 24 karakter hosszú lehet és tartalmaznia kell kisbetűt, nagybetűt, számot és speciális karaktert"
+		)
 		.required("Jelszó megadása kötelező"),
-	admin: yup.boolean()
+	isAdmin: yup.boolean()
 });
 
 export const AddUser = () => {
@@ -43,22 +42,24 @@ export const AddUser = () => {
 		initialValues: {
 			id: "",
 			password: "",
-			admin: false
+			isAdmin: false
 		},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			axios
-				.post("/auth/register", {
-					...values,
-					admin: values.admin ? 1 : 0
+				.post("/users", {
+					...values
 				})
 				.then((res) => {
-					// toast
-					navigate("/admin/users/list");
+					toast.success(res.data.message);
+					navigate("/admin/users");
 				})
 				.catch((err) => {
-					// toast
-					if (err.response.status === 401) logout();
+					if (err.response.status === 401) {
+						logout();
+					} else {
+						toast.error(err.response.data.message);
+					}
 				});
 		}
 	});
@@ -67,12 +68,7 @@ export const AddUser = () => {
 		<>
 			<Nav />
 			<Paper elevation={2} className="wrapper">
-				<BackToPageButton
-					style={{ marginBottom: "1rem" }}
-					onClick={() => {
-						navigate("/admin/users/list");
-					}}
-				/>
+				<BackToPageButton style={{ marginBottom: "1rem" }} />
 				<Typography
 					variant="h4"
 					color="primary"
@@ -102,6 +98,7 @@ export const AddUser = () => {
 						name="id"
 						autoComplete="id"
 						autoFocus
+						sx={{ mb: 1 }}
 					/>
 					<TextField
 						value={formik.values.password}
@@ -116,26 +113,30 @@ export const AddUser = () => {
 						}
 						fullWidth
 						label="Jelszó"
-						name="jelszo"
+						id="password"
 						autoFocus
 						type="password"
 					/>
 					<div>
-						<Switch checked={formik.values.admin} onChange={true} />
+						<Switch
+							id="isAdmin"
+							checked={formik.values.isAdmin}
+							onChange={formik.handleChange}
+						/>
 						<Typography variant="h7">
-							{formik.values.admin ? "Admin" : "Felhasználó"}
+							{formik.values.isAdmin ? "Admin" : "Felhasználó"}
 						</Typography>
 					</div>
 					<Button
 						type="submit"
 						variant="contained"
-						sx={{ textTransform: "uppercase" }}
+						sx={{ textTransform: "uppercase", marginTop: 2 }}
 					>
 						létrehozás
 					</Button>
 				</Box>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Button,
-	CssBaseline,
 	TextField,
 	Box,
 	Typography,
@@ -11,7 +10,7 @@ import Footer from "../components/Footer";
 import fingerprint from "../images/fingerprint.svg";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "react-toastify";
@@ -19,19 +18,17 @@ import { toast } from "react-toastify";
 const validationSchema = yup.object({
 	id: yup
 		.string()
-		.required("OM azonosító megadása kötelező")
-		.min(
-			11,
-			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
+		.matches(
+			"^[0-9]{11}$",
+			"Az OM azonosító 11 karakter hosszú és csak számot tartalmazhat"
 		)
-		.max(
-			11,
-			"Az OM azonosítónak pontosan 11 karakter hosszúnak kell lennie"
-		),
+		.required("OM azonosító megadása kötelező"),
 	password: yup
 		.string()
-		.min(8, "A jelszónak legalább 8 karakter hosszúnak kell lennie")
-		.max(24, "A jelszónak legfeljebb 24 karakter hosszúnak kell lennie")
+		.matches(
+			"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*_-]).{8,24}$",
+			"A jelszó legalább 8, legfeljebb 24 karakter hosszú lehet és tartalmaznia kell kisbetűt, nagybetűt, számot és speciális karaktert"
+		)
 		.required("Jelszó megadása kötelező")
 });
 
@@ -49,9 +46,9 @@ export default function SignIn() {
 			login(values)
 				.then((e) => {
 					if (e.isAdmin === 1) {
-						navigate("/admin/users/list");
+						navigate("/admin/users");
 					} else if (e.isAdmin === 0) {
-						navigate("/class/choose");
+						navigate("/classes");
 					}
 					toast.success(e.message);
 				})
@@ -63,7 +60,6 @@ export default function SignIn() {
 
 	return (
 		<Container component="main" maxWidth="xs">
-			<CssBaseline />
 			<Box
 				sx={{
 					display: "flex",
@@ -115,13 +111,18 @@ export default function SignIn() {
 						margin="normal"
 						fullWidth
 					/>
-					<Button fullWidth type="submit" variant="contained">
+					<Button
+						fullWidth
+						type="submit"
+						variant="contained"
+						sx={{ marginTop: "1rem" }}
+					>
 						Bejelentkezés
 					</Button>
 				</Box>
 			</Box>
 
-			<Footer trademark versionNumber />
+			<Footer />
 		</Container>
 	);
 }

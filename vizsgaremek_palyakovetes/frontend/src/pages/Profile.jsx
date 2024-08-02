@@ -1,33 +1,32 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
-import {
-	Button,
-	CssBaseline,
-	Paper,
-	TextField,
-	Typography
-} from "@mui/material";
+import { Button, Paper, TextField, Typography } from "@mui/material";
 import lightprofile from "../images/lightprofile.png";
-//import darkprofile from "../images/darkprofile.png";
+import darkprofile from "../images/darkprofile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { BackToPageButton } from "../components/BackToPageButton";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "react-toastify";
+import { useTheme } from "../contexts/ThemeContext";
 
 const validationSchema = yup.object({
 	oldPassword: yup
 		.string()
-		.min(8, "A jelszónak legalább 8 karakter hosszúnak kell lennie")
-		.max(24, "A jelszónak legfeljebb 24 karakter hosszúnak kell lennie")
+		.matches(
+			"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*_-]).{8,24}$",
+			"A régi jelszó legalább 8, legfeljebb 24 karakter hosszú lehet és tartalmaznia kell kisbetűt, nagybetűt, számot és speciális karaktert"
+		)
 		.required("Régi jelszó megadása kötelező"),
 	newPassword: yup
 		.string()
-		.min(8, "A jelszónak legalább 8 karakter hosszúnak kell lennie")
-		.max(24, "A jelszónak legfeljebb 24 karakter hosszúnak kell lennie")
+		.matches(
+			"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*_-]).{8,24}$",
+			"Az új jelszó legalább 8, legfeljebb 24 karakter hosszú lehet és tartalmaznia kell kisbetűt, nagybetűt, számot és speciális karaktert"
+		)
 		.required("Új jelszó megadása kötelező"),
 	newPassword2: yup
 		.string()
@@ -36,6 +35,7 @@ const validationSchema = yup.object({
 });
 
 export const Profile = () => {
+	const { mode } = useTheme();
 	const { currentUser, logout } = useContext(AuthContext);
 	const formik = useFormik({
 		initialValues: {
@@ -72,11 +72,6 @@ export const Profile = () => {
 				<div className="user-form" onSubmit={formik.handleSubmit}>
 					<BackToPageButton
 						style={{ width: "30%", marginBottom: "1rem" }}
-						onClick={() => {
-							currentUser.isAdmin === 1
-								? navigate("/admin/users/list")
-								: navigate("/");
-						}}
 					/>
 					<Typography
 						variant="h3"
@@ -87,17 +82,17 @@ export const Profile = () => {
 					</Typography>
 
 					<img
-						src={lightprofile}
+						src={mode === "light" ? lightprofile : darkprofile}
 						style={{
 							width: "150px",
 							height: "150px",
 							margin: "2.5rem 0"
 						}}
 					/>
+
 					<Typography variant="h5" color="primary">
 						OM azonosító: {currentUser.id}
 					</Typography>
-					<CssBaseline />
 					<TextField
 						style={{ width: "100%" }}
 						value={formik.values.oldPassword}
@@ -161,7 +156,7 @@ export const Profile = () => {
 					</Button>
 				</div>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

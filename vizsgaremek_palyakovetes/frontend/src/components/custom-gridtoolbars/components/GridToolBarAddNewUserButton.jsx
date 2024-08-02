@@ -6,7 +6,7 @@ export const GridToolbarAddNewUserButton = () => {
 	const navigate = useNavigate();
 
 	const handleClick = (event) => {
-		navigate("/admin/users/add", { replace: true });
+		navigate("/admin/user/add", { replace: true });
 	};
 
 	return (

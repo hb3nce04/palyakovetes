@@ -8,7 +8,7 @@ const Home = () => {
 		<>
 			<Nav />
 			<StudentDataTable />
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

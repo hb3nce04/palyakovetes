@@ -105,7 +105,6 @@ export const deleteStudentByID = (req, res) => {
 	});
 };
 
-// ???
 export const updateStudentByID = async (req, res) => {
 	const {
 		id,
@@ -140,7 +139,7 @@ export const updateStudentByID = async (req, res) => {
 			data: {
 				name,
 				day_shift: dayShift,
-				Profession: { connect: { id: parseInt(professionId) } } // ??
+				Profession: { connect: { id: parseInt(professionId) } }
 			}
 		});
 	}
@@ -153,7 +152,7 @@ export const updateStudentByID = async (req, res) => {
 			data: {
 				name,
 				day_shift: dayShift,
-				Sector: { connect: { id: parseInt(sectorId) } } // null??
+				Sector: { connect: { id: parseInt(sectorId) } }
 			}
 		});
 	}

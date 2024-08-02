@@ -1,15 +1,17 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import axios from "../utils/axios";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { UserToolBar } from "./custom-gridtoolbars/UserToolBar";
-import { isAdminFromDatabaseLogicConverter } from "../utils/utils";
+import { isAdmin } from "../utils/utils";
 import { UserRowDeleteAction } from "./user-row-actions/UserRowDeleteAction";
 import { huHU } from "@mui/x-data-grid/locales";
 import { toast } from "react-toastify";
+import { UserRowEditAction } from "./user-row-actions/UserRowEditAction";
 
 export const UserDataTable = () => {
+	const [loading, setLoading] = useState(true);
 	const [userData, setUserData] = useState([]);
 	const { logout } = useContext(AuthContext);
 	const navigate = useNavigate();
@@ -17,7 +19,7 @@ export const UserDataTable = () => {
 	const currentUserData = () => {
 		let boolConvertedClassData = userData.map((o) => ({
 			...o,
-			admin: isAdminFromDatabaseLogicConverter(o.is_admin)
+			admin: isAdmin(o.is_admin)
 		}));
 		return boolConvertedClassData;
 	};
@@ -25,7 +27,10 @@ export const UserDataTable = () => {
 	useEffect(() => {
 		axios
 			.get("/users")
-			.then((e) => setUserData(e.data))
+			.then((e) => {
+				setUserData(e.data);
+				setLoading(false);
+			})
 			.catch((err) => {
 				if (err.code === "ERR_NETWORK") navigate("/login");
 				if (err.response.status === 401) logout();
@@ -35,6 +40,28 @@ export const UserDataTable = () => {
 	const columns = [
 		{ field: "id", headerName: "OM azonosító", width: 130 },
 		{ field: "admin", headerName: "Jogosultság", width: 130 },
+		{
+			field: "edit",
+			headerName: "Módosítás",
+			sortable: false,
+			disableColumnMenu: true,
+			width: 140,
+			disableExport: true,
+			disableClickEventBubbling: true,
+			renderCell: (params) => {
+				return (
+					<div
+						className="d-flex justify-content-between align-items-center"
+						style={{ cursor: "pointer" }}
+					>
+						<UserRowEditAction
+							params={params}
+							clickEvent={onButtonClickEdit}
+						/>
+					</div>
+				);
+			}
+		},
 		{
 			field: "delete",
 			headerName: "Törlés",
@@ -57,6 +84,13 @@ export const UserDataTable = () => {
 			}
 		}
 	];
+
+	// FOLYAMATBAN
+	const onButtonClickEdit = (e, row) => {
+		e.stopPropagation();
+		handleUserRow(row.id);
+		navigate("/users/edit");
+	};
 
 	const onButtonClickDelete = (e, row) => {
 		e.stopPropagation();
@@ -95,6 +129,13 @@ export const UserDataTable = () => {
 				}}
 				slots={{
 					toolbar: UserToolBar
+				}}
+				loading={loading}
+				slotProps={{
+					loadingOverlay: {
+						variant: "circular-progress",
+						noRowsVariant: "skeleton"
+					}
 				}}
 			/>
 		</div>

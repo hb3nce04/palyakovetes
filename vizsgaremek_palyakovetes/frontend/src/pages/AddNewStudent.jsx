@@ -16,23 +16,35 @@ import axios from "../utils/axios";
 import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Nav from "../components/Nav";
-import { ClassContext } from "../context/ClassContext";
+import { ClassContext } from "../contexts/ClassContext";
 import { useNavigate } from "react-router-dom";
 import { BackToPageButton } from "../components/BackToPageButton";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 
 const validationSchema = yup.object({
-	id: yup.string(),
-	name: yup.string(),
+	id: yup
+		.string()
+		.matches(
+			"^[0-9]{11}$",
+			"Az OM azonosító 11 karakter hosszú és csak számot tartalmazhat"
+		)
+		.required(),
+	name: yup
+		.string()
+		.matches(
+			/^[^\d'"`\\]{2,100}$/,
+			"A név legalább 2, legfeljebb 100 karakter lehet, nem tartalmazhat számot és speciális karaktert sem"
+		)
+		.required(""),
 	dayShift: yup.boolean(),
 	classId: yup.number(),
 	professionId: yup.number(),
 	sectorId: yup.number(),
-	categoryId: yup.number(),
-	field_description: yup.string()
+	categoryId: yup.number().optional(),
+	field_description: yup.string().optional()
 });
 
 export const AddNewStudent = () => {
@@ -60,7 +72,7 @@ export const AddNewStudent = () => {
 				.post("/students", values)
 				.then((res) => {
 					toast.success(res.data.message);
-					navigate("/");
+					navigate("/students");
 				})
 				.catch((err) => {
 					if (err.code === "ERR_NETWORK") navigate("/login");
@@ -135,12 +147,7 @@ export const AddNewStudent = () => {
 		<>
 			<Nav />
 			<Paper elevation={2} className="wrapper">
-				<BackToPageButton
-					style={{ marginBottom: "1rem" }}
-					onClick={() => {
-						navigate("/");
-					}}
-				/>
+				<BackToPageButton style={{ marginBottom: "1rem" }} />
 				<Typography
 					variant="h4"
 					color="primary"
@@ -322,7 +329,7 @@ export const AddNewStudent = () => {
 					</div>
 				</Box>
 			</Paper>
-			<Footer trademark versionNumber />
+			<Footer />
 		</>
 	);
 };

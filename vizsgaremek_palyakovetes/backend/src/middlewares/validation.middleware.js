@@ -1,13 +1,27 @@
 import { checkSchema } from "express-validator";
 import { validationResult } from "express-validator";
 
-const passwordValidationOptions = {
-	minLength: 8,
-	maxLength: 24,
-	minUppercase: 1,
-	minLowercase: 1,
-	minNumbers: 1,
-	minSymbols: 1
+const idValidation = {
+	exists: { errorMessage: "OM azonosító kötelező" },
+	isNumeric: {
+		errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
+	},
+	matches: {
+		options: "^[0-9]{11}$",
+		errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
+	}
+};
+
+const passwordValidation = {
+	exists: { errorMessage: "Jelszó kötelező" },
+	isString: {
+		errorMessage: "Hibás jelszó (nem megfelelő formátum)"
+	},
+	matches: {
+		options:
+			"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*_-]).{8,24}$",
+		errorMessage: "Hibás vagy gyenge jelszó"
+	}
 };
 
 // GLOBAL
@@ -24,50 +38,9 @@ export const validationMessage = (req) => {
 };
 
 // Auth
-export const registerValidation = checkSchema({
-	id: {
-		exists: { errorMessage: "OM azonosító kötelező" },
-		isNumeric: {
-			errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
-		},
-		isLength: {
-			options: { min: 11, max: 11 },
-			errorMessage: "Hibás OM azonosító (nem megfelelő hossz)"
-		}
-	},
-	password: {
-		exists: { errorMessage: "Jelszó kötelező" },
-		isStrongPassword: {
-			options: passwordValidationOptions,
-			errorMessage: "Hibás jelszó (gyenge)"
-		}
-	},
-	isAdmin: {
-		exists: { errorMessage: "Admin jogosultság kötelező" },
-		isBoolean: {
-			errorMessage: "Jogosultság (nem megfelelő formátum)"
-		}
-	}
-});
-
 export const loginValidation = checkSchema({
-	id: {
-		exists: { errorMessage: "OM azonosító kötelező" },
-		isNumeric: {
-			errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
-		},
-		isLength: {
-			options: { min: 11, max: 11 },
-			errorMessage: "Hibás OM azonosító (nem megfelelő hossz)"
-		}
-	},
-	password: {
-		exists: { errorMessage: "Jelszó kötelező" },
-		isStrongPassword: {
-			options: passwordValidationOptions,
-			errorMessage: "Hibás jelszó (gyenge)"
-		}
-	}
+	id: idValidation,
+	password: passwordValidation
 });
 
 // Classes
@@ -77,24 +50,31 @@ export const classValidation = checkSchema({
 		isNumeric: {
 			errorMessage: "Hibás iskola azonosító (nem megfelelő formátum)"
 		},
-		isLength: {
+		isInt: {
 			options: { min: 1 },
-			errorMessage: "Hibás iskola azonosító (nem megfelelő hossz)"
+			errorMessage: "Hibás iskola azonosító (nem megfelelő formátum)"
 		}
 	},
 	name: {
-		isLength: {
-			options: { min: 3 },
-			errorMessage: "Osztály neve túl rövid"
-		},
-		exists: { errorMessage: "Osztály neve kötelező" },
+		exists: { errorMessage: "Osztálynév kötelező" },
 		isString: {
-			errorMessage: "Hibás osztály név (nem megfelelő formátum)"
+			errorMessage: "Hibás osztálynév (nem megfelelő formátum)"
+		},
+		matches: {
+			options: /^[^'"`\\;=()]{2,50}$/,
+			errorMessage: "Hibás osztálynév (nem megfelelő formátum)"
 		}
 	},
 	finishingYear: {
 		exists: { errorMessage: "Végzési év kötelező" },
 		isNumeric: {
+			errorMessage: "Hibás végzési év (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: {
+				min: new Date().getFullYear() - 25,
+				max: new Date().getFullYear()
+			},
 			errorMessage: "Hibás végzési év (nem megfelelő formátum)"
 		}
 	}
@@ -102,25 +82,24 @@ export const classValidation = checkSchema({
 
 // Students
 export const createStudentValidation = checkSchema({
-	id: {
-		exists: { errorMessage: "OM azonosító kötelező" },
-		isNumeric: {
-			errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
-		},
-		isLength: {
-			options: { min: 11, max: 11 },
-			errorMessage: "Hibás OM azonosító (nem megfelelő hossz)"
-		}
-	},
+	id: idValidation,
 	name: {
 		exists: { errorMessage: "Tanuló neve kötelező" },
 		isString: {
-			errorMessage: "Hibás tanuló név (nem megfelelő formátum)"
+			errorMessage: "Hibás tanulónév (nem megfelelő formátum)"
+		},
+		matches: {
+			options: /^[^\d'"`\\]{2,100}$/,
+			errorMessage: "Hibás tanulónév (nem megfelelő formátum)"
 		}
 	},
 	classId: {
 		exists: { errorMessage: "Osztály azonosító kötelező" },
 		isNumeric: {
+			errorMessage: "Hibás osztály azonosító (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: { min: 1 },
 			errorMessage: "Hibás osztály azonosító (nem megfelelő formátum)"
 		}
 	},
@@ -134,17 +113,31 @@ export const createStudentValidation = checkSchema({
 		exists: { errorMessage: "Ágazat azonosító kötelező" },
 		isNumeric: {
 			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
-		}
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
+		},
+		optional: true
 	},
 	professionId: {
 		exists: { errorMessage: "Szakma azonosító kötelező" },
 		isNumeric: {
 			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
-		}
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
+		},
+		optional: true
 	},
 	categoryId: {
 		exists: { errorMessage: "Kategória azonosító kötelező" },
 		isNumeric: {
+			errorMessage: "Hibás kategória azonosító (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: { min: 1 },
 			errorMessage: "Hibás kategória azonosító (nem megfelelő formátum)"
 		}
 	},
@@ -161,20 +154,15 @@ export const createStudentValidation = checkSchema({
 });
 
 export const updateStudentValidation = checkSchema({
-	id: {
-		exists: { errorMessage: "OM azonosító kötelező" },
-		isNumeric: {
-			errorMessage: "Hibás OM azonosító (nem megfelelő formátum)"
-		},
-		isLength: {
-			options: { min: 11, max: 11 },
-			errorMessage: "Hibás OM azonosító (nem megfelelő hossz)"
-		}
-	},
+	id: idValidation,
 	name: {
 		exists: { errorMessage: "Tanuló neve kötelező" },
+		matches: {
+			options: /^[^\d'"`\\]{2,100}$/,
+			errorMessage: "Hibás tanulónév (nem megfelelő formátum)"
+		},
 		isString: {
-			errorMessage: "Hibás tanuló név (nem megfelelő formátum)"
+			errorMessage: "Hibás tanulónév (nem megfelelő formátum)"
 		}
 	},
 	dayShift: {
@@ -186,16 +174,30 @@ export const updateStudentValidation = checkSchema({
 	sectorId: {
 		isNumeric: {
 			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
-		}
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
+		},
+		optional: true
 	},
 	professionId: {
 		isNumeric: {
 			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
-		}
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
+		},
+		optional: true
 	},
 	categoryId: {
 		exists: { errorMessage: "Kategória azonosító kötelező" },
 		isNumeric: {
+			errorMessage: "Hibás kategória azonosító (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: { min: 1 },
 			errorMessage: "Hibás kategória azonosító (nem megfelelő formátum)"
 		}
 	},
@@ -206,25 +208,24 @@ export const updateStudentValidation = checkSchema({
 		},
 		isLength: {
 			options: { min: 5, max: 255 },
-			errorMessage: "Hibás pályaleírás (nem megfelelő hossz)"
+			errorMessage: "Hibás pályaleírás (nem megfelelő formátum)"
 		}
 	}
 });
 
 // Users
-export const updatePasswordValidation = checkSchema({
-	oldPassword: {
-		exists: { errorMessage: "Régi jelszó kötelező" },
-		isStrongPassword: {
-			options: passwordValidationOptions,
-			errorMessage: "Hibás régi jelszó (gyenge)"
-		}
-	},
-	newPassword: {
-		exists: { errorMessage: "Új jelszó kötelező" },
-		isStrongPassword: {
-			options: passwordValidationOptions,
-			errorMessage: "Hibás új jelszó (gyenge)"
+export const createUserValidation = checkSchema({
+	id: idValidation,
+	password: passwordValidation,
+	isAdmin: {
+		exists: { errorMessage: "Jogkör megadása kötelező" },
+		isBoolean: {
+			errorMessage: "Jogosultság (nem megfelelő formátum)"
 		}
 	}
+});
+
+export const updatePasswordValidation = checkSchema({
+	oldPassword: passwordValidation,
+	newPassword: passwordValidation
 });

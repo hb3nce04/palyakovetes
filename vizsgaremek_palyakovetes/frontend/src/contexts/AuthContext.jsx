@@ -12,6 +12,7 @@ export const Auth = ({ children }) => {
 	const login = async (inputs) => {
 		try {
 			const response = await axios.post("/auth/login", inputs);
+            toast.success(response.data.message);
 			setCurrentUser(response.data.user);
 			return response.data.user;
 		} catch (error) {

@@ -1,0 +1,171 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "API dokumentáció",
+		"description": "Pályakövető rendszer Swagger dokumentációja",
+		"version": "2.0"
+	},
+	"servers": [{ "url": "http://localhost:8080/api" }],
+	"paths": {
+		"/auth/login": {
+			"post": {
+				"tags": ["Auth"],
+				"summary": "Authenticate user",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User authenticated successfully",
+						"headers": {
+							"Set-Cookie": {
+								"type": "string",
+								"format": "cookie",
+								"description": "JWT token",
+								"example": "<JWT_TOKEN>"
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid credentials"
+					}
+				}
+			}
+		},
+		"/auth/logout": {
+			"post": { "tags": ["Auth"], "summary": "Logout user" }
+		},
+		"/schools": {
+			"get": {
+				"tags": ["School"],
+				"responses": {
+					"200": {
+						"description": "Get the list of schools"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"School": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": { "type": "string" }
+				},
+				"example": {
+					"id": 1,
+					"name": "Példa Intézmény"
+				}
+			},
+			"Sector": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": { "type": "string" },
+					"number": "string"
+				},
+				"example": {
+					"id": 1,
+					"name": "Példa ágazat",
+					"number": "X"
+				}
+			},
+			"Category": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": { "type": "string" }
+				},
+				"example": {
+					"id": 1,
+					"name": "Példa kategória"
+				}
+			},
+			"Class": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": {
+						"type": "string"
+					},
+					"finishingYear": {
+						"type": "integer",
+						"minimum": 2000,
+						"maximum": 2024
+					},
+					"schoolId": {
+						"type": "integer"
+					},
+					"userId": {
+						"type": "integer"
+					}
+				}
+			},
+			"Profession": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": {
+						"type": "string"
+					},
+					"number": {
+						"type": "string"
+					}
+				}
+			},
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"minimum": 10000000000,
+						"maximum": 99999999999
+					},
+					"password": { "type": "string" },
+					"isAdmin": {
+						"type": "boolean",
+						"description": "Only for user creation"
+					}
+				},
+				"example": {
+					"Admin": {
+						"id": 11111111111,
+						"password": "Admin_123",
+						"isAdmin": true
+					},
+					"User": {
+						"id": 22222222222,
+						"password": "Felhasznalo_123",
+						"isAdmin": false
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}

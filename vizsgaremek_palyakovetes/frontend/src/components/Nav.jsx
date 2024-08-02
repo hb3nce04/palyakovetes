@@ -10,18 +10,20 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import lightfingerprint from "../images/lightfingerprint.png";
-import { ColorModeContext } from "./DarkMode";
+import { ThemeContext } from "../contexts/ThemeContext";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 const userPages = ["Osztály kiválasztása", "Profil"];
 const adminPages = ["Főoldal", "Profil"];
 const dropdownButtons = ["Profil", "Kijelentkezés"];
 
 function Nav() {
-	const { toggleColorMode } = useContext(ColorModeContext);
+	const {
+		colorMode: { toggleColorMode }
+	} = useContext(ThemeContext);
 	const { logout, currentUser } = useContext(AuthContext);
 	const [darkModeIcon, setDarkModeIcon] = useState(
 		localStorage.getItem("mode") === "dark" ? (
@@ -57,12 +59,12 @@ function Nav() {
 		navigate("/profile");
 	};
 
-	const handleClassChooserNavigation = () => {
-		navigate("/class/choose");
+	const handleClassSelectorNavigation = () => {
+		navigate("/classes");
 	};
 
 	const handleAdminDataTableNavigation = () => {
-		navigate("/admin/users/list");
+		navigate("/admin/users");
 	};
 
 	return (
@@ -157,7 +159,7 @@ function Nav() {
 													page ===
 													"Osztály kiválasztása"
 												) {
-													handleClassChooserNavigation();
+													handleClassSelectorNavigation();
 												}
 												handleCloseUserMenu();
 											}}
@@ -221,7 +223,7 @@ function Nav() {
 											if (
 												page === "Osztály kiválasztása"
 											) {
-												handleClassChooserNavigation();
+												handleClassSelectorNavigation();
 											}
 											handleCloseUserMenu();
 										}}
@@ -251,7 +253,7 @@ function Nav() {
 					</IconButton>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
+						<Tooltip title="Profil">
 							<IconButton
 								onClick={handleOpenUserMenu}
 								sx={{ p: 0 }}
