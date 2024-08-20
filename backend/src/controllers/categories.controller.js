@@ -6,7 +6,8 @@ export const getCategories = (req, res) => {
 		.then((categories) => {
 			return res.status(StatusCodes.OK).json(categories);
 		})
-		.catch(() => {
+		.catch((err) => {
+			console.error(err);
 			return res
 				.status(StatusCodes.INTERNAL_SERVER_ERROR)
 				.send(ReasonPhrases.INTERNAL_SERVER_ERROR);

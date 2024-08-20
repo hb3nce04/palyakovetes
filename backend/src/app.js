@@ -6,12 +6,13 @@ import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
-import routes from "./src/routes/main.route.js";
+import routes from "./routes/main.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,14 +25,12 @@ app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
-if (process.env.NODE_ENV === "production") {
-	app.use(
-		rateLimit({
-			windowMs: 5000,
-			max: 10
-		})
-	);
-}
+app.use(
+	rateLimit({
+		windowMs: 5000,
+		max: 10
+	})
+);
 
 app.use("/api", routes);
 
