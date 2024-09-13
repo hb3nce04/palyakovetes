@@ -1,6 +1,0 @@
-Dockerfile
-test
-.dockerignore
-.gitignore
-eslint.config.js
-swagger.json

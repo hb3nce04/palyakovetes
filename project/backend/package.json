@@ -2,10 +2,10 @@
 	"name": "backendv2",
 	"type": "module",
 	"version": "2.0.0",
-	"main": "app.js",
+	"main": "server.js",
 	"scripts": {
-		"dev": "nodemon --legacy-watch src/app.js",
-		"start": "node src/app.js",
+		"dev": "nodemon --legacy-watch server.js",
+		"start": "node server.js",
 		"test": "npx jest"
 	},
 	"author": "hb3nce04",
@@ -38,7 +38,6 @@
 		"supertest": "^7.0.0"
 	},
 	"prisma": {
-		"seed": "node src/prisma/seed.js",
-		"schema": "src/prisma/schema.prisma"
+		"seed": "node prisma/seed.js"
 	}
 }

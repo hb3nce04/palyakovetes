@@ -39,7 +39,7 @@ export const login = async (req, res) => {
 	res.cookie("token", token, {
 		secret: process.env.COOKIE_SECRET,
 		httpOnly: true,
-		sameSite: true,
+		sameSite: false, // Docker cross hosting
 		maxAge: process.env.COOKIE_MAX_AGE,
 		secure: process.env.NODE_ENV === "production"
 	})

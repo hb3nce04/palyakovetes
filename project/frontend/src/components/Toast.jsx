@@ -9,6 +9,7 @@ function Toast() {
 			autoClose={5000}
 			draggable
 			pauseOnHover
+			pauseOnFocusLoss={false}
 			theme={mode === "light" ? "colored" : "dark"}
 		/>
 	);
