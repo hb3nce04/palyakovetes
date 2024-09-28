@@ -4,9 +4,9 @@
 	"version": "2.0.0",
 	"main": "server.js",
 	"scripts": {
-		"dev": "nodemon --legacy-watch server.js",
-		"start": "node server.js",
-		"test": "npx jest"
+		"dev": "NODE_ENV=development tsx watch src/index.ts",
+		"start": "NODE_ENV=production node dist/index.js",
+		"build": "tsc --build"
 	},
 	"author": "hb3nce04",
 	"license": "ISC",
@@ -30,12 +30,18 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.8.0",
+		"@types/express": "^4.17.21",
+		"@types/jsonwebtoken": "^9.0.6",
+		"@types/morgan": "^1.9.9",
+		"@types/node": "^22.5.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^9.8.0",
 		"globals": "^15.9.0",
 		"jest": "^29.7.0",
 		"prisma": "^5.17.0",
-		"supertest": "^7.0.0"
+		"supertest": "^7.0.0",
+		"tsx": "^4.19.1",
+		"typescript": "^5.6.2"
 	},
 	"prisma": {
 		"seed": "node prisma/seed.js"
