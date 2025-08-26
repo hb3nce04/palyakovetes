@@ -14,7 +14,7 @@ const app = express();
 app.use(
 	process.env.NODE_ENV === "development" ? morgan("dev") : morgan("combined")
 );
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: "http://localhost:4200" }));
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
