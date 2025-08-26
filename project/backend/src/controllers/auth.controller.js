@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
 	const { id, password } = req.body;
-
+    console.log(req.body)
 	const message = validationMessage(req);
 	if (message) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ message });
@@ -45,7 +45,7 @@ export const login = async (req, res) => {
 	})
 		.status(StatusCodes.OK)
 		.send({
-			user: { isAdmin: foundUser.is_admin ? 1 : 0, id: foundUser.id },
+			user: { isAdmin: foundUser.is_admin, id: foundUser.id },
 			message: "Sikeresen bejelentkeztél!"
 		});
 };
@@ -55,3 +55,10 @@ export const logout = (req, res) => {
 		.status(StatusCodes.OK)
 		.json({ message: "Sikeresen kijelentkeztél!" });
 };
+
+export const profile = (req, res) => {
+    res.status(StatusCodes.OK).json({
+        id: req.user.id,
+        isAdmin: req.user.admin
+    })
+}

@@ -3,6 +3,7 @@ import professions from "./json/professions.json" with {type: 'json'};
 import categories from "./json/categories.json" with {type: 'json'};
 import sectors from "./json/sectors.json" with {type: 'json'};
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 async function seedingSchools() {
@@ -49,7 +50,14 @@ async function seedingOthers() {
             {id: 12345678912, name: "Lukács Donát", class_id: 2, day_shift: true, profession_id: 20},
         ]
 	}).then(() => console.log("Students seeded..."));
-    
+
+}
+
+async function seedingUser() {
+    const hashedPassword = await bcrypt.hash("Ab3#xYz9", 12);
+    await prisma.User.create({
+        data: {id: 12345123451, password: hashedPassword, is_admin: true}
+    }).then(() => console.log("Sectors seeded..."));
 }
 
 const seeding = async () => {
@@ -59,6 +67,7 @@ const seeding = async () => {
 	await seedingCategories();
 	await seedingSectors();
     await seedingOthers();
+    await seedingUser();
 };
 
 seeding()
