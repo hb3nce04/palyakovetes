@@ -45,10 +45,10 @@ async function seedingOthers() {
 	}).then(() => console.log("Classes seeded..."));
     await prisma.Student.createMany({
 		data: [
-            {id: 12345678910, name: "Kovács József", class_id: 2, day_shift: true, profession_id: 12},
-            {id: 12345678911, name: "Soós Gizella", class_id: 2, day_shift: false, profession_id: 13},
-            {id: 12345678912, name: "Lukács Donát", class_id: 2, day_shift: true, profession_id: 20},
-        ]
+            {id: 12345678910, name: "Kovács József", class_id: 2, day_shift: true, profession_id: 12, sector_id: 1},
+            {id: 12345678911, name: "Soós Gizella", class_id: 2, day_shift: false, profession_id: 13, sector_id: 1},
+            {id: 12345678912, name: "Lukács Donát", class_id: 2, day_shift: true, profession_id: 20, sector_id: 1},
+        ]0
 	}).then(() => console.log("Students seeded..."));
 
 }
