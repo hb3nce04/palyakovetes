@@ -48,7 +48,7 @@ async function seedingOthers() {
             {id: 12345678910, name: "Kovács József", class_id: 2, day_shift: true, profession_id: 12, sector_id: 1},
             {id: 12345678911, name: "Soós Gizella", class_id: 2, day_shift: false, profession_id: 13, sector_id: 1},
             {id: 12345678912, name: "Lukács Donát", class_id: 2, day_shift: true, profession_id: 20, sector_id: 1},
-        ]0
+        ]
 	}).then(() => console.log("Students seeded..."));
 
 }
@@ -60,6 +60,16 @@ async function seedingUser() {
     }).then(() => console.log("Sectors seeded..."));
 }
 
+async function seedingFields() {
+	await prisma.Field.createMany({
+		data: [
+			{student_id: 12345678910, category_id: 5, description: 'Ide jön például, hogy melyik intézményben tanul.'},
+			{student_id: 12345678911, category_id: 3, description: 'Lorem ipsum'},
+			{student_id: 12345678912, category_id: 13, description: 'Nincs info'},
+		]
+	}).then(() => console.log("Fields seeded..."));
+}
+
 const seeding = async () => {
     console.log("Seeding started...")
 	await seedingSchools();
@@ -67,7 +77,8 @@ const seeding = async () => {
 	await seedingCategories();
 	await seedingSectors();
     await seedingOthers();
-    await seedingUser();
+	await seedingUser();
+	await seedingFields();
 };
 
 seeding()
