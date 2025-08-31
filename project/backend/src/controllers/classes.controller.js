@@ -127,3 +127,26 @@ export const updateClassById = async (req, res) => {
         message: "Az osztály sikeresen frissítve."
     });
 }
+
+export const getStatistics = async (req, res) => {
+    const {id} = req.params;
+
+    const message = validationMessage(req);
+    if (message) {
+        return res.status(StatusCodes.BAD_REQUEST).json({message});
+    }
+
+    const foundClass = await prisma.Class.findFirst({
+        where: {id: parseInt(id)}
+    });
+
+    if (!foundClass) {
+        return res
+            .status(StatusCodes.CONFLICT)
+            .json({message: "Az osztály nem létezik!"});
+    }
+
+    const countStudentsInClass = await prisma.Student.count({where: {class_id: parseInt(id)}});
+
+    res.status(StatusCodes.OK).json({countStudentsInClass});
+}
