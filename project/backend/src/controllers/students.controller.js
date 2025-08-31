@@ -142,9 +142,7 @@ export const updateStudentByID = async (req, res) => {
 				Profession: { connect: { id: parseInt(professionId) } }
 			}
 		});
-	}
-
-	if (sectorId) {
+	} else if (sectorId) {
 		await prisma.Student.update({
 			where: {
 				id
