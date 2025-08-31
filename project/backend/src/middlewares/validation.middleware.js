@@ -171,26 +171,6 @@ export const updateStudentValidation = checkSchema({
 			errorMessage: "Hibás tagozat (nem megfelelő formátum)"
 		}
 	},
-	sectorId: {
-		isNumeric: {
-			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
-		},
-		isInt: {
-			options: { min: 1 },
-			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
-		},
-		optional: true
-	},
-	professionId: {
-		isNumeric: {
-			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
-		},
-		isInt: {
-			options: { min: 1 },
-			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
-		},
-		optional: true
-	},
 	categoryId: {
 		exists: { errorMessage: "Kategória azonosító kötelező" },
 		isNumeric: {
@@ -210,7 +190,27 @@ export const updateStudentValidation = checkSchema({
 			options: { min: 5, max: 255 },
 			errorMessage: "Hibás pályaleírás (nem megfelelő formátum)"
 		}
-	}
+	},
+	professionId: {
+		isNumeric: {
+			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás szakma azonosító (nem megfelelő formátum)"
+		},
+		optional: true
+	},
+	sectorId: {
+		isNumeric: {
+			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
+		},
+		isInt: {
+			options: { min: 1 },
+			errorMessage: "Hibás ágazat azonosító (nem megfelelő formátum)"
+		},
+		optional: true
+	},
 });
 
 // Users
