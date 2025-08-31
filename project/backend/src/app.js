@@ -14,17 +14,11 @@ const app = express();
 app.use(
 	process.env.NODE_ENV === "development" ? morgan("dev") : morgan("combined")
 );
-app.use(cors({ credentials: true, origin: "http://localhost:4200" }));
+app.use(cors({ credentials: true, origin: ['http://localhost:4200', 'http://localhost:5173'], methods: ["GET", "POST", "PATCH", "PUT", "DELETE"], }));
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-	rateLimit({
-		windowMs: 5000,
-		max: 10
-	})
-);
 
 app.use("/api", routes);
 
